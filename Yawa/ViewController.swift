@@ -3,12 +3,14 @@ import MultipeerConnectivity
 
 class ViewController: UIViewController {
   
-  let serviceType = "LCOC-Chat"
+  let serviceType = "yawasync"
+  let displayNameKey = "displayNameKey"
+  let peerIDKey = "peerIDKey"
   
-  var browser : MCBrowserViewController!
-  var assistant : MCAdvertiserAssistant!
+  var browser : MCNearbyServiceBrowser!
+  var assistant: MCNearbyServiceAdvertiser!
   var session : MCSession!
-  var peerID: MCPeerID!
+  var myPeerID: MCPeerID!
   let appStartDate = Date()
   
   var tap: UITapGestureRecognizer!
@@ -17,26 +19,41 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    self.peerID = MCPeerID(displayName: UIDevice.current.name)
-    self.session = MCSession(peer: peerID)
-    self.session.delegate = self
+    let displayName = UIDevice.current.name
+    let oldDisplayName = UserDefaults.standard.string(forKey: displayNameKey)
     
-    // create the browser viewcontroller with a unique service name
-    self.browser = MCBrowserViewController(serviceType: serviceType,
-                                           session: self.session)
+    if oldDisplayName == displayName {
+      guard let peerIDData = UserDefaults.standard.data(forKey: peerIDKey) else {
+        print("Getting peerIDData from UserDefaults failed")
+        return
+      }
+      guard let archivedPeerID = NSKeyedUnarchiver.unarchiveObject(with: peerIDData) as? MCPeerID else {
+        print("Unarchiving peerIDData failed")
+        return
+      }
+      myPeerID = archivedPeerID
+    } else {
+      myPeerID = MCPeerID(displayName: displayName)
+      let peerIDData = NSKeyedArchiver.archivedData(withRootObject: myPeerID)
+      UserDefaults.standard.set(peerIDData, forKey: peerIDKey)
+      UserDefaults.standard.set(displayName, forKey: displayNameKey)
+      UserDefaults.standard.synchronize()
+    }
     
-    self.browser.delegate = self;
+    session = MCSession(peer: myPeerID)
+    session.delegate = self
     
-    self.assistant = MCAdvertiserAssistant(serviceType:serviceType,
-                                           discoveryInfo:nil, session:self.session)
+    browser = MCNearbyServiceBrowser(peer: myPeerID, serviceType: serviceType)
+    browser.delegate = self
     
-    // tell the assistant to start advertising our fabulous chat
-    self.assistant.start()
+    assistant = MCNearbyServiceAdvertiser(peer: myPeerID, discoveryInfo: nil, serviceType: serviceType)
+    assistant.delegate = self
+    assistant.startAdvertisingPeer()
     
-    tap = UITapGestureRecognizer(target: self, action: #selector(self.tapHandler(gesture:)))
+    tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler(gesture:)))
     view.addGestureRecognizer(tap)
     
-    longPress = UILongPressGestureRecognizer(target: self, action: #selector(self.longPressHandler(gesture:)))
+    longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressHandler(gesture:)))
     view.addGestureRecognizer(longPress)
   }
   
@@ -47,59 +64,41 @@ class ViewController: UIViewController {
   }
   
   @objc func longPressHandler(gesture: UILongPressGestureRecognizer) {
-    if gesture.state == .ended {
-      showBrowser()
+    if gesture.state == .began {
+      print("\(myPeerID.displayName) started browsing")
+      browser.startBrowsingForPeers()
     }
   }
   
   func sendChat() {
-    // Bundle up the text in the message field, and send it off to all
-    // connected peers
-    
-    let text = "bulka \(Date().timeIntervalSince(appStartDate))"
+    let text = "\(UIDevice.current.model) \(Date().timeIntervalSince(appStartDate))"
     let data = text.data(using: .utf8, allowLossyConversion: false)!
     
-//    self.session.sendData(msg, toPeers: self.session.connectedPeers, withMode: MCSessionSendDataMode.Unreliable, error: &error)
     do {
       try session.send(data, toPeers: session.connectedPeers, with: .reliable)
+      print("Message sent from \(myPeerID.displayName)")
     } catch {
       print("Sending error: \(error)")
     }
-    
-    self.updateChat(text: text, fromPeer: self.peerID)
   }
   
-  // Appends some text to the chat view
   func updateChat(text: String, fromPeer peerID: MCPeerID) {
-    let name : String
-    
-    switch peerID {
-    case self.peerID:
-      name = "Me"
-    default:
-      name = peerID.displayName
-    }
-    
-    // Add the name to the message and display it
-    print("\(name): \(text)")
-  }
-  
-  func showBrowser() {
-    // Show the browser vziew controller
-    self.present(self.browser, animated: true, completion: nil)
+    print("\(peerID.displayName): \(text)")
   }
 }
 
-extension ViewController: MCBrowserViewControllerDelegate {
-  func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
-    // Called when the browser view controller is dismissed (ie the Done
-    // button was tapped)
-    self.dismiss(animated: true, completion: nil)
+extension ViewController: MCNearbyServiceBrowserDelegate {
+  public func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
+    print("Found peer: \(peerID)")
+    browser.invitePeer(peerID, to: session, withContext: nil, timeout: 5)
   }
   
-  func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
-    // Called when the browser view controller is cancelled
-    self.dismiss(animated: true, completion: nil)
+  public func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
+    print("Lost peer: \(peerID)")
+  }
+  
+  public func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
+    print("Didn't start browsing: \(error)")
   }
 }
 
@@ -108,12 +107,23 @@ extension ViewController: MCSessionDelegate {
     // Called when a peer sends an NSData to us
     DispatchQueue.main.async { [unowned self] in
       guard let msg = String(data: data as Data, encoding: .utf8) else { return }
-      self.updateChat(text: msg, fromPeer: peerID)
+      self.updateChat(text: msg, fromPeer: self.myPeerID)
     }
   }
   
-  public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) { }
-  public func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) { }
+  func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) { }
+  func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) { }
   public func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) { }
   public func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) { }
+}
+
+extension ViewController: MCNearbyServiceAdvertiserDelegate {
+  func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Swift.Void) {
+    print("Invitation from: \(peerID.displayName)")
+    invitationHandler(true, session)
+  }
+  
+  func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
+    print("didNotStartAdvertisingPeer: \(error)")
+  }
 }
