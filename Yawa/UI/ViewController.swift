@@ -12,6 +12,7 @@ class ViewController: UIViewController {
   private var tap: UITapGestureRecognizer!
   private var longPress: UILongPressGestureRecognizer!
   private let syncManager = SyncManager()
+  private let storeManager = StoreManager()
   private var transactions = [Transaction]()
   
   @IBOutlet var tableView: UITableView!
@@ -19,6 +20,7 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     syncManager.delegate = self
+    transactions = storeManager.loadTransactions()
     
     tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler(gesture:)))
     view.addGestureRecognizer(tap)
@@ -71,7 +73,7 @@ extension ViewController: UITableViewDataSource {
       cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID)
     }
     
-    let transaction = transactions[indexPath.row]
+    let transaction = transactions[transactions.count - indexPath.row - 1]
     cell.textLabel?.text = "\(transaction.category): \(transaction.amount)"
     cell.detailTextLabel?.text = "\(transaction.author), \(transaction.date)"
     return cell
@@ -81,6 +83,7 @@ extension ViewController: UITableViewDataSource {
 extension ViewController: TransactionAdditionDelegate {
   func add(transaction: Transaction) {
     transactions.append(transaction)
+    storeManager.save(transactions: transactions)
     tableView.reloadData()
   }
 }

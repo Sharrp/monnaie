@@ -25,9 +25,31 @@ enum TransactionCategory: Int, CustomStringConvertible {
   }
 }
 
-struct Transaction {
+class Transaction: NSObject, NSCoding {
   let amount: Float
   let category: TransactionCategory
   let author: String
   let date: Date
+  
+  init(amount: Float, category: TransactionCategory, author: String, date: Date) {
+    self.amount = amount
+    self.category = category
+    self.author = author
+    self.date = date
+  }
+  
+  required init(coder decoder: NSCoder) {
+    amount = decoder.decodeFloat(forKey: "amount")
+    let categoryRawValue = decoder.decodeInteger(forKey: "category")
+    category = TransactionCategory(rawValue: categoryRawValue)!
+    author = decoder.decodeObject(forKey: "author") as! String
+    date = decoder.decodeObject(forKey: "date") as! Date
+  }
+  
+  func encode(with coder: NSCoder) {
+    coder.encode(amount, forKey: "amount")
+    coder.encode(category.rawValue, forKey: "category")
+    coder.encode(author, forKey: "author")
+    coder.encode(date, forKey: "date")
+  }
 }
