@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7524B98B209AEF26006027C8 /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98A209AEF26006027C8 /* SyncManager.swift */; };
 		75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046DE2098892500E8B09E /* AppDelegate.swift */; };
 		75C046E12098892600E8B09E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046E02098892600E8B09E /* ViewController.swift */; };
 		75C046E42098892600E8B09E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C046E22098892600E8B09E /* Main.storyboard */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7524B98A209AEF26006027C8 /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
 		75C046DB2098892500E8B09E /* Yawa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yawa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75C046DE2098892500E8B09E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75C046E02098892600E8B09E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -35,6 +37,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7524B989209AEF09006027C8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7524B98A209AEF26006027C8 /* SyncManager.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		75C046D22098892500E8B09E = {
 			isa = PBXGroup;
 			children = (
@@ -54,6 +64,7 @@
 		75C046DD2098892500E8B09E /* Yawa */ = {
 			isa = PBXGroup;
 			children = (
+				7524B989209AEF09006027C8 /* Model */,
 				75C046DE2098892500E8B09E /* AppDelegate.swift */,
 				75C046E02098892600E8B09E /* ViewController.swift */,
 				75C046E22098892600E8B09E /* Main.storyboard */,
@@ -135,6 +146,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7524B98B209AEF26006027C8 /* SyncManager.swift in Sources */,
 				75C046E12098892600E8B09E /* ViewController.swift in Sources */,
 				75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */,
 			);
