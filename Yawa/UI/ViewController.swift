@@ -72,6 +72,17 @@ extension ViewController: UITableViewDataSource {
     cell.detailTextLabel?.text = "\(transaction.author), \(transaction.date)"
     return cell
   }
+  
+  func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    return true
+  }
+  
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    guard editingStyle == .delete else { return }
+    transactions.remove(at: indexPath.row)
+    tableView.reloadData()
+    storeManager.save(transactions: transactions)
+  }
 }
 
 extension ViewController: TransactionAdditionDelegate {
