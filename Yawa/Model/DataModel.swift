@@ -53,3 +53,21 @@ class Transaction: NSObject, NSCoding {
     coder.encode(date, forKey: "date")
   }
 }
+
+extension Transaction {
+  override func isEqual(_ object: Any?) -> Bool {
+    guard let transaction = object as? Transaction else { return false }
+    let equal = author == transaction.author && date == transaction.date
+    return equal
+  }
+  
+  override var hashValue: Int {
+    return "\(author)\(date)".hashValue
+  }
+}
+
+extension Transaction {
+  override var description: String {
+    return "\(author), \(date): \(category), \(amount)"
+  }
+}

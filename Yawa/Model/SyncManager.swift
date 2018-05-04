@@ -65,7 +65,6 @@ class SyncManager: NSObject {
   func prepareSync() {
     assistant.startAdvertisingPeer()
     browser.startBrowsingForPeers()
-    print("Started browsing")
   }
   
   func send(data: Data) {
@@ -78,18 +77,22 @@ class SyncManager: NSObject {
       print("Sending error: \(error)")
     }
   }
+  
+  deinit {
+    session.disconnect()
+    browser.stopBrowsingForPeers()
+    assistant.stopAdvertisingPeer()
+  }
 }
 
 extension SyncManager: MCNearbyServiceBrowserDelegate {
-  public func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
+  func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
     print("Found peer: \(peerID)")
     peerFound = peerID
     browser.invitePeer(peerID, to: session, withContext: nil, timeout: 5)
-    delegate?.readyToSync()
-    isReadyToSync = true
   }
   
-  public func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
+  func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
     print("Lost peer: \(peerID)")
     if peerFound == peerID {
       peerFound = nil
@@ -97,25 +100,30 @@ extension SyncManager: MCNearbyServiceBrowserDelegate {
     }
   }
   
-  public func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
+  func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
     print("Didn't start browsing: \(error)")
   }
 }
 
 extension SyncManager: MCSessionDelegate {
-  public func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+  func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
     DispatchQueue.main.async { [unowned self] in
       self.delegate?.receive(data: data)
     }
   }
   
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-    print("State of \(UIDevice.current.name) updated to: \(state)")
+    if state == .connected {
+      delegate?.readyToSync()
+      isReadyToSync = true
+    } else {
+      isReadyToSync = false
+    }
   }
   
   func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) { }
-  public func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) { }
-  public func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) { }
+  func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) { }
+  func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) { }
 }
 
 extension SyncManager: MCNearbyServiceAdvertiserDelegate {

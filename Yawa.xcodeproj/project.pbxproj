@@ -12,6 +12,7 @@
 		7524B98F209B284F006027C8 /* AddTransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98E209B284F006027C8 /* AddTransactionViewController.swift */; };
 		7524B992209B3497006027C8 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B991209B3497006027C8 /* Utilities.swift */; };
 		7524B994209B3BD8006027C8 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B993209B3BD8006027C8 /* StoreManager.swift */; };
+		7524B996209B4451006027C8 /* SyncViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B995209B4451006027C8 /* SyncViewController.swift */; };
 		75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046DE2098892500E8B09E /* AppDelegate.swift */; };
 		75C046E12098892600E8B09E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046E02098892600E8B09E /* ViewController.swift */; };
 		75C046E42098892600E8B09E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C046E22098892600E8B09E /* Main.storyboard */; };
@@ -25,6 +26,7 @@
 		7524B98E209B284F006027C8 /* AddTransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionViewController.swift; sourceTree = "<group>"; };
 		7524B991209B3497006027C8 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		7524B993209B3BD8006027C8 /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
+		7524B995209B4451006027C8 /* SyncViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncViewController.swift; sourceTree = "<group>"; };
 		75C046DB2098892500E8B09E /* Yawa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yawa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75C046DE2098892500E8B09E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75C046E02098892600E8B09E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 			children = (
 				75C046E02098892600E8B09E /* ViewController.swift */,
 				7524B98E209B284F006027C8 /* AddTransactionViewController.swift */,
+				7524B995209B4451006027C8 /* SyncViewController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -173,6 +176,7 @@
 				7524B98F209B284F006027C8 /* AddTransactionViewController.swift in Sources */,
 				7524B98D209B0F9F006027C8 /* DataModel.swift in Sources */,
 				75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */,
+				7524B996209B4451006027C8 /* SyncViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
