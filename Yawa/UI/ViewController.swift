@@ -67,7 +67,7 @@ extension ViewController: UITableViewDataSource {
       cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID)
     }
     
-    let transaction = transactions[transactions.count - indexPath.row - 1]
+    let transaction = transactions[indexPath.row]
     cell.textLabel?.text = "\(transaction.category): \(transaction.amount)"
     cell.detailTextLabel?.text = "\(transaction.author), \(transaction.date)"
     return cell
@@ -87,7 +87,7 @@ extension ViewController: UITableViewDataSource {
 
 extension ViewController: TransactionAdditionDelegate {
   func add(transaction: Transaction) {
-    transactions.append(transaction)
+    transactions.insert(transaction, at: 0)
     tableView.reloadData()
     storeManager.save(transactions: transactions)
   }

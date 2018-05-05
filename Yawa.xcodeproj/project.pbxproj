@@ -34,6 +34,7 @@
 		75C046E52098892600E8B09E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		75C046E82098892600E8B09E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		75C046EA2098892600E8B09E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DF959F38209C733C000AB980 /* Sync.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Sync.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +54,7 @@
 				7524B98A209AEF26006027C8 /* SyncManager.swift */,
 				7524B98C209B0F9F006027C8 /* DataModel.swift */,
 				7524B993209B3BD8006027C8 /* StoreManager.swift */,
+				DF959F38209C733C000AB980 /* Sync.md */,
 			);
 			path = Model;
 			sourceTree = "<group>";

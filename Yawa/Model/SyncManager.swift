@@ -26,7 +26,6 @@ class SyncManager: NSObject {
   private var peerFound: MCPeerID?
   
   var delegate: SyncDelegate?
-  var isReadyToSync = false
 
   override init() {
     // Use archived peerID if exists
@@ -70,15 +69,13 @@ class SyncManager: NSObject {
   func send(data: Data) {
     guard let peerID = peerFound else { return }
     do {
-//      try session.send(data, toPeers: session.connectedPeers, with: .reliable)
       try session.send(data, toPeers: [peerID], with: .reliable)
-      print("Message sent from \(myPeerID.displayName)")
     } catch {
       print("Sending error: \(error)")
     }
   }
   
-  deinit {
+  func stopSync() {
     session.disconnect()
     browser.stopBrowsingForPeers()
     assistant.stopAdvertisingPeer()
@@ -96,7 +93,6 @@ extension SyncManager: MCNearbyServiceBrowserDelegate {
     print("Lost peer: \(peerID)")
     if peerFound == peerID {
       peerFound = nil
-      isReadyToSync = false
     }
   }
   
@@ -115,9 +111,6 @@ extension SyncManager: MCSessionDelegate {
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
     if state == .connected {
       delegate?.readyToSync()
-      isReadyToSync = true
-    } else {
-      isReadyToSync = false
     }
   }
   
