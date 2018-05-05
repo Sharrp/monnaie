@@ -11,6 +11,9 @@ import UIKit
 enum TransactionCategory: Int, CustomStringConvertible {
   case grocery
   case cafe
+  case transport
+  case entertainment
+  case bills
   case other
   
   var description: String {
@@ -19,6 +22,12 @@ enum TransactionCategory: Int, CustomStringConvertible {
       return "Grocery"
     case .cafe:
       return "Cafe"
+    case .transport:
+      return "Transport"
+    case .entertainment:
+      return "Entertainment"
+    case .bills:
+      return "Bills"
     case .other:
       return "Other"
     }
@@ -29,6 +38,7 @@ class Transaction: NSObject, NSCoding {
   let amount: Float
   let category: TransactionCategory
   let author: String
+  
   let date: Date // date of transaction in real world (set by user)
   let createdDate: Date // date when user created the transaction
   let modifiedDate: Date // last modificatino date
@@ -37,6 +47,7 @@ class Transaction: NSObject, NSCoding {
     self.amount = amount
     self.category = category
     self.author = author
+    self.comment =
     self.date = date
     self.createdDate = Date()
     self.modifiedDate = self.createdDate

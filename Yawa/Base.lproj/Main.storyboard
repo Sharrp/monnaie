@@ -87,6 +87,9 @@
                                 <segments>
                                     <segment title="Grocery"/>
                                     <segment title="Cafe"/>
+                                    <segment title="Suica"/>
+                                    <segment title="Fun"/>
+                                    <segment title="Bills"/>
                                     <segment title="Other"/>
                                 </segments>
                             </segmentedControl>
