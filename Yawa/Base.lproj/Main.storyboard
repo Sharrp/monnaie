@@ -71,9 +71,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="amount" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nh0-PE-g9D">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="amount" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nh0-PE-g9D">
                                 <rect key="frame" x="16" y="85" width="343" height="33"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <textInputTraits key="textInputTraits" keyboardType="decimalPad" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
@@ -81,9 +80,11 @@
                                     <action selector="amountTextChanged" destination="J2s-wE-pf2" eventType="editingChanged" id="qa2-EO-Xn3"/>
                                 </connections>
                             </textField>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CIU-RV-71C">
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CIU-RV-71C">
                                 <rect key="frame" x="16" y="126" width="343" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="28" id="dBP-hD-vBR"/>
+                                </constraints>
                                 <segments>
                                     <segment title="Grocery"/>
                                     <segment title="Cafe"/>
@@ -111,8 +112,37 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="TgH-T5-qXh">
+                                <rect key="frame" x="0.0" y="162" width="375" height="162"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="162" id="MU0-Cu-d41"/>
+                                </constraints>
+                                <date key="date" timeIntervalSinceReferenceDate="547201651.25282705">
+                                    <!--2018-05-05 08:27:31 +0000-->
+                                </date>
+                            </datePicker>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="comment" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nMg-OC-0Dl">
+                                <rect key="frame" x="16" y="332" width="343" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="CIU-RV-71C" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="50v-zE-DXL"/>
+                            <constraint firstItem="TgH-T5-qXh" firstAttribute="top" secondItem="CIU-RV-71C" secondAttribute="bottom" constant="8" id="5Wf-Ry-uZ6"/>
+                            <constraint firstItem="nh0-PE-g9D" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="Ay3-4D-8Y3"/>
+                            <constraint firstItem="CIU-RV-71C" firstAttribute="top" secondItem="nh0-PE-g9D" secondAttribute="bottom" constant="8" id="GA0-hG-ufC"/>
+                            <constraint firstItem="nh0-PE-g9D" firstAttribute="top" secondItem="4Qm-UU-hIj" secondAttribute="top" constant="65" id="Guw-1Z-31k"/>
+                            <constraint firstItem="nMg-OC-0Dl" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="SOd-S4-nOa"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="nMg-OC-0Dl" secondAttribute="trailing" constant="16" id="TxJ-8L-bVn"/>
+                            <constraint firstItem="nMg-OC-0Dl" firstAttribute="top" secondItem="TgH-T5-qXh" secondAttribute="bottom" constant="8" id="c0w-wK-JG1"/>
+                            <constraint firstItem="TgH-T5-qXh" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="grX-xy-IPi"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="CIU-RV-71C" secondAttribute="trailing" constant="16" id="lWa-Oz-JUT"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="TgH-T5-qXh" secondAttribute="trailing" id="pmJ-ER-vUF"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="nh0-PE-g9D" secondAttribute="trailing" constant="16" id="sF5-g9-j9g"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="4Qm-UU-hIj"/>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="gcs-Hq-9lj">
@@ -127,6 +157,8 @@
                     <connections>
                         <outlet property="amountTextField" destination="nh0-PE-g9D" id="PC0-wb-uEU"/>
                         <outlet property="categoryPicker" destination="CIU-RV-71C" id="AkU-yP-g9r"/>
+                        <outlet property="commentTextField" destination="nMg-OC-0Dl" id="RrT-bq-hzy"/>
+                        <outlet property="dateTimePicker" destination="TgH-T5-qXh" id="juM-7W-Dxr"/>
                         <outlet property="saveButton" destination="y0m-bB-zqy" id="yxx-iR-OT4"/>
                     </connections>
                 </viewController>

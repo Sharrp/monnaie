@@ -38,16 +38,17 @@ class Transaction: NSObject, NSCoding {
   let amount: Float
   let category: TransactionCategory
   let author: String
+  let comment: String?
   
   let date: Date // date of transaction in real world (set by user)
   let createdDate: Date // date when user created the transaction
   let modifiedDate: Date // last modificatino date
   
-  init(amount: Float, category: TransactionCategory, author: String, date: Date) {
+  init(amount: Float, category: TransactionCategory, author: String, date: Date, comment: String? = nil ) {
     self.amount = amount
     self.category = category
     self.author = author
-    self.comment =
+    self.comment = comment
     self.date = date
     self.createdDate = Date()
     self.modifiedDate = self.createdDate
@@ -58,6 +59,8 @@ class Transaction: NSObject, NSCoding {
     let categoryRawValue = decoder.decodeInteger(forKey: "category")
     category = TransactionCategory(rawValue: categoryRawValue)!
     author = decoder.decodeObject(forKey: "author") as! String
+    comment = decoder.decodeObject(forKey: "comment") as? String
+    
     date = decoder.decodeObject(forKey: "date") as! Date
     createdDate = decoder.decodeObject(forKey: "createdDate") as! Date
     modifiedDate = decoder.decodeObject(forKey: "modifiedDate") as! Date
@@ -67,6 +70,8 @@ class Transaction: NSObject, NSCoding {
     coder.encode(amount, forKey: "amount")
     coder.encode(category.rawValue, forKey: "category")
     coder.encode(author, forKey: "author")
+    coder.encode(comment, forKey: "comment")
+    
     coder.encode(date, forKey: "date")
     coder.encode(createdDate, forKey: "createdDate")
     coder.encode(modifiedDate, forKey: "modifiedDate")

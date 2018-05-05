@@ -69,7 +69,11 @@ extension ViewController: UITableViewDataSource {
     
     let transaction = transactions[indexPath.row]
     cell.textLabel?.text = "\(transaction.category): \(transaction.amount)"
-    cell.detailTextLabel?.text = "\(transaction.author), \(transaction.date)"
+    var detailsText = "\(transaction.author), \(transaction.date)"
+    if let comment = transaction.comment, comment.count > 0 {
+      detailsText += ", " + comment
+    }
+    cell.detailTextLabel?.text = detailsText
     return cell
   }
   

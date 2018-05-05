@@ -16,6 +16,8 @@ class AddTransactionViewController: UIViewController {
   @IBOutlet var amountTextField: UITextField!
   @IBOutlet var saveButton: UIBarButtonItem!
   @IBOutlet var categoryPicker: UISegmentedControl!
+  @IBOutlet var dateTimePicker: UIDatePicker!
+  @IBOutlet var commentTextField: UITextField!
   var delegate: TransactionAdditionDelegate?
   
   override func viewDidLoad() {
@@ -32,7 +34,7 @@ class AddTransactionViewController: UIViewController {
   @IBAction func save() {
     let amount = Float(amountTextField.text ?? "0")!
     let category = TransactionCategory(rawValue: categoryPicker.selectedSegmentIndex)!
-    let transaction = Transaction(amount: amount, category: category, author: UIDevice.current.name, date: Date())
+    let transaction = Transaction(amount: amount, category: category, author: UIDevice.current.name, date: dateTimePicker.date, comment: commentTextField.text)
     delegate?.add(transaction: transaction)
     self.dismiss(animated: true, completion: nil)
   }
