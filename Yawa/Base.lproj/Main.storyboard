@@ -38,8 +38,22 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fGI-zP-s8Q">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="eWj-ZD-y37">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="eWj-ZD-y37" id="edt-gh-Z4f">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="J2s-wE-pf2" kind="presentation" identifier="editTransaction" id="cpQ-4J-Uou"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="BYZ-38-t0r" id="iI6-v1-lBN"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="6xR-XO-rcy"/>
                                 </connections>
                             </tableView>
                         </subviews>
@@ -66,7 +80,7 @@
         <!--Title-->
         <scene sceneID="LqN-g1-dFt">
             <objects>
-                <viewController id="J2s-wE-pf2" customClass="AddTransactionViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="J2s-wE-pf2" customClass="TransactionViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nkC-uH-eg5">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -77,7 +91,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <textInputTraits key="textInputTraits" keyboardType="decimalPad" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                 <connections>
-                                    <action selector="amountTextChanged" destination="J2s-wE-pf2" eventType="editingChanged" id="qa2-EO-Xn3"/>
+                                    <action selector="amountTextChanged" destination="J2s-wE-pf2" eventType="editingChanged" id="MFO-iE-bf5"/>
                                 </connections>
                             </textField>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CIU-RV-71C">
@@ -101,12 +115,12 @@
                                     <navigationItem title="Title" id="rPT-Vl-RjP">
                                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="bfd-2N-A6o">
                                             <connections>
-                                                <action selector="cancel" destination="J2s-wE-pf2" id="o0I-70-HNL"/>
+                                                <action selector="cancel" destination="J2s-wE-pf2" id="vwX-kB-bU9"/>
                                             </connections>
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" enabled="NO" title="Save" id="y0m-bB-zqy">
                                             <connections>
-                                                <action selector="save" destination="J2s-wE-pf2" id="46e-Br-rca"/>
+                                                <action selector="save" destination="J2s-wE-pf2" id="DEi-KG-8Ky"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>
@@ -146,11 +160,7 @@
                         <viewLayoutGuide key="safeArea" id="4Qm-UU-hIj"/>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="gcs-Hq-9lj">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="aXn-nz-SHG">
-                            <connections>
-                                <action selector="cancel" destination="J2s-wE-pf2" id="ix2-rC-vfT"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="aXn-nz-SHG"/>
                         <barButtonItem key="rightBarButtonItem" title="Save" id="mZW-aW-Gdk"/>
                     </navigationItem>
                     <nil key="simulatedTopBarMetrics"/>
@@ -214,4 +224,7 @@
             <point key="canvasLocation" x="1013.6" y="903.59820089955031"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="cpQ-4J-Uou"/>
+    </inferredMetricsTieBreakers>
 </document>

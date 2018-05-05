@@ -35,14 +35,14 @@ enum TransactionCategory: Int, CustomStringConvertible {
 }
 
 class Transaction: NSObject, NSCoding {
-  let amount: Float
-  let category: TransactionCategory
+  var amount: Float
+  var category: TransactionCategory
+  var comment: String?
   let author: String
-  let comment: String?
   
-  let date: Date // date of transaction in real world (set by user)
+  var date: Date // date of transaction in real world (set by user)
   let createdDate: Date // date when user created the transaction
-  let modifiedDate: Date // last modificatino date
+  var modifiedDate: Date // last modificatino date
   
   init(amount: Float, category: TransactionCategory, author: String, date: Date, comment: String? = nil ) {
     self.amount = amount

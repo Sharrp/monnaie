@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		7524B98B209AEF26006027C8 /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98A209AEF26006027C8 /* SyncManager.swift */; };
 		7524B98D209B0F9F006027C8 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98C209B0F9F006027C8 /* DataModel.swift */; };
-		7524B98F209B284F006027C8 /* AddTransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98E209B284F006027C8 /* AddTransactionViewController.swift */; };
+		7524B98F209B284F006027C8 /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98E209B284F006027C8 /* TransactionViewController.swift */; };
 		7524B992209B3497006027C8 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B991209B3497006027C8 /* Utilities.swift */; };
 		7524B994209B3BD8006027C8 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B993209B3BD8006027C8 /* StoreManager.swift */; };
 		7524B996209B4451006027C8 /* SyncViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B995209B4451006027C8 /* SyncViewController.swift */; };
@@ -23,7 +23,7 @@
 /* Begin PBXFileReference section */
 		7524B98A209AEF26006027C8 /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
 		7524B98C209B0F9F006027C8 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
-		7524B98E209B284F006027C8 /* AddTransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionViewController.swift; sourceTree = "<group>"; };
+		7524B98E209B284F006027C8 /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		7524B991209B3497006027C8 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		7524B993209B3BD8006027C8 /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		7524B995209B4451006027C8 /* SyncViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncViewController.swift; sourceTree = "<group>"; };
@@ -63,7 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				75C046E02098892600E8B09E /* ViewController.swift */,
-				7524B98E209B284F006027C8 /* AddTransactionViewController.swift */,
+				7524B98E209B284F006027C8 /* TransactionViewController.swift */,
 				7524B995209B4451006027C8 /* SyncViewController.swift */,
 			);
 			path = UI;
@@ -175,7 +175,7 @@
 				7524B994209B3BD8006027C8 /* StoreManager.swift in Sources */,
 				7524B98B209AEF26006027C8 /* SyncManager.swift in Sources */,
 				75C046E12098892600E8B09E /* ViewController.swift in Sources */,
-				7524B98F209B284F006027C8 /* AddTransactionViewController.swift in Sources */,
+				7524B98F209B284F006027C8 /* TransactionViewController.swift in Sources */,
 				7524B98D209B0F9F006027C8 /* DataModel.swift in Sources */,
 				75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */,
 				7524B996209B4451006027C8 /* SyncViewController.swift in Sources */,

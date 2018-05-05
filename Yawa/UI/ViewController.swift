@@ -13,8 +13,6 @@ protocol TransactionsUpdateDelegate {
 }
 
 class ViewController: UIViewController {
-  private var tap: UITapGestureRecognizer!
-  private var longPress: UILongPressGestureRecognizer!
   private let storeManager = StoreManager()
   private var transactions = [Transaction]()
   
@@ -23,33 +21,27 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     transactions = storeManager.loadTransactions()
-    
-    tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler(gesture:)))
-    view.addGestureRecognizer(tap)
-    
-    longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressHandler(gesture:)))
-    view.addGestureRecognizer(longPress)
-  }
-  
-  @objc func tapHandler(gesture: UITapGestureRecognizer) {
-    if gesture.state == .ended {
-    }
-  }
-  
-  @objc func longPressHandler(gesture: UILongPressGestureRecognizer) {
-    if gesture.state == .began {
-    }
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "addTransaction" {
-      guard let addTransactionVC = segue.destination as? AddTransactionViewController else { return }
+      guard let addTransactionVC = segue.destination as? TransactionViewController else { return }
       addTransactionVC.delegate = self
+    } else if segue.identifier == "editTransaction" {
+      guard let transactionVC = segue.destination as? TransactionViewController else { return }
+      guard let indexPath = tableView.indexPathForSelectedRow else { return }
+      transactionVC.transaction = transactions[indexPath.row]
+      transactionVC.delegate = self
     } else if segue.identifier == "sync" {
       guard let syncVC = segue.destination as? SyncViewController else { return }
       syncVC.delegate = self
       syncVC.transactionsToSync = transactions
     }
+  }
+  
+  private func saveAndUpdate() {
+    tableView.reloadData()
+    storeManager.save(transactions: transactions)
   }
 }
 
@@ -84,23 +76,32 @@ extension ViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     guard editingStyle == .delete else { return }
     transactions.remove(at: indexPath.row)
-    tableView.reloadData()
-    storeManager.save(transactions: transactions)
+    saveAndUpdate()
   }
 }
 
-extension ViewController: TransactionAdditionDelegate {
+extension ViewController: UITableViewDelegate {
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    performSegue(withIdentifier: "editTransaction", sender: self)
+  }
+}
+
+extension ViewController: TransactionDelegate {
   func add(transaction: Transaction) {
     transactions.insert(transaction, at: 0)
-    tableView.reloadData()
-    storeManager.save(transactions: transactions)
+    saveAndUpdate()
+  }
+  
+  func update(transaction: Transaction) {
+    guard let bla = transactions.index(where: { $0.hashValue == transaction.hashValue }) else { return }
+    transactions[bla] = transaction
+    saveAndUpdate()
   }
 }
 
 extension ViewController: TransactionsUpdateDelegate {
   func reset(transactionsTo transactions: [Transaction]) {
     self.transactions = transactions
-    tableView.reloadData()
-    storeManager.save(transactions: transactions)
+    saveAndUpdate()
   }
 }
