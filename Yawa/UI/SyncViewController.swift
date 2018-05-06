@@ -105,6 +105,6 @@ extension SyncViewController: SyncDelegate {
       }
     }
     
-    return merged.sorted{ $0.createdDate < $1.createdDate}
+    return merged
   }
 }
