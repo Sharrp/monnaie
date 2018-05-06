@@ -12,15 +12,27 @@ protocol TransactionsUpdateDelegate {
   func reset(transactionsTo transactions: [Transaction])
 }
 
+struct TimelineSection {
+  let firstItemInList: Int
+  let numberOfItems: Int
+}
+
 class ViewController: UIViewController {
   private let storeManager = StoreManager()
   private var transactions = [Transaction]()
   
   @IBOutlet var tableView: UITableView!
+  private var tableIndex = [TimelineSection]()
+  private let dateFormatter = DateFormatter()
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    dateFormatter.dateStyle = .medium
+    dateFormatter.timeStyle = .none
+    
     transactions = storeManager.loadTransactions()
+    tableIndex = buildTableIndex(transactions)
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -41,14 +53,46 @@ class ViewController: UIViewController {
   
   private func sortUpdateAndSave() {
     transactions.sort{ $0.date > $1.date }
+    tableIndex = buildTableIndex(transactions)
     tableView.reloadData()
     storeManager.save(transactions: transactions)
+  }
+  
+  private func buildTableIndex(_ transactions: [Transaction]) -> [TimelineSection] {
+    var index = [TimelineSection]()
+    var lastDay = Date.distantFuture
+    var sectionFirstIndex = -1
+    for (i, t) in transactions.enumerated() {
+      if !Calendar.current.isDate(lastDay, inSameDayAs: t.date) {
+        if sectionFirstIndex != -1 {
+          let newSection = TimelineSection(firstItemInList: sectionFirstIndex, numberOfItems: i-sectionFirstIndex)
+          index.append(newSection)
+        }
+        sectionFirstIndex = i
+        lastDay = t.date
+      }
+    }
+    if transactions.count > 0 {
+      let newSection = TimelineSection(firstItemInList: sectionFirstIndex, numberOfItems: transactions.count-sectionFirstIndex)
+      index.append(newSection)
+    }
+    return index
   }
 }
 
 extension ViewController: UITableViewDataSource {
+  func numberOfSections(in tableView: UITableView) -> Int {
+    return tableIndex.count
+  }
+  
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return transactions.count
+    return tableIndex[section].numberOfItems
+  }
+  
+  func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    let transactionIndex = tableIndex[section].firstItemInList
+    let day = transactions[transactionIndex].date
+    return dateFormatter.string(from: day)
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -60,7 +104,8 @@ extension ViewController: UITableViewDataSource {
       cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID)
     }
     
-    let transaction = transactions[indexPath.row]
+    let transactionIndex = tableIndex[indexPath.section].firstItemInList + indexPath.row
+    let transaction = transactions[transactionIndex]
     cell.textLabel?.text = "\(transaction.category): \(transaction.amount)"
     var detailsText = "\(transaction.author), \(transaction.date)"
     if let comment = transaction.comment, comment.count > 0 {
