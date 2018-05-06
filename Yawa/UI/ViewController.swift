@@ -39,7 +39,8 @@ class ViewController: UIViewController {
     }
   }
   
-  private func saveAndUpdate() {
+  private func sortUpdateAndSave() {
+    transactions.sort{ $0.date > $1.date }
     tableView.reloadData()
     storeManager.save(transactions: transactions)
   }
@@ -76,7 +77,7 @@ extension ViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     guard editingStyle == .delete else { return }
     transactions.remove(at: indexPath.row)
-    saveAndUpdate()
+    sortUpdateAndSave()
   }
 }
 
@@ -88,20 +89,20 @@ extension ViewController: UITableViewDelegate {
 
 extension ViewController: TransactionDelegate {
   func add(transaction: Transaction) {
-    transactions.insert(transaction, at: 0)
-    saveAndUpdate()
+    transactions.append(transaction)
+    sortUpdateAndSave()
   }
   
   func update(transaction: Transaction) {
-    guard let bla = transactions.index(where: { $0.hashValue == transaction.hashValue }) else { return }
-    transactions[bla] = transaction
-    saveAndUpdate()
+    guard let index = transactions.index(where: { $0.hashValue == transaction.hashValue }) else { return }
+    transactions[index] = transaction
+    sortUpdateAndSave()
   }
 }
 
 extension ViewController: TransactionsUpdateDelegate {
   func reset(transactionsTo transactions: [Transaction]) {
     self.transactions = transactions
-    saveAndUpdate()
+    sortUpdateAndSave()
   }
 }
