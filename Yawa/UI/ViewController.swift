@@ -107,9 +107,9 @@ extension ViewController: UITableViewDataSource {
     let transactionIndex = tableIndex[indexPath.section].firstItemInList + indexPath.row
     let transaction = transactions[transactionIndex]
     cell.textLabel?.text = "\(transaction.category): \(transaction.amount)"
-    var detailsText = "\(transaction.author), \(transaction.date)"
+    var detailsText = "\(transaction.author)"
     if let comment = transaction.comment, comment.count > 0 {
-      detailsText += ", " + comment
+      detailsText += ": " + comment
     }
     cell.detailTextLabel?.text = detailsText
     return cell
