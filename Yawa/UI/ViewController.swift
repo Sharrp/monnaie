@@ -103,20 +103,21 @@ extension ViewController: UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cellID = "transactionCell"
-    let cell: UITableViewCell
-    if let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: cellID) {
+    let cell: TransactionCell
+    if let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: cellID) as? TransactionCell {
       cell = dequeuedCell
     } else {
-      cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID)
+      cell = TransactionCell(style: .subtitle, reuseIdentifier: cellID)
     }
     
     let transactionIndex = tableIndex[indexPath.section].firstItemInList + indexPath.row
     let transaction = transactions[transactionIndex]
-    cell.textLabel?.text = "\(transaction.category): \(transaction.amount)"
+    cell.textLabel?.text = "\(transaction.category)"
     var detailsText = "\(transaction.author)"
     if let comment = transaction.comment, comment.count > 0 {
       detailsText += ": " + comment
     }
+    cell.amountLabel.text = NSString(format: "¥%.0f", transaction.amount) as String
     cell.detailTextLabel?.text = detailsText
     return cell
   }
