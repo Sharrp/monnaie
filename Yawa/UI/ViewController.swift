@@ -91,8 +91,14 @@ extension ViewController: UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
     let transactionIndex = tableIndex[section].firstItemInList
-    let day = transactions[transactionIndex].date
-    return dateFormatter.string(from: day)
+    let transaction = transactions[transactionIndex]
+    
+    if Calendar.current.isDate(transaction.date, inSameDayAs: Date()) {
+      return "Today"
+    } else if Calendar.current.isDate(transaction.date, inSameDayAs: Date(timeIntervalSinceNow: -86400)) {
+      return "Yesterday"
+    }
+    return dateFormatter.string(from: transaction.date)
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
