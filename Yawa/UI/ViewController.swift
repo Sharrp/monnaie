@@ -90,15 +90,35 @@ extension ViewController: UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    let transactionIndex = tableIndex[section].firstItemInList
-    let transaction = transactions[transactionIndex]
+    let firstTransactionIndex = tableIndex[section].firstItemInList
+    let sectionLength = tableIndex[section].numberOfItems
+    let transaction = transactions[firstTransactionIndex]
     
+    var title: String
     if Calendar.current.isDate(transaction.date, inSameDayAs: Date()) {
-      return "Today"
+      title = "Today"
     } else if Calendar.current.isDate(transaction.date, inSameDayAs: Date(timeIntervalSinceNow: -86400)) {
-      return "Yesterday"
+      title = "Yesterday"
+    } else {
+      title = dateFormatter.string(from: transaction.date)
     }
-    return dateFormatter.string(from: transaction.date)
+    
+    // Daily amount in each section
+    var dailySum: Float = 0
+    for i in firstTransactionIndex..<firstTransactionIndex+sectionLength {
+      dailySum += transactions[i].amount
+    }
+    let sumString = NSString(format: "¥%.0f", dailySum) as String
+    title += " — " + sumString
+    
+    // Monthly amount in the first section
+    if section == 0 {
+      let thisMonthTransactions = transactions.filter { Calendar.current.isDate($0.date, equalTo: transactions[0].date, toGranularity: .month) }
+      let monthlyAmount = thisMonthTransactions.reduce(0) { $0 + $1.amount }
+      let monthlyAmountString = NSString(format: "¥%.0f", monthlyAmount) as String
+      title += ". Total: " + monthlyAmountString
+    }
+    return title
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -130,12 +150,6 @@ extension ViewController: UITableViewDataSource {
     guard editingStyle == .delete else { return }
     transactions.remove(at: indexPath.row)
     sortUpdateAndSave()
-  }
-}
-
-extension ViewController: UITableViewDelegate {
-  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    performSegue(withIdentifier: "editTransaction", sender: self)
   }
 }
 
