@@ -216,6 +216,12 @@
                                             <action selector="cancel" destination="Cq3-tA-THa" id="cVA-pf-Zhd"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="jgI-Ju-hWi"/>
+                                    <barButtonItem title="Edit name" id="k1V-KA-Bqc">
+                                        <connections>
+                                            <segue destination="nwH-Tk-n2m" kind="presentation" identifier="name-edit" id="3sr-FJ-cQT"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sync status" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dqn-Fh-aMt">
@@ -227,14 +233,28 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G7d-m0-NbC">
+                                <rect key="frame" x="16" y="572" width="343" height="51"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="51" id="SQB-iK-mAP"/>
+                                </constraints>
+                                <string key="text">We sign your transactions with "iPhone 7 5hrp".
+Feel free to change your name here 👇</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="qBN-IF-vaq" firstAttribute="trailing" secondItem="zBH-pu-RaR" secondAttribute="trailing" id="8xh-1g-gDT"/>
+                            <constraint firstItem="qBN-IF-vaq" firstAttribute="trailing" secondItem="G7d-m0-NbC" secondAttribute="trailing" constant="16" id="AwY-EC-p7c"/>
                             <constraint firstItem="qBN-IF-vaq" firstAttribute="bottom" secondItem="zBH-pu-RaR" secondAttribute="bottom" id="PqM-e7-6zu"/>
+                            <constraint firstItem="G7d-m0-NbC" firstAttribute="leading" secondItem="qBN-IF-vaq" secondAttribute="leading" constant="16" id="WFu-Av-pX8"/>
                             <constraint firstItem="dqn-Fh-aMt" firstAttribute="leading" secondItem="qBN-IF-vaq" secondAttribute="leading" constant="16" id="sE3-qh-yOW"/>
                             <constraint firstItem="zBH-pu-RaR" firstAttribute="leading" secondItem="qBN-IF-vaq" secondAttribute="leading" id="vZl-A9-quP"/>
                             <constraint firstItem="dqn-Fh-aMt" firstAttribute="centerY" secondItem="qBN-IF-vaq" secondAttribute="centerY" id="vrh-bo-VAp"/>
+                            <constraint firstItem="zBH-pu-RaR" firstAttribute="top" secondItem="G7d-m0-NbC" secondAttribute="bottom" id="yBQ-Z9-bGl"/>
                             <constraint firstItem="qBN-IF-vaq" firstAttribute="trailing" secondItem="dqn-Fh-aMt" secondAttribute="trailing" constant="16" id="yp0-PV-A3d"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="qBN-IF-vaq"/>
@@ -246,6 +266,53 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gc0-0H-cTD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1013.6" y="903.59820089955031"/>
+        </scene>
+        <!--Sync Name View Controller-->
+        <scene sceneID="tJl-XY-BMc">
+            <objects>
+                <viewController id="nwH-Tk-n2m" customClass="SyncNameViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Llx-da-Yn9">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name people you sync with see" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lhp-Ad-nBE">
+                                <rect key="frame" x="16" y="318" width="343" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="nameEditingChangedWithTextField:" destination="nwH-Tk-n2m" eventType="editingChanged" id="TT8-7a-SIv"/>
+                                </connections>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Awz-UK-pzK">
+                                <rect key="frame" x="225" y="356" width="34" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Save"/>
+                                <connections>
+                                    <action selector="savePressed" destination="nwH-Tk-n2m" eventType="touchUpInside" id="IDK-xx-zIj"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zbo-zu-VLx">
+                                <rect key="frame" x="111" y="356" width="48" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Cancel"/>
+                                <connections>
+                                    <action selector="cancelPressed" destination="nwH-Tk-n2m" eventType="touchUpInside" id="4FN-hv-KZi"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="jN7-o4-DCS"/>
+                    </view>
+                    <connections>
+                        <outlet property="nameTextField" destination="lhp-Ad-nBE" id="3GY-v2-JZA"/>
+                        <outlet property="saveButton" destination="Awz-UK-pzK" id="PV6-5m-nc8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Sct-Pq-MxM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1781.5999999999999" y="903.59820089955031"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

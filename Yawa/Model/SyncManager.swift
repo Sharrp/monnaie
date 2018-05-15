@@ -29,14 +29,13 @@ class SyncManager: NSObject {
 
   override init() {
     // Use archived peerID if exists
-    let displayName = UIDevice.current.name
+    let displayName = Settings.main.syncName
     let oldDisplayName = UserDefaults.standard.string(forKey: displayNameKey)
     if oldDisplayName == displayName {
       if let peerIDData = UserDefaults.standard.data(forKey: peerIDKey),
         let archivedPeerID = NSKeyedUnarchiver.unarchiveObject(with: peerIDData) as? MCPeerID {
         myPeerID = archivedPeerID
-      }
-      else {
+      } else {
         print("Getting peerID from UserDefaults failed")
       }
     }
