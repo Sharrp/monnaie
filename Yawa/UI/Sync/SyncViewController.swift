@@ -12,6 +12,7 @@ class SyncViewController: UIViewController {
   private let syncManager = SyncManager()
   private let syncHistoryManager = SyncHistoryManager()
   var delegate: TransactionsUpdateDelegate?
+  var nameDelegate: SyncNameUpdateDelegate?
   var transactionsToSync: [Transaction]!
   
   @IBOutlet var syncStatusLabel: UILabel!
@@ -25,6 +26,12 @@ class SyncViewController: UIViewController {
   @IBAction func cancel() {
     syncManager.stopSync()
     self.dismiss(animated: true, completion: nil)
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    guard segue.identifier == "name-edit" else { return }
+    guard let vc = segue.destination as? SyncNameViewController else { return }
+    vc.delegate = nameDelegate
   }
 }
 

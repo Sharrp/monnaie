@@ -48,6 +48,7 @@ class ViewController: UIViewController {
       guard let syncVC = segue.destination as? SyncViewController else { return }
       syncVC.delegate = self
       syncVC.transactionsToSync = transactions
+      syncVC.nameDelegate = self
     }
   }
   
@@ -133,9 +134,15 @@ extension ViewController: UITableViewDataSource {
     let transactionIndex = tableIndex[indexPath.section].firstItemInList + indexPath.row
     let transaction = transactions[transactionIndex]
     cell.textLabel?.text = "\(transaction.category)"
-    var detailsText = "\(transaction.author)"
+    var detailsText = ""
+    if transaction.author != Settings.main.syncName {
+      detailsText = "\(transaction.author)"
+    }
     if let comment = transaction.comment, comment.count > 0 {
-      detailsText += ": " + comment
+      if detailsText.count > 0 { // we've already added author
+        detailsText += ": "
+      }
+      detailsText += comment
     }
     cell.amountLabel.text = NSString(format: "¥%.0f", transaction.amount) as String
     cell.detailTextLabel?.text = detailsText
@@ -170,5 +177,12 @@ extension ViewController: TransactionsUpdateDelegate {
   func reset(transactionsTo transactions: [Transaction]) {
     self.transactions = transactions
     sortUpdateAndSave()
+  }
+}
+
+extension ViewController: SyncNameUpdateDelegate {
+  func nameUpdated(toName name: String) {
+    Settings.main.syncName = name
+    // Update all transactions, created on this device with new name
   }
 }
