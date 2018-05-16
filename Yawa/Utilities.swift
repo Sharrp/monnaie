@@ -14,3 +14,11 @@ func deviceUniqueIdentifier() -> String {
   }
   return "\(UIDevice.current.name.hashValue)"
 }
+
+enum Currency {
+  case JPY
+}
+
+func formatMoney(amount: Float, currency: Currency, symbolEnabled: Bool = true) -> String {
+  return NSString(format: "%@%.0f", symbolEnabled ? "¥" : "", amount) as String
+}

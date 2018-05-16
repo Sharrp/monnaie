@@ -27,7 +27,7 @@ class TransactionViewController: UIViewController {
     super.viewDidLoad()
     
     if let transaction = transaction {
-      amountTextField.text = "\(transaction.amount)"
+      amountTextField.text = formatMoney(amount: transaction.amount, currency: .JPY, symbolEnabled: false)
       categoryPicker.selectedSegmentIndex = transaction.category.rawValue
       dateTimePicker.date = transaction.date
       commentTextField.text = transaction.comment
