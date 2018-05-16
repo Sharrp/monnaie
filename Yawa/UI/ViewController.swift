@@ -109,15 +109,13 @@ extension ViewController: UITableViewDataSource {
     for i in firstTransactionIndex..<firstTransactionIndex+sectionLength {
       dailySum += transactions[i].amount
     }
-    let sumString = NSString(format: "¥%.0f", dailySum) as String
-    title += " — " + sumString
+    title += " — " + formatMoney(amount: transaction.amount, currency: .JPY)
     
     // Monthly amount in the first section
     if section == 0 {
       let thisMonthTransactions = transactions.filter { Calendar.current.isDate($0.date, equalTo: transactions[0].date, toGranularity: .month) }
       let monthlyAmount = thisMonthTransactions.reduce(0) { $0 + $1.amount }
-      let monthlyAmountString = NSString(format: "¥%.0f", monthlyAmount) as String
-      title += ". Total: " + monthlyAmountString
+      title += ". Total: " + formatMoney(amount: monthlyAmount, currency: .JPY)
     }
     return title
   }
@@ -144,7 +142,7 @@ extension ViewController: UITableViewDataSource {
       }
       detailsText += comment
     }
-    cell.amountLabel.text = NSString(format: "¥%.0f", transaction.amount) as String
+    cell.amountLabel.text = formatMoney(amount: transaction.amount, currency: .JPY)
     cell.detailTextLabel?.text = detailsText
     return cell
   }
