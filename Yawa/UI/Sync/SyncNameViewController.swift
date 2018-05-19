@@ -8,14 +8,14 @@
 
 import UIKit
 
-protocol SyncNameUpdateDelegate {
+protocol SyncNameUpdateDelegate: AnyObject {
   func nameUpdated(toName name: String)
 }
 
 class SyncNameViewController: UIViewController {
   @IBOutlet var nameTextField: UITextField!
   @IBOutlet var saveButton: UIButton!
-  var delegate: SyncNameUpdateDelegate?
+  weak var delegate: SyncNameUpdateDelegate?
   
   override func viewDidLoad() {
     super.viewDidLoad()
