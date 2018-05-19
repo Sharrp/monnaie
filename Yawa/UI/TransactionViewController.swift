@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol TransactionDelegate {
+protocol TransactionUpdateDelegate: AnyObject {
   func add(transaction: Transaction)
   func update(transaction: Transaction)
 }
@@ -20,7 +20,7 @@ class TransactionViewController: UIViewController {
   @IBOutlet var dateTimePicker: UIDatePicker!
   @IBOutlet var commentTextField: UITextField!
   
-  var delegate: TransactionDelegate?
+  weak var delegate: TransactionUpdateDelegate?
   var transaction: Transaction?
   
   override func viewDidLoad() {

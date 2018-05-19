@@ -9,7 +9,7 @@
 import UIKit
 import MultipeerConnectivity
 
-protocol SyncDelegate {
+protocol SyncDelegate: AnyObject {
   func readyToSync()
   func receive(data: Data)
 }
@@ -25,7 +25,7 @@ class SyncManager: NSObject {
   private let browser: MCNearbyServiceBrowser
   private var peerFound: MCPeerID?
   
-  var delegate: SyncDelegate?
+  weak var delegate: SyncDelegate?
 
   override init() {
     // Use archived peerID if exists

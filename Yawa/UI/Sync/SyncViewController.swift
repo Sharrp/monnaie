@@ -8,11 +8,15 @@
 
 import UIKit
 
+protocol SyncUpdateDelegate: AnyObject {
+  func reset(transactionsTo transactions: [Transaction])
+}
+
 class SyncViewController: UIViewController {
   private let syncManager = SyncManager()
   private let syncHistoryManager = SyncHistoryManager()
-  var delegate: TransactionsUpdateDelegate?
-  var nameDelegate: SyncNameUpdateDelegate?
+  weak var delegate: SyncUpdateDelegate?
+  weak var nameDelegate: SyncNameUpdateDelegate?
   var transactionsToSync: [Transaction]!
   
   @IBOutlet var syncStatusLabel: UILabel!
