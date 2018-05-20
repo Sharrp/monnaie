@@ -34,6 +34,12 @@ class TransactionsController {
     daysIndex = buildTableIndex(transactions)
   }
   
+  // For unit-tests
+  init(withTransactions transactions: [Transaction]) {
+    self.transactions = transactions.sorted { $0.date > $1.date }
+    daysIndex = buildTableIndex(transactions)
+  }
+  
   var numberOfDays: Int {
     return daysIndex.count
   }
