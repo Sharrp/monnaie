@@ -22,7 +22,29 @@
 		75D32C0B20AB1DB300D13420 /* SyncNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */; };
 		75D32C0D20AB202E00D13420 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0C20AB202E00D13420 /* Settings.swift */; };
 		DF8C66C720B00C9A008A7488 /* TransactionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66C620B00C9A008A7488 /* TransactionsController.swift */; };
+		DF8C66CF20B0635D008A7488 /* YawaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66CE20B0635D008A7488 /* YawaTests.swift */; };
+		DF8C66D620B063B4008A7488 /* TransactionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66C620B00C9A008A7488 /* TransactionsController.swift */; };
+		DF8C66D720B0648A008A7488 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98C209B0F9F006027C8 /* DataModel.swift */; };
+		DF8C66D820B06722008A7488 /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98E209B284F006027C8 /* TransactionViewController.swift */; };
+		DF8C66D920B06725008A7488 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046E02098892600E8B09E /* ViewController.swift */; };
+		DF8C66DA20B06727008A7488 /* SyncViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B995209B4451006027C8 /* SyncViewController.swift */; };
+		DF8C66DB20B06732008A7488 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B993209B3BD8006027C8 /* StoreManager.swift */; };
+		DF8C66DC20B06737008A7488 /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98A209AEF26006027C8 /* SyncManager.swift */; };
+		DF8C66DD20B06747008A7488 /* SyncNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */; };
+		DF8C66DE20B06753008A7488 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0C20AB202E00D13420 /* Settings.swift */; };
+		DF8C66DF20B06761008A7488 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B991209B3497006027C8 /* Utilities.swift */; };
+		DF8C66E020B0676F008A7488 /* TransactionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0220A3093000D13420 /* TransactionCell.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DF8C66D120B0635D008A7488 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 75C046D32098892500E8B09E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 75C046DA2098892500E8B09E;
+			remoteInfo = Yawa;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		7524B98A209AEF26006027C8 /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
@@ -42,11 +64,21 @@
 		75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncNameViewController.swift; sourceTree = "<group>"; };
 		75D32C0C20AB202E00D13420 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		DF8C66C620B00C9A008A7488 /* TransactionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsController.swift; sourceTree = "<group>"; };
+		DF8C66CC20B0635D008A7488 /* YawaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YawaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF8C66CE20B0635D008A7488 /* YawaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YawaTests.swift; sourceTree = "<group>"; };
+		DF8C66D020B0635D008A7488 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DF959F38209C733C000AB980 /* Sync.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Sync.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		75C046D82098892500E8B09E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DF8C66C920B0635D008A7488 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -84,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				75C046DD2098892500E8B09E /* Yawa */,
+				DF8C66CD20B0635D008A7488 /* YawaTests */,
 				75C046DC2098892500E8B09E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -92,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				75C046DB2098892500E8B09E /* Yawa.app */,
+				DF8C66CC20B0635D008A7488 /* YawaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -120,6 +154,15 @@
 			path = Sync;
 			sourceTree = "<group>";
 		};
+		DF8C66CD20B0635D008A7488 /* YawaTests */ = {
+			isa = PBXGroup;
+			children = (
+				DF8C66CE20B0635D008A7488 /* YawaTests.swift */,
+				DF8C66D020B0635D008A7488 /* Info.plist */,
+			);
+			path = YawaTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -140,6 +183,24 @@
 			productReference = 75C046DB2098892500E8B09E /* Yawa.app */;
 			productType = "com.apple.product-type.application";
 		};
+		DF8C66CB20B0635D008A7488 /* YawaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DF8C66D320B0635D008A7488 /* Build configuration list for PBXNativeTarget "YawaTests" */;
+			buildPhases = (
+				DF8C66C820B0635D008A7488 /* Sources */,
+				DF8C66C920B0635D008A7488 /* Frameworks */,
+				DF8C66CA20B0635D008A7488 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DF8C66D220B0635D008A7488 /* PBXTargetDependency */,
+			);
+			name = YawaTests;
+			productName = YawaTests;
+			productReference = DF8C66CC20B0635D008A7488 /* YawaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -152,6 +213,10 @@
 				TargetAttributes = {
 					75C046DA2098892500E8B09E = {
 						CreatedOnToolsVersion = 9.3;
+					};
+					DF8C66CB20B0635D008A7488 = {
+						CreatedOnToolsVersion = 9.3.1;
+						TestTargetID = 75C046DA2098892500E8B09E;
 					};
 				};
 			};
@@ -169,6 +234,7 @@
 			projectRoot = "";
 			targets = (
 				75C046DA2098892500E8B09E /* Yawa */,
+				DF8C66CB20B0635D008A7488 /* YawaTests */,
 			);
 		};
 /* End PBXProject section */
@@ -181,6 +247,13 @@
 				75C046E92098892600E8B09E /* LaunchScreen.storyboard in Resources */,
 				75C046E62098892600E8B09E /* Assets.xcassets in Resources */,
 				75C046E42098892600E8B09E /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DF8C66CA20B0635D008A7488 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,7 +279,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DF8C66C820B0635D008A7488 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF8C66D920B06725008A7488 /* ViewController.swift in Sources */,
+				DF8C66DB20B06732008A7488 /* StoreManager.swift in Sources */,
+				DF8C66E020B0676F008A7488 /* TransactionCell.swift in Sources */,
+				DF8C66DF20B06761008A7488 /* Utilities.swift in Sources */,
+				DF8C66DD20B06747008A7488 /* SyncNameViewController.swift in Sources */,
+				DF8C66D620B063B4008A7488 /* TransactionsController.swift in Sources */,
+				DF8C66DE20B06753008A7488 /* Settings.swift in Sources */,
+				DF8C66CF20B0635D008A7488 /* YawaTests.swift in Sources */,
+				DF8C66DC20B06737008A7488 /* SyncManager.swift in Sources */,
+				DF8C66D720B0648A008A7488 /* DataModel.swift in Sources */,
+				DF8C66D820B06722008A7488 /* TransactionViewController.swift in Sources */,
+				DF8C66DA20B06727008A7488 /* SyncViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DF8C66D220B0635D008A7488 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 75C046DA2098892500E8B09E /* Yawa */;
+			targetProxy = DF8C66D120B0635D008A7488 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		75C046E22098892600E8B09E /* Main.storyboard */ = {
@@ -378,6 +478,46 @@
 			};
 			name = Release;
 		};
+		DF8C66D420B0635D008A7488 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YLHBNR4ACZ;
+				INFOPLIST_FILE = YawaTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sharrp.YawaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Yawa.app/Yawa";
+			};
+			name = Debug;
+		};
+		DF8C66D520B0635D008A7488 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YLHBNR4ACZ;
+				INFOPLIST_FILE = YawaTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sharrp.YawaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Yawa.app/Yawa";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -395,6 +535,15 @@
 			buildConfigurations = (
 				75C046EE2098892600E8B09E /* Debug */,
 				75C046EF2098892600E8B09E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DF8C66D320B0635D008A7488 /* Build configuration list for PBXNativeTarget "YawaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF8C66D420B0635D008A7488 /* Debug */,
+				DF8C66D520B0635D008A7488 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
