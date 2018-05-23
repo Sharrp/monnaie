@@ -13,12 +13,12 @@ protocol TransactionUpdateDelegate: AnyObject {
   func update(transaction: Transaction)
 }
 
-class TransactionViewController: UIViewController {
-  @IBOutlet var amountTextField: UITextField!
-  @IBOutlet var saveButton: UIBarButtonItem!
-  @IBOutlet var categoryPicker: UISegmentedControl!
-  @IBOutlet var dateTimePicker: UIDatePicker!
-  @IBOutlet var commentTextField: UITextField!
+class TransactionViewController: CardViewController {
+  @IBOutlet weak var amountTextField: UITextField!
+  @IBOutlet weak var saveButton: UIButton!
+  @IBOutlet weak var categoryPicker: UISegmentedControl!
+  @IBOutlet weak var dateTimePicker: UIDatePicker!
+  @IBOutlet weak var commentTextField: UITextField!
   
   weak var delegate: TransactionUpdateDelegate?
   var transaction: Transaction?

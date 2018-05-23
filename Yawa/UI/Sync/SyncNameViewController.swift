@@ -13,8 +13,8 @@ protocol SyncNameUpdateDelegate: AnyObject {
 }
 
 class SyncNameViewController: UIViewController {
-  @IBOutlet var nameTextField: UITextField!
-  @IBOutlet var saveButton: UIButton!
+  @IBOutlet weak var nameTextField: UITextField!
+  @IBOutlet weak var saveButton: UIButton!
   weak var delegate: SyncNameUpdateDelegate?
   
   override func viewDidLoad() {

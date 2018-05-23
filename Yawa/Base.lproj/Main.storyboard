@@ -101,7 +101,7 @@
             </objects>
             <point key="canvasLocation" x="136.80000000000001" y="132.68365817091455"/>
         </scene>
-        <!--Title-->
+        <!--Transaction View Controller-->
         <scene sceneID="LqN-g1-dFt">
             <objects>
                 <viewController id="J2s-wE-pf2" customClass="TransactionViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
@@ -110,7 +110,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="amount" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nh0-PE-g9D">
-                                <rect key="frame" x="16" y="85" width="343" height="33"/>
+                                <rect key="frame" x="16" y="32" width="343" height="33"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <textInputTraits key="textInputTraits" keyboardType="decimalPad" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
@@ -119,7 +119,7 @@
                                 </connections>
                             </textField>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CIU-RV-71C">
-                                <rect key="frame" x="16" y="126" width="343" height="29"/>
+                                <rect key="frame" x="16" y="73" width="343" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="28" id="dBP-hD-vBR"/>
                                 </constraints>
@@ -132,26 +132,8 @@
                                     <segment title="Other"/>
                                 </segments>
                             </segmentedControl>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ek0-lJ-K3S">
-                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <items>
-                                    <navigationItem title="Title" id="rPT-Vl-RjP">
-                                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="bfd-2N-A6o">
-                                            <connections>
-                                                <action selector="cancel" destination="J2s-wE-pf2" id="vwX-kB-bU9"/>
-                                            </connections>
-                                        </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Save" id="y0m-bB-zqy">
-                                            <connections>
-                                                <action selector="save" destination="J2s-wE-pf2" id="DEi-KG-8Ky"/>
-                                            </connections>
-                                        </barButtonItem>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="TgH-T5-qXh">
-                                <rect key="frame" x="0.0" y="162" width="375" height="162"/>
+                                <rect key="frame" x="0.0" y="109" width="375" height="162"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="162" id="MU0-Cu-d41"/>
                                 </constraints>
@@ -160,40 +142,63 @@
                                 </date>
                             </datePicker>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="comment" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nMg-OC-0Dl">
-                                <rect key="frame" x="16" y="332" width="343" height="30"/>
+                                <rect key="frame" x="16" y="279" width="343" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vcT-4r-tyg">
+                                <rect key="frame" x="16" y="317" width="48" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="48" id="zsk-rf-0qf"/>
+                                </constraints>
+                                <state key="normal" title="Cancel"/>
+                                <connections>
+                                    <action selector="cancel" destination="J2s-wE-pf2" eventType="touchUpInside" id="1m2-QS-1EP"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="n2G-7X-LBj">
+                                <rect key="frame" x="325" y="317" width="34" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="34" id="gTr-nL-RQW"/>
+                                </constraints>
+                                <state key="normal" title="Save"/>
+                                <connections>
+                                    <action selector="save" destination="J2s-wE-pf2" eventType="touchUpInside" id="9WZ-D6-kJR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="CIU-RV-71C" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="50v-zE-DXL"/>
                             <constraint firstItem="TgH-T5-qXh" firstAttribute="top" secondItem="CIU-RV-71C" secondAttribute="bottom" constant="8" id="5Wf-Ry-uZ6"/>
+                            <constraint firstItem="n2G-7X-LBj" firstAttribute="top" secondItem="nMg-OC-0Dl" secondAttribute="bottom" constant="8" id="87k-Wt-S3m"/>
+                            <constraint firstItem="vcT-4r-tyg" firstAttribute="top" secondItem="nMg-OC-0Dl" secondAttribute="bottom" constant="8" id="9U6-gb-eB5"/>
                             <constraint firstItem="nh0-PE-g9D" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="Ay3-4D-8Y3"/>
                             <constraint firstItem="CIU-RV-71C" firstAttribute="top" secondItem="nh0-PE-g9D" secondAttribute="bottom" constant="8" id="GA0-hG-ufC"/>
-                            <constraint firstItem="nh0-PE-g9D" firstAttribute="top" secondItem="4Qm-UU-hIj" secondAttribute="top" constant="65" id="Guw-1Z-31k"/>
+                            <constraint firstItem="nh0-PE-g9D" firstAttribute="top" secondItem="4Qm-UU-hIj" secondAttribute="top" constant="12" id="Guw-1Z-31k"/>
                             <constraint firstItem="nMg-OC-0Dl" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="SOd-S4-nOa"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="nMg-OC-0Dl" secondAttribute="trailing" constant="16" id="TxJ-8L-bVn"/>
                             <constraint firstItem="nMg-OC-0Dl" firstAttribute="top" secondItem="TgH-T5-qXh" secondAttribute="bottom" constant="8" id="c0w-wK-JG1"/>
+                            <constraint firstItem="vcT-4r-tyg" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="cWz-OH-I2I"/>
                             <constraint firstItem="TgH-T5-qXh" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="grX-xy-IPi"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="CIU-RV-71C" secondAttribute="trailing" constant="16" id="lWa-Oz-JUT"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="TgH-T5-qXh" secondAttribute="trailing" id="pmJ-ER-vUF"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="nh0-PE-g9D" secondAttribute="trailing" constant="16" id="sF5-g9-j9g"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="n2G-7X-LBj" secondAttribute="trailing" constant="16" id="vZx-bp-9aG"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="4Qm-UU-hIj"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Title" id="gcs-Hq-9lj">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="aXn-nz-SHG"/>
-                        <barButtonItem key="rightBarButtonItem" title="Save" id="mZW-aW-Gdk"/>
-                    </navigationItem>
+                    <toolbarItems/>
                     <nil key="simulatedTopBarMetrics"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <size key="freeformSize" width="375" height="667"/>
                     <connections>
-                        <outlet property="amountTextField" destination="nh0-PE-g9D" id="PC0-wb-uEU"/>
-                        <outlet property="categoryPicker" destination="CIU-RV-71C" id="AkU-yP-g9r"/>
-                        <outlet property="commentTextField" destination="nMg-OC-0Dl" id="RrT-bq-hzy"/>
-                        <outlet property="dateTimePicker" destination="TgH-T5-qXh" id="juM-7W-Dxr"/>
-                        <outlet property="saveButton" destination="y0m-bB-zqy" id="yxx-iR-OT4"/>
+                        <outlet property="amountTextField" destination="nh0-PE-g9D" id="KrA-P8-dRb"/>
+                        <outlet property="categoryPicker" destination="CIU-RV-71C" id="1cm-D5-Vz9"/>
+                        <outlet property="commentTextField" destination="nMg-OC-0Dl" id="n4r-Ha-US5"/>
+                        <outlet property="dateTimePicker" destination="TgH-T5-qXh" id="8eu-Zr-bZX"/>
+                        <outlet property="saveButton" destination="n2G-7X-LBj" id="VQU-Qq-fQP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Thh-DZ-1Qz" userLabel="First Responder" sceneMemberID="firstResponder"/>
