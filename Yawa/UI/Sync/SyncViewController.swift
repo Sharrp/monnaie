@@ -19,7 +19,7 @@ class SyncViewController: UIViewController {
   weak var nameDelegate: SyncNameUpdateDelegate?
   var transactionsToSync: [Transaction]!
   
-  @IBOutlet var syncStatusLabel: UILabel!
+  @IBOutlet weak var syncStatusLabel: UILabel!
   
   override func viewDidLoad() {
     super.viewDidLoad()

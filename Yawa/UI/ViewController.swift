@@ -9,7 +9,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-  @IBOutlet var tableView: UITableView!
+  @IBOutlet weak var tableView: UITableView!
   private let dateFormatter = DateFormatter()
   private let dataProvider = TransactionsController()
   
@@ -22,16 +22,16 @@ class ViewController: UIViewController {
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if segue.identifier == "addTransaction" {
-      guard let addTransactionVC = segue.destination as? TransactionViewController else { return }
-      addTransactionVC.delegate = dataProvider
-    } else if segue.identifier == "editTransaction" {
-      guard let transactionVC = segue.destination as? TransactionViewController else { return }
-      guard let indexPath = tableView.indexPathForSelectedRow else { return }
-      transactionVC.transaction = dataProvider.transaction(forDay: indexPath.section, withIndex: indexPath.row)
+    if let transactionVC = segue.destination as? TransactionViewController {
       transactionVC.delegate = dataProvider
-    } else if segue.identifier == "sync" {
-      guard let syncVC = segue.destination as? SyncViewController else { return }
+      transactionVC.dismissCardSubscriber = self
+      transactionVC.cardHeight = view.frame.height - 70
+      
+      if segue.identifier == "editTransaction" {
+        guard let indexPath = tableView.indexPathForSelectedRow else { return }
+        transactionVC.transaction = dataProvider.transaction(forDay: indexPath.section, withIndex: indexPath.row)
+      }
+    } else if let syncVC = segue.destination as? SyncViewController {
       syncVC.delegate = dataProvider
       syncVC.transactionsToSync = dataProvider.syncTransactions
       syncVC.nameDelegate = self
@@ -132,5 +132,11 @@ extension ViewController: TransactionsPresentor {
     DispatchQueue.main.async { [unowned self] in
       self.tableView.reloadData()
     }
+  }
+}
+
+extension ViewController: DismissCardSubscriber {
+  func cardDismissed() {
+    print("Dismissed, I'm ViewController")
   }
 }
