@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MultipeerConnectivity
 
 protocol SyncUpdateDelegate: AnyObject {
   func reset(transactionsTo transactions: [Transaction])
@@ -20,9 +21,14 @@ class SyncViewController: UIViewController {
   var transactionsToSync: [Transaction]!
   
   @IBOutlet weak var syncStatusLabel: UILabel!
+  @IBOutlet weak var nameChangeMessageLabel: UILabel!
+  
+  @IBOutlet weak var peersTableView: UITableView!
+  private var peers = [MCPeerID]()
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    display(name: Settings.main.syncName)
     syncManager.delegate = self
     syncManager.prepareSync()
   }
@@ -35,7 +41,7 @@ class SyncViewController: UIViewController {
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     guard segue.identifier == "name-edit" else { return }
     guard let vc = segue.destination as? SyncNameViewController else { return }
-    vc.delegate = nameDelegate
+    vc.delegate = self
   }
 }
 
@@ -46,14 +52,19 @@ extension SyncViewController: SyncDelegate {
     }
   }
   
-  func readyToSync() {
-    let syncData = SyncData(transactions: transactionsToSync, mode: .merge)
-    let data = NSKeyedArchiver.archivedData(withRootObject: syncData)
-    syncManager.send(data: data)
-    updateStatus(to: "Syncing...")
+  func didUpdate(peersList: [MCPeerID]) {
+    peers = peersList
+    peersTableView.reloadData()
   }
   
-  func receive(data: Data) {
+  func readyToSync(withPeer peerID: MCPeerID) {
+    let syncData = SyncData(transactions: transactionsToSync, mode: .merge)
+    let data = NSKeyedArchiver.archivedData(withRootObject: syncData)
+    syncManager.send(data: data, toPeer: peerID)
+    updateStatus(to: "Syncing with \(peerID.displayName)")
+  }
+  
+  func receive(data: Data, fromPeer peerID: MCPeerID) {
     guard let syncData = NSKeyedUnarchiver.unarchiveObject(with: data) as? SyncData else {
       print("Failed to unarchive transactions from peer")
       updateStatus(to: "Sync failed. Reopen this view")
@@ -61,18 +72,24 @@ extension SyncViewController: SyncDelegate {
     }
     
     let transactions: [Transaction]
-    if syncData.mode == .merge {
+    switch syncData.mode {
+    case .merge:
       let previousSyncTransactions = syncHistoryManager.transactionsListAtPreviousSync(forDeviceID: syncData.deviceID)
       transactions = merge(local: transactionsToSync,
-                          remote: syncData.transactions,
-        previousSyncTransactions: previousSyncTransactions)
-    } else { // merged data received
+                           remote: syncData.transactions,
+                           previousSyncTransactions: previousSyncTransactions)
+      
+      // Send merged data back
+      let syncData = SyncData(transactions: transactions, mode: .update)
+      let data = NSKeyedArchiver.archivedData(withRootObject: syncData)
+      syncManager.send(data: data, toPeer: peerID)
+    case .update:
       transactions = syncData.transactions
     }
+    
     delegate?.reset(transactionsTo: transactions)
     let thisSyncTransactionsList = transactions.map { $0.hashValue }
     syncHistoryManager.update(transactionsList: thisSyncTransactionsList, forDeviceID: syncData.deviceID)
-    
     updateStatus(to: "Sync is finished")
   }
   
@@ -116,6 +133,46 @@ extension SyncViewController: SyncDelegate {
       }
     }
     
-    return merged
+    return merged.sorted { $0.date > $1.date }
+  }
+}
+
+extension SyncViewController: SyncNameUpdateDelegate {
+  func display(name: String) {
+    nameChangeMessageLabel.text = """
+    We sign your transactions with "\(name)".
+    Feel free to change your name here 👇
+    """
+  }
+  
+  func nameUpdated(toName name: String) {
+    display(name: name)
+    nameDelegate?.nameUpdated(toName: name)
+    syncManager.deviceNameUpdated(toName: name)
+  }
+}
+
+extension SyncViewController: UITableViewDataSource {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return peers.count
+  }
+  
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cellID = "peerCellID"
+    let cell: UITableViewCell
+    if let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: cellID) {
+      cell = dequeuedCell
+    } else {
+      cell = UITableViewCell(style: .default, reuseIdentifier: cellID)
+    }
+    
+    cell.textLabel?.text = peers[indexPath.row].displayName
+    return cell
+  }
+}
+
+extension SyncViewController: UITableViewDelegate {
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    syncManager.inviteToSync(peerID: peers[indexPath.row])
   }
 }

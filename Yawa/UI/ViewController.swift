@@ -109,7 +109,6 @@ extension ViewController: UITableViewDataSource {
 
 extension ViewController: SyncNameUpdateDelegate {
   func nameUpdated(toName name: String) {
-    Settings.main.syncName = name
     dataProvider.updateNameInTransactionsFromThisDevice(toNewName: name)
   }
 }

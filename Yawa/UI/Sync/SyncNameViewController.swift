@@ -30,6 +30,7 @@ class SyncNameViewController: UIViewController {
   
   @IBAction func savePressed() {
     if let newName = nameTextField.text {
+      Settings.main.syncName = newName
       delegate?.nameUpdated(toName: newName)
     }
     dismiss()
