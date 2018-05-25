@@ -96,9 +96,18 @@ extension Transaction {
   }
 }
 
-enum SyncRequestMode: Int {
+enum SyncRequestMode: Int, CustomStringConvertible {
   case merge
   case update
+  
+  var description: String {
+    switch self {
+    case .merge:
+      return "Merge"
+    case .update:
+      return "Update"
+    }
+  }
 }
 
 // Meta-object that encapsulates all information required for sync
@@ -107,7 +116,7 @@ class SyncData: NSObject, NSCoding {
   let mode: SyncRequestMode
   let deviceID: String
   
-  init(transactions: [Transaction], mode:SyncRequestMode = .merge) {
+  init(transactions: [Transaction], mode: SyncRequestMode = .merge) {
     self.transactions = transactions
     self.mode = mode
     deviceID = deviceUniqueIdentifier()

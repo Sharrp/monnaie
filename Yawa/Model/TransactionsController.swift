@@ -138,6 +138,7 @@ extension TransactionsController: TransactionUpdateDelegate {
     for (i, daySection) in daysIndex.enumerated() {
       if transactionIndex < daySection.firstOfNext {
         rebuiltIndexAndNotify(aboutDays: [i])
+        break
       }
     }
   }
@@ -146,5 +147,6 @@ extension TransactionsController: TransactionUpdateDelegate {
 extension TransactionsController: SyncUpdateDelegate {
   func reset(transactionsTo transactions: [Transaction]) {
     self.transactions = transactions
+    rebuiltIndexAndNotify()
   }
 }

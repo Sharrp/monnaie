@@ -249,6 +249,15 @@ Feel free to change your name here 👇</string>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="TOU-c9-7Rq">
+                                <rect key="frame" x="0.0" y="371" width="375" height="193"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="Cq3-tA-THa" id="Usp-na-Pfd"/>
+                                    <outlet property="delegate" destination="Cq3-tA-THa" id="eor-64-QO9"/>
+                                </connections>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -265,6 +274,8 @@ Feel free to change your name here 👇</string>
                         <viewLayoutGuide key="safeArea" id="qBN-IF-vaq"/>
                     </view>
                     <connections>
+                        <outlet property="nameChangeMessageLabel" destination="G7d-m0-NbC" id="MS0-Km-eOu"/>
+                        <outlet property="peersTableView" destination="TOU-c9-7Rq" id="rFJ-vQ-YQk"/>
                         <outlet property="syncStatusLabel" destination="dqn-Fh-aMt" id="PWZ-Ld-aJ0"/>
                     </connections>
                 </viewController>
