@@ -91,6 +91,11 @@ extension SyncViewController: SyncDelegate {
     let thisSyncTransactionsList = transactions.map { $0.hashValue }
     syncHistoryManager.update(transactionsList: thisSyncTransactionsList, forDeviceID: syncData.deviceID)
     updateStatus(to: "Sync is finished")
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+      guard let strongSelf = self else { return }
+      strongSelf.dismiss(animated: true, completion: nil)
+    }
   }
   
   private func mostRecentTransaction(t1: Transaction, t2: Transaction) -> Transaction {
