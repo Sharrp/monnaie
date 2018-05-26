@@ -54,7 +54,7 @@ class TransactionViewController: CardViewController {
       transaction.modifiedDate = Date()
       delegate?.update(transaction: transaction)
     } else { // adding new transaction
-      let transaction = Transaction(amount: amount, category: category, author: Settings.main.syncName, date: dateTimePicker.date, comment: commentTextField.text)
+      let transaction = Transaction(amount: amount, category: category, authorName: Settings.main.syncName, date: dateTimePicker.date, comment: commentTextField.text)
       delegate?.add(transaction: transaction)
     }
     self.dismiss(animated: true, completion: nil)

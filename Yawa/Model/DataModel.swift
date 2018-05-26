@@ -1,4 +1,4 @@
-//
+
 //  Transaction.swift
 //  Yawa
 //
@@ -38,61 +38,69 @@ class Transaction: NSObject, NSCoding {
   var amount: Float
   var category: TransactionCategory
   var comment: String?
-  let author: String
+  var authorName: String
   
   var date: Date // date of transaction in real world (set by user)
   let createdDate: Date // date when user created the transaction
   var modifiedDate: Date // last modificatino date
+  private let authorID: String
   
-  init(amount: Float, category: TransactionCategory, author: String, date: Date, comment: String? = nil ) {
+  init(amount: Float, category: TransactionCategory, authorName: String, date: Date, comment: String? = nil ) {
     self.amount = amount
     self.category = category
-    self.author = author
+    self.authorName = authorName
     self.comment = comment
     self.date = date
     self.createdDate = Date()
     self.modifiedDate = self.createdDate
+    authorID = deviceUniqueIdentifier()
   }
   
   required init(coder decoder: NSCoder) {
     amount = decoder.decodeFloat(forKey: "amount")
     let categoryRawValue = decoder.decodeInteger(forKey: "category")
     category = TransactionCategory(rawValue: categoryRawValue)!
-    author = decoder.decodeObject(forKey: "author") as! String
+    authorName = decoder.decodeObject(forKey: "authorName") as! String
     comment = decoder.decodeObject(forKey: "comment") as? String
     
     date = decoder.decodeObject(forKey: "date") as! Date
     createdDate = decoder.decodeObject(forKey: "createdDate") as! Date
     modifiedDate = decoder.decodeObject(forKey: "modifiedDate") as! Date
+    authorID = decoder.decodeObject(forKey: "authorID") as! String
   }
   
   func encode(with coder: NSCoder) {
     coder.encode(amount, forKey: "amount")
     coder.encode(category.rawValue, forKey: "category")
-    coder.encode(author, forKey: "author")
+    coder.encode(authorName, forKey: "authorName")
     coder.encode(comment, forKey: "comment")
     
     coder.encode(date, forKey: "date")
     coder.encode(createdDate, forKey: "createdDate")
     coder.encode(modifiedDate, forKey: "modifiedDate")
+    coder.encode(authorID, forKey: "authorID")
+  }
+  
+  var isCreatedOnCurrentDevice: Bool {
+    return authorID == deviceUniqueIdentifier()
   }
 }
 
 extension Transaction {
   override func isEqual(_ object: Any?) -> Bool {
     guard let transaction = object as? Transaction else { return false }
-    let equal = author == transaction.author && date == transaction.date
+    let equal = authorID == transaction.authorID && date == transaction.date
     return equal
   }
   
   override var hashValue: Int {
-    return "\(author)\(date)".hashValue
+    return "\(authorID)\(date)".hashValue
   }
 }
 
 extension Transaction {
   override var description: String {
-    return "\(author), \(date): \(category), \(amount)"
+    return "\(authorName), \(date): \(category), \(amount)"
   }
 }
 
@@ -102,10 +110,8 @@ enum SyncRequestMode: Int, CustomStringConvertible {
   
   var description: String {
     switch self {
-    case .merge:
-      return "Merge"
-    case .update:
-      return "Update"
+    case .merge: return "Merge"
+    case .update: return "Update"
     }
   }
 }
