@@ -83,8 +83,8 @@ extension ViewController: UITableViewDataSource {
     let transaction = dataProvider.transaction(forDay: indexPath.section, withIndex: indexPath.row)
     cell.textLabel?.text = "\(transaction.category)"
     var detailsText = ""
-    if transaction.author != Settings.main.syncName {
-      detailsText = "\(transaction.author)"
+    if transaction.authorName != Settings.main.syncName {
+      detailsText = "\(transaction.authorName)"
     }
     if let comment = transaction.comment, comment.count > 0 {
       if detailsText.count > 0 { // we've already added author

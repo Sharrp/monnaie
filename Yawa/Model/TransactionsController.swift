@@ -80,7 +80,13 @@ class TransactionsController {
   }
   
   func updateNameInTransactionsFromThisDevice(toNewName name: String) {
-//    rebuiltIndexAndNotify()
+    for transaction in transactions {
+      if transaction.isCreatedOnCurrentDevice {
+        transaction.authorName = name
+        transaction.modifiedDate = Date()
+      }
+    }
+    rebuiltIndexAndNotify()
   }
   
   private func rebuiltIndexAndNotify(aboutDays days: [Int]? = nil) {
