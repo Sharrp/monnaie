@@ -68,7 +68,6 @@
         "locked" : false,
         "name" : "list",
         "opacity" : 1,
-        "originalFilename" : "list.png",
         "parentid" : "NW6iZdJWy",
         "radius" : 0,
         "radiusBottomLeft" : 0,
@@ -240,7 +239,6 @@
         "locked" : false,
         "name" : "card",
         "opacity" : 1,
-        "originalFilename" : "card.png",
         "parentid" : "NW6iZdJWy",
         "radius" : 0,
         "radiusBottomLeft" : 0,
@@ -402,9 +400,7 @@
             "top" : null,
             "visible" : true,
             "width" : 56,
-            "widthFactor" : null,
-            "x" : 29,
-            "y" : 9
+            "widthFactor" : null
           },
           {
             "__class" : "RectangleShapeNode",
