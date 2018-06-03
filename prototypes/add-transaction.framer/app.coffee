@@ -1,3 +1,11 @@
+# Scale adoptions
+scaleFactor = Screen.width/list.width
+list.scale = scaleFactor
+list.center()
+card.originX = 0
+card.scale = scaleFactor
+
+
 cardCollapsedHeight = 92
 cardBottomInset = 33
 cardCollapsedY = Screen.height - cardCollapsedHeight
@@ -7,14 +15,12 @@ animationOptions =
 	duration: 0.3
 	curve: "spring(200,20,10)"
 
-list.point = { x: 0, y: 0 }
 card.point = { x: 0, y: cardCollapsedY }
-
 card.draggable.enabled = true
 
 list.states.add
 	covered:
-		blur: 3
+		blur: 5
 
 # States  
 card.states.add
@@ -47,7 +53,7 @@ categoriesScroll = new ScrollComponent
 	size: scrollPlaceholder.size
 	point: scrollPlaceholder.point
 	parent: card
-	backgroundColor: 'red'
+# 	backgroundColor: 'red'
 	scrollVertical: false
 scrollPlaceholder.destroy()
 
@@ -60,5 +66,20 @@ for categoryTitle, i in categoriesTitles
 	newCategory.children[0].text = categoryTitle
 category.destroy()
 
-card.stateCycle('expanded', 'default')
-list.stateCycle('covered', 'default')
+# Resolve scroll conflicts
+categoriesScroll.on Events.ScrollStart, ->
+	card.draggable.enabled = false
+	
+categoriesScroll.on Events.ScrollEnd, ->
+	card.draggable.enabled = true
+	
+card.onDragStart ->
+	categoriesScroll.scrollHorizontal = false
+	
+card.onDragEnd ->
+	categoriesScroll.scrollHorizontal = true
+	
+# 	categoriesScroll.enabled = false
+
+# card.stateCycle('expanded', 'default')
+# list.stateCycle('covered', 'default')

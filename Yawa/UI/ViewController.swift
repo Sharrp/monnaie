@@ -8,10 +8,13 @@
 
 import UIKit
 
+//class ViewController: CardViewController {
 class ViewController: UIViewController {
   @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var totalAmountLabel: UILabel!
+  
   private let dateFormatter = DateFormatter()
-  private let dataProvider = TransactionsController()
+  let dataProvider = TransactionsController()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -19,23 +22,8 @@ class ViewController: UIViewController {
     dataProvider.presentor = self
     dateFormatter.dateStyle = .medium
     dateFormatter.timeStyle = .none
-  }
-  
-  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if let transactionVC = segue.destination as? TransactionViewController {
-      transactionVC.delegate = dataProvider
-      transactionVC.dismissCardSubscriber = self
-      transactionVC.cardHeight = view.frame.height - 70
-      
-      if segue.identifier == "editTransaction" {
-        guard let indexPath = tableView.indexPathForSelectedRow else { return }
-        transactionVC.transaction = dataProvider.transaction(forDay: indexPath.section, withIndex: indexPath.row)
-      }
-    } else if let syncVC = segue.destination as? SyncViewController {
-      syncVC.delegate = dataProvider
-      syncVC.transactionsToSync = dataProvider.syncTransactions
-      syncVC.nameDelegate = self
-    }
+    
+    updateTotal()
   }
 }
 
@@ -63,11 +51,6 @@ extension ViewController: UITableViewDataSource {
     let dailySum = dataProvider.totalAmount(forDay: section)
     title += " — " + formatMoney(amount: dailySum, currency: .JPY)
     
-    // Monthly amount in the first section
-    if section == 0 {
-      let monthlyAmount = dataProvider.totalAmountForCurrentMonth()
-      title += ". Total: " + formatMoney(amount: monthlyAmount, currency: .JPY)
-    }
     return title
   }
   
@@ -82,18 +65,10 @@ extension ViewController: UITableViewDataSource {
     
     let transaction = dataProvider.transaction(forDay: indexPath.section, withIndex: indexPath.row)
     cell.textLabel?.text = "\(transaction.category)"
-    var detailsText = ""
-    if transaction.authorName != Settings.main.syncName {
-      detailsText = "\(transaction.authorName)"
-    }
-    if let comment = transaction.comment, comment.count > 0 {
-      if detailsText.count > 0 { // we've already added author
-        detailsText += ": "
-      }
-      detailsText += comment
-    }
     cell.amountLabel.text = formatMoney(amount: transaction.amount, currency: .JPY)
-    cell.detailTextLabel?.text = detailsText
+    if transaction.authorName != Settings.main.syncName {
+      cell.detailTextLabel?.text = "\(transaction.authorName)"
+    }
     return cell
   }
   
@@ -114,28 +89,34 @@ extension ViewController: SyncNameUpdateDelegate {
 }
 
 extension ViewController: TransactionsPresentor {
+  private func updateTotal() {
+    let dailySum = dataProvider.totalAmount(forDay: 0)
+    var totalString = "Today: " + formatMoney(amount: dailySum, currency: .JPY)
+    let monthlyAmount = dataProvider.totalAmountForCurrentMonth()
+    totalString += ". Total: " + formatMoney(amount: monthlyAmount, currency: .JPY)
+    totalAmountLabel.text = totalString
+  }
+  
   func didUpdate(days: [Int]) {
     DispatchQueue.main.async { [unowned self] in
       let sections = IndexSet(days)
       self.tableView.reloadSections(sections, with: .automatic)
+      self.updateTotal()
     }
   }
   
   func didUpdateTransactions(atIndexPaths indexPaths: [IndexPath]) {
     DispatchQueue.main.async { [unowned self] in
       self.tableView.reloadRows(at: indexPaths, with: .automatic)
+      self.updateTotal()
     }
   }
   
   func didUpdateAll() {
     DispatchQueue.main.async { [unowned self] in
       self.tableView.reloadData()
+      self.updateTotal()
     }
   }
 }
 
-extension ViewController: DismissCardSubscriber {
-  func cardDismissed() {
-    print("Dismissed, I'm ViewController")
-  }
-}

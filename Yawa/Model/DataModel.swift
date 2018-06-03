@@ -37,7 +37,6 @@ enum TransactionCategory: Int, CustomStringConvertible {
 class Transaction: NSObject, NSCoding {
   var amount: Float
   var category: TransactionCategory
-  var comment: String?
   var authorName: String
   
   var date: Date // date of transaction in real world (set by user)
@@ -45,11 +44,10 @@ class Transaction: NSObject, NSCoding {
   var modifiedDate: Date // last modificatino date
   private let authorID: String
   
-  init(amount: Float, category: TransactionCategory, authorName: String, date: Date, comment: String? = nil ) {
+  init(amount: Float, category: TransactionCategory, authorName: String, date: Date) {
     self.amount = amount
     self.category = category
     self.authorName = authorName
-    self.comment = comment
     self.date = date
     self.createdDate = Date()
     self.modifiedDate = self.createdDate
@@ -61,7 +59,6 @@ class Transaction: NSObject, NSCoding {
     let categoryRawValue = decoder.decodeInteger(forKey: "category")
     category = TransactionCategory(rawValue: categoryRawValue)!
     authorName = decoder.decodeObject(forKey: "authorName") as! String
-    comment = decoder.decodeObject(forKey: "comment") as? String
     
     date = decoder.decodeObject(forKey: "date") as! Date
     createdDate = decoder.decodeObject(forKey: "createdDate") as! Date
@@ -73,7 +70,6 @@ class Transaction: NSObject, NSCoding {
     coder.encode(amount, forKey: "amount")
     coder.encode(category.rawValue, forKey: "category")
     coder.encode(authorName, forKey: "authorName")
-    coder.encode(comment, forKey: "comment")
     
     coder.encode(date, forKey: "date")
     coder.encode(createdDate, forKey: "createdDate")
