@@ -98,6 +98,8 @@ extension TransactionsListViewController: UITableViewDataSource {
     cell.amountLabel.text = formatMoney(amount: transaction.amount, currency: .JPY)
     if transaction.authorName != Settings.main.syncName {
       cell.detailTextLabel?.text = "\(transaction.authorName)"
+    } else {
+      cell.detailTextLabel?.text = ""
     }
     return cell
   }
