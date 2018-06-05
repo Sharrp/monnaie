@@ -34,15 +34,16 @@ class TransactionViewController: UIViewController {
       dateTimePicker.date = transaction.date
       addButton.isEnabled = true
     }
+    
+    NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
 
     amountTextField.becomeFirstResponder()
-    let defaultCategory = categoryPicker.titleForSegment(at: 0)!
-    categoryButton.setTitle(defaultCategory, for: .normal)
+    resetCategory()
   }
   
   override func viewWillAppear(_ animated: Bool) {
-    let vc = self.pulleyViewController!.drawerContentViewController as! ViewController
-    delegate = vc.dataProvider
+    let transactionsListVC = self.pulleyViewController!.drawerContentViewController as! TransactionsListViewController
+    delegate = transactionsListVC.dataProvider
   }
   
   @IBAction func addTapped() {
@@ -63,9 +64,26 @@ class TransactionViewController: UIViewController {
     clearAmount()
   }
   
+  @objc func appDidBecomeActive() {
+    resetStateAfterBackground()
+  }
+  
+  private func resetStateAfterBackground() {
+    guard amountTextField.text?.count == 0 else { return }
+    dateTimePicker.date = Date()
+    resetCategory()
+    amountTextField.becomeFirstResponder()
+  }
+  
   private func clearAmount() {
     amountTextField.text = ""
     addButton.isEnabled = false
+  }
+  
+  private func resetCategory() {
+    let defaultCategory = categoryPicker.titleForSegment(at: 0)!
+    categoryPicker.selectedSegmentIndex = 0
+    categoryButton.setTitle(defaultCategory, for: .normal)
   }
   
   enum EditingMode {
@@ -114,3 +132,12 @@ class TransactionViewController: UIViewController {
     addButton.isEnabled = value != nil && value! > 0
   }
 }
+
+extension TransactionViewController: PulleyPrimaryContentControllerDelegate {
+  func makeUIAdjustmentsForFullscreen(progress: CGFloat, bottomSafeArea: CGFloat) {
+//    if progress < 0.2 {
+//      amountTextField.resignFirstResponder()
+//    }
+  }
+}
+

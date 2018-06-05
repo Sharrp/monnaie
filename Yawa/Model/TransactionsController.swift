@@ -30,13 +30,13 @@ class TransactionsController {
   weak var presentor: TransactionsPresentor?
   
   init() {
-    transactions = storeManager.loadTransactions()
+    transactions = storeManager.loadTransactions().sorted { $0.date < $1.date }
     daysIndex = buildTableIndex(transactions)
   }
   
   // For unit-tests
   init(withTransactions transactions: [Transaction]) {
-    self.transactions = transactions.sorted { $0.date > $1.date }
+    self.transactions = transactions.sorted { $0.date < $1.date }
     daysIndex = buildTableIndex(transactions)
   }
   
@@ -53,14 +53,28 @@ class TransactionsController {
     return daysIndex[day].length
   }
   
+  func totalNumberOfTransactions() -> Int {
+    return transactions.count
+  }
+  
   func totalAmount(forDay day: Int) -> Float {
     let daySection = daysIndex[day]
     let indexRange = daySection.first..<daySection.firstOfNext
     return transactions[indexRange].reduce(0.0) { $0 + $1.amount }
   }
   
+  func totalAmountForToday() -> Float {
+    for (i, daySection) in daysIndex.enumerated() {
+      let date = transactions[daySection.first].date
+      if Calendar.current.isDate(date, inSameDayAs: Date()) {
+        return totalAmount(forDay: i)
+      }
+    }
+    return 0
+  }
+  
   func totalAmountForCurrentMonth() -> Float {
-    let thisMonthTransactions = transactions.filter { Calendar.current.isDate($0.date, equalTo: transactions[0].date, toGranularity: .month) }
+    let thisMonthTransactions = transactions.filter { Calendar.current.isDate($0.date, equalTo: Date(), toGranularity: .month) }
     return thisMonthTransactions.reduce(0) { $0 + $1.amount }
   }
   
@@ -122,7 +136,7 @@ class TransactionsController {
   
   private func insertWithSort(transaction newTransaction: Transaction) {
     for (i, transaction) in transactions.enumerated() {
-      if newTransaction.date > transaction.date {
+      if newTransaction.date < transaction.date {
         transactions.insert(newTransaction, at: i)
         return
       }
