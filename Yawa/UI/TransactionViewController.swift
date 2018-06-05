@@ -17,7 +17,7 @@ class TransactionViewController: UIViewController {
   @IBOutlet weak var amountTextField: UITextField!
   @IBOutlet weak var addButton: UIButton!
   @IBOutlet weak var dateButton: UIButton!
-  @IBOutlet weak var categoryButton: UIButton!
+  @IBOutlet weak var inputFlowButton: UIButton!
   
   @IBOutlet weak var categoryPicker: UISegmentedControl!
   @IBOutlet weak var dateTimePicker: UIDatePicker!
@@ -28,6 +28,8 @@ class TransactionViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
+    
     if let transaction = transaction {
       amountTextField.text = formatMoney(amount: transaction.amount, currency: .JPY, symbolEnabled: false)
       categoryPicker.selectedSegmentIndex = transaction.category.rawValue
@@ -35,10 +37,18 @@ class TransactionViewController: UIViewController {
       addButton.isEnabled = true
     }
     
-    NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
+    for button in [inputFlowButton, addButton, dateButton] {
+      button!.layer.cornerRadius = 28
+      if button == dateButton {
+        button?.layer.cornerRadius = 20
+      }
+      button!.clipsToBounds = true
+      button!.setBackgroundColor(color: UIColor(white: 0.4, alpha: 1.0), forState: .normal)
+      button!.setBackgroundColor(color: UIColor(white: 0.7, alpha: 1.0), forState: .highlighted)
+    }
 
-    amountTextField.becomeFirstResponder()
     resetCategory()
+    amountTextField.becomeFirstResponder()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -83,7 +93,7 @@ class TransactionViewController: UIViewController {
   private func resetCategory() {
     let defaultCategory = categoryPicker.titleForSegment(at: 0)!
     categoryPicker.selectedSegmentIndex = 0
-    categoryButton.setTitle(defaultCategory, for: .normal)
+    inputFlowButton.setTitle(defaultCategory, for: .normal)
   }
   
   enum EditingMode {
@@ -120,7 +130,7 @@ class TransactionViewController: UIViewController {
   
   @IBAction func categoryChanged(sender: UISegmentedControl) {
     guard let selectedCategoryName = sender.titleForSegment(at: sender.selectedSegmentIndex) else { return }
-    categoryButton.setTitle(selectedCategoryName, for: .normal)
+    inputFlowButton.setTitle(selectedCategoryName, for: .normal)
   }
   
   @IBAction func categoryTapped() {
