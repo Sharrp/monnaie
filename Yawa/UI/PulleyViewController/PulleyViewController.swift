@@ -124,7 +124,7 @@ public enum PulleySnapMode {
   case nearestPositionUnlessExceeded(threshold: CGFloat)
 }
 
-private let kPulleyDefaultCollapsedHeight: CGFloat = 68.0
+private let kPulleyDefaultCollapsedHeight: CGFloat = 102.0
 
 open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDelegate {
   

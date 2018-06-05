@@ -8,10 +8,13 @@
 
 import UIKit
 
-//class ViewController: CardViewController {
-class ViewController: UIViewController {
+class TransactionsListViewController: UIViewController {
   @IBOutlet weak var tableView: UITableView!
-  @IBOutlet weak var totalAmountLabel: UILabel!
+  
+  @IBOutlet weak var dayLabel: UILabel!
+  @IBOutlet weak var dayAmountLabel: UILabel!
+  @IBOutlet weak var monthLabel: UILabel!
+  @IBOutlet weak var monthAmountLabel: UILabel!
   
   private let dateFormatter = DateFormatter()
   let dataProvider = TransactionsController()
@@ -24,10 +27,37 @@ class ViewController: UIViewController {
     dateFormatter.timeStyle = .none
     
     updateTotal()
+    
+    scrollToBottom()
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//    if let transactionVC = segue.destination as? TransactionViewController {
+//      transactionVC.delegate = dataProvider
+//      transactionVC.dismissCardSubscriber = self
+//      transactionVC.cardHeight = view.frame.height - 70
+//
+//      if segue.identifier == "editTransaction" {
+//        guard let indexPath = tableView.indexPathForSelectedRow else { return }
+//        transactionVC.transaction = dataProvider.transaction(forDay: indexPath.section, withIndex: indexPath.row)
+//      }
+//    }
+    if let syncVC = segue.destination as? SyncViewController {
+      syncVC.delegate = dataProvider
+      syncVC.transactionsToSync = dataProvider.syncTransactions
+      syncVC.nameDelegate = self
+    }
+  }
+  
+  private func scrollToBottom() {
+    let days = dataProvider.numberOfDays
+    guard days > 0 else { return }
+    let numberOfRows = dataProvider.numberOfTransactions(forDay: days-1)
+    tableView.scrollToRow(at: IndexPath(row: numberOfRows-1, section: days-1), at: .top, animated: false)
   }
 }
 
-extension ViewController: UITableViewDataSource {
+extension TransactionsListViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
     return dataProvider.numberOfDays
   }
@@ -82,19 +112,23 @@ extension ViewController: UITableViewDataSource {
   }
 }
 
-extension ViewController: SyncNameUpdateDelegate {
+extension TransactionsListViewController: SyncNameUpdateDelegate {
   func nameUpdated(toName name: String) {
     dataProvider.updateNameInTransactionsFromThisDevice(toNewName: name)
   }
 }
 
-extension ViewController: TransactionsPresentor {
+extension TransactionsListViewController: TransactionsPresentor {
   private func updateTotal() {
-    let dailySum = dataProvider.totalAmount(forDay: 0)
-    var totalString = "Today: " + formatMoney(amount: dailySum, currency: .JPY)
+    let todaySum = dataProvider.totalAmountForToday()
+    dayAmountLabel.text = formatMoney(amount: todaySum, currency: .JPY)
+    
     let monthlyAmount = dataProvider.totalAmountForCurrentMonth()
-    totalString += ". Total: " + formatMoney(amount: monthlyAmount, currency: .JPY)
-    totalAmountLabel.text = totalString
+    monthAmountLabel.text = formatMoney(amount: monthlyAmount, currency: .JPY)
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.setLocalizedDateFormatFromTemplate("MMMM yy")
+    monthLabel.text = dateFormatter.string(from: Date()).replacingOccurrences(of: " ", with: "'")
   }
   
   func didUpdate(days: [Int]) {
@@ -119,4 +153,3 @@ extension ViewController: TransactionsPresentor {
     }
   }
 }
-
