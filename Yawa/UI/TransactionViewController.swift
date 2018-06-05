@@ -19,6 +19,10 @@ class TransactionViewController: UIViewController {
   @IBOutlet weak var dateButton: UIButton!
   @IBOutlet weak var inputFlowButton: UIButton!
   
+  private let gapToKeyboard: CGFloat = 8
+  @IBOutlet weak var inputFlowBottomConstraint: NSLayoutConstraint!
+  @IBOutlet weak var addButtonBottomConstraint: NSLayoutConstraint!
+  
   @IBOutlet weak var categoryPicker: UISegmentedControl!
   @IBOutlet weak var dateTimePicker: UIDatePicker!
   
@@ -29,6 +33,7 @@ class TransactionViewController: UIViewController {
     super.viewDidLoad()
     
     NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
     
     if let transaction = transaction {
       amountTextField.text = formatMoney(amount: transaction.amount, currency: .JPY, symbolEnabled: false)
@@ -94,6 +99,23 @@ class TransactionViewController: UIViewController {
     let defaultCategory = categoryPicker.titleForSegment(at: 0)!
     categoryPicker.selectedSegmentIndex = 0
     inputFlowButton.setTitle(defaultCategory, for: .normal)
+  }
+  
+  @objc func keyboardWillShow(_ notification: Notification) {
+    if let info = notification.userInfo as? [String: AnyObject],
+      let sizeValue = info[UIKeyboardFrameEndUserInfoKey] as? NSValue {
+      let keyboardHeight = sizeValue.cgRectValue.size.height
+      
+      // Say hello to iPhone X
+      var bottomInset: CGFloat = 0
+      if #available(iOS 11.0, *) {
+        if let safeAreBottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom {
+          bottomInset = safeAreBottomInset
+        }
+      }
+      inputFlowBottomConstraint.constant = keyboardHeight + gapToKeyboard - bottomInset
+      addButtonBottomConstraint.constant = keyboardHeight + gapToKeyboard - bottomInset
+    }
   }
   
   enum EditingMode {
