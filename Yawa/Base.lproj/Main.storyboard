@@ -242,7 +242,7 @@
                                 </connections>
                             </button>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="¥0" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nh0-PE-g9D">
-                                <rect key="frame" x="16" y="212" width="343" height="89"/>
+                                <rect key="frame" x="16" y="218" width="343" height="89"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="89" id="ZCx-9q-rkR"/>
@@ -255,7 +255,7 @@
                                 </connections>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BLY-AK-Gmv">
-                                <rect key="frame" x="141" y="132" width="92" height="40"/>
+                                <rect key="frame" x="141" y="138" width="92" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="bcO-f6-ENJ"/>
                                     <constraint firstAttribute="width" constant="92" id="p3R-No-55w"/>
@@ -276,7 +276,7 @@
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="ggY-Qh-ib6" secondAttribute="bottom" constant="255" id="AJV-bj-Rxi"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="CIU-RV-71C" secondAttribute="trailing" constant="16" id="CPC-5N-1YM"/>
                             <constraint firstItem="TgH-T5-qXh" firstAttribute="width" secondItem="4Qm-UU-hIj" secondAttribute="width" id="FFJ-5f-RkY"/>
-                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="BLY-AK-Gmv" secondAttribute="bottom" constant="495" id="TCq-vG-52l"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="BLY-AK-Gmv" secondAttribute="bottom" constant="489" id="TCq-vG-52l"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="TgH-T5-qXh" secondAttribute="bottom" constant="20" id="VHo-8j-LIR"/>
                             <constraint firstItem="nh0-PE-g9D" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="Vay-jP-du9"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="n2G-7X-LBj" secondAttribute="trailing" constant="16" id="Xaq-GL-4J2"/>
@@ -286,7 +286,7 @@
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="nh0-PE-g9D" secondAttribute="trailing" constant="16" id="iWf-dh-v0Z"/>
                             <constraint firstItem="BLY-AK-Gmv" firstAttribute="centerX" secondItem="4Qm-UU-hIj" secondAttribute="centerX" id="jZC-ml-36D"/>
                             <constraint firstItem="CIU-RV-71C" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="jms-3e-9gj"/>
-                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="nh0-PE-g9D" secondAttribute="bottom" constant="366" id="xO8-uW-csT"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="nh0-PE-g9D" secondAttribute="bottom" constant="360" id="xO8-uW-csT"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="4Qm-UU-hIj"/>
                     </view>
@@ -297,10 +297,12 @@
                     <size key="freeformSize" width="375" height="667"/>
                     <connections>
                         <outlet property="addButton" destination="n2G-7X-LBj" id="JNH-wZ-rUp"/>
+                        <outlet property="addButtonBottomConstraint" destination="AF3-sY-wBX" id="5CQ-9V-aZu"/>
                         <outlet property="amountTextField" destination="nh0-PE-g9D" id="KrA-P8-dRb"/>
                         <outlet property="categoryPicker" destination="CIU-RV-71C" id="1cm-D5-Vz9"/>
                         <outlet property="dateButton" destination="BLY-AK-Gmv" id="OyO-c0-7k1"/>
                         <outlet property="dateTimePicker" destination="TgH-T5-qXh" id="8eu-Zr-bZX"/>
+                        <outlet property="inputFlowBottomConstraint" destination="AJV-bj-Rxi" id="ejq-d1-MeW"/>
                         <outlet property="inputFlowButton" destination="ggY-Qh-ib6" id="YoT-hi-sOA"/>
                     </connections>
                 </viewController>
