@@ -77,6 +77,7 @@ class TransactionViewController: UIViewController {
     }
     
     clearAmount()
+    amountTextField.becomeFirstResponder()
   }
   
   @objc func appDidBecomeActive() {
