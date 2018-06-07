@@ -41,7 +41,7 @@ class Transaction: NSObject, NSCoding {
   
   var date: Date // date of transaction in real world (set by user)
   let createdDate: Date // date when user created the transaction
-  var modifiedDate: Date // last modificatino date
+  var modifiedDate: Date // last modification date
   private let authorID: String
   
   init(amount: Float, category: TransactionCategory, authorName: String, date: Date) {

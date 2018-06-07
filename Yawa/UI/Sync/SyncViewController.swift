@@ -138,7 +138,7 @@ extension SyncViewController: SyncDelegate {
       }
     }
     
-    return merged.sorted { $0.date > $1.date }
+    return merged.sorted { $0.date < $1.date }
   }
 }
 
