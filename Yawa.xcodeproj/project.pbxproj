@@ -142,7 +142,6 @@
 			children = (
 				75C046DE2098892500E8B09E /* AppDelegate.swift */,
 				7524B991209B3497006027C8 /* Utilities.swift */,
-				DF26E00F20BCF88D00E32206 /* Libs */,
 				7524B989209AEF09006027C8 /* Model */,
 				7524B990209B2A2C006027C8 /* UI */,
 				75C046E52098892600E8B09E /* Assets.xcassets */,
@@ -169,13 +168,6 @@
 				75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */,
 			);
 			path = PulleyViewController;
-			sourceTree = "<group>";
-		};
-		DF26E00F20BCF88D00E32206 /* Libs */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Libs;
 			sourceTree = "<group>";
 		};
 		DF8C66CD20B0635D008A7488 /* YawaTests */ = {
@@ -477,6 +469,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YLHBNR4ACZ;
 				INFOPLIST_FILE = Yawa/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -495,6 +488,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YLHBNR4ACZ;
 				INFOPLIST_FILE = Yawa/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
