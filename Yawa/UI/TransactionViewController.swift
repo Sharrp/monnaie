@@ -22,6 +22,7 @@ class TransactionViewController: UIViewController {
   private let gapToKeyboard: CGFloat = 8
   @IBOutlet weak var inputFlowBottomConstraint: NSLayoutConstraint!
   @IBOutlet weak var addButtonBottomConstraint: NSLayoutConstraint!
+  private var keyboardWasOpenWHenDrawerOpened = false
   
   @IBOutlet weak var categoryPicker: UISegmentedControl!
   @IBOutlet weak var dateTimePicker: UIDatePicker!
@@ -88,7 +89,10 @@ class TransactionViewController: UIViewController {
     guard amountTextField.text?.count == 0 else { return }
     dateTimePicker.date = Date()
     resetCategory()
-    amountTextField.becomeFirstResponder()
+    
+    if pulleyViewController?.drawerPosition == .open {
+      amountTextField.becomeFirstResponder()
+    }
   }
   
   private func clearAmount() {
@@ -167,10 +171,20 @@ class TransactionViewController: UIViewController {
 }
 
 extension TransactionViewController: PulleyPrimaryContentControllerDelegate {
-  func makeUIAdjustmentsForFullscreen(progress: CGFloat, bottomSafeArea: CGFloat) {
-//    if progress < 0.2 {
-//      amountTextField.resignFirstResponder()
-//    }
+  func didSwitchTo(drawerPosition: PulleyPosition) {
+    switch drawerPosition {
+    case .open:
+      if keyboardWasOpenWHenDrawerOpened {
+        amountTextField.becomeFirstResponder()
+      }
+    case .collapsed:
+      keyboardWasOpenWHenDrawerOpened = amountTextField.isFirstResponder
+      amountTextField.resignFirstResponder()
+    }
+  }
+  
+  func drawerChangedDistanceFromBottom(drawer: PulleyViewController, distance: CGFloat, bottomSafeArea: CGFloat) {
+    print("TO BOTTOM: \(distance)")
   }
 }
 
