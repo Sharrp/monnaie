@@ -1080,7 +1080,7 @@ extension PulleyViewController: UIScrollViewDelegate {
   public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
     guard scrollView == drawerScrollView else { return }
     lastDragTargetContentOffset = targetContentOffset.pointee
-//    targetContentOffset.pointee = scrollView.contentOffset // Halt intertia
+    targetContentOffset.pointee = scrollView.contentOffset // Halt intertia
   }
   
   public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
