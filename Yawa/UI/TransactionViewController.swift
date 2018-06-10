@@ -14,7 +14,15 @@ protocol TransactionUpdateDelegate: AnyObject {
 }
 
 class TransactionViewController: UIViewController {
-  @IBOutlet weak var amountTextField: UITextField!
+  @IBOutlet weak var amountInput: UITextField!
+  private var inputFocused: Bool {
+    return amountInput.isFirstResponder
+  }
+  private var inputHasValidContent: Bool {
+    let value = (amountInput.text as NSString?)?.floatValue
+    return value != nil && value! > 0
+  }
+  
   @IBOutlet weak var addButton: UIButton!
   @IBOutlet weak var dateButton: UIButton!
   @IBOutlet weak var inputFlowButton: UIButton!
@@ -34,9 +42,9 @@ class TransactionViewController: UIViewController {
   var transaction: Transaction?
   
   enum EditingMode {
-    case Amount
-    case Date
-    case Category
+    case amount
+    case date
+    case category
   }
   
   override func viewDidLoad() {
@@ -46,7 +54,7 @@ class TransactionViewController: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
     
     if let transaction = transaction {
-      amountTextField.text = formatMoney(amount: transaction.amount, currency: .JPY, symbolEnabled: false)
+      amountInput.text = formatMoney(amount: transaction.amount, currency: .JPY, symbolEnabled: false)
       categoryPicker.selectedSegmentIndex = transaction.category.rawValue
       dateTimePicker.date = transaction.date
       addButton.isEnabled = true
@@ -63,7 +71,7 @@ class TransactionViewController: UIViewController {
 
     updateDateButton(forDate: Date())
     clearCategory()
-    amountTextField.becomeFirstResponder()
+    amountInput.becomeFirstResponder()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -76,13 +84,13 @@ class TransactionViewController: UIViewController {
   }
   
   private func resetStateAfterBackground() {
-    guard amountTextField.text?.count == 0 else { return }
+    guard amountInput.text?.count == 0 else { return }
     resetDate()
     clearCategory()
     userSetCategoryManually = false
     
     if pulleyViewController?.drawerPosition == .open {
-      amountTextField.becomeFirstResponder()
+      amountInput.becomeFirstResponder()
     }
   }
   
@@ -104,33 +112,30 @@ class TransactionViewController: UIViewController {
   }
   
   private func switchTo(editingMode: EditingMode) {
-    dateTimePicker.isHidden = editingMode != .Date
-    categoryPicker.isHidden = editingMode != .Category
-    if editingMode == .Amount {
-      amountTextField.becomeFirstResponder()
+    dateTimePicker.isHidden = editingMode != .date
+    categoryPicker.isHidden = editingMode != .category
+    if editingMode == .amount {
+      amountInput.becomeFirstResponder()
     } else {
-      amountTextField.resignFirstResponder()
+      amountInput.resignFirstResponder()
     }
+    updateCategoryButtonTitle()
   }
   
   // MARK: Amount
   
   private func clearAmount() {
-    amountTextField.text = ""
+    amountInput.text = ""
     addButton.isEnabled = false
   }
   
   @IBAction func amountTextChanged() {
-    let value = (amountTextField.text as NSString?)?.floatValue
-    let hasValidValue = value != nil && value! > 0
-    addButton.isEnabled = hasValidValue
-    if !userSetCategoryManually {
-      if hasValidValue {
-        setDefaultCategory()
-      } else {
-        clearCategory()
-      }
-    }
+    addButton.isEnabled = inputHasValidContent
+    updateCategoryButtonTitle()
+  }
+  
+  @IBAction func editingDidBegin() {
+    updateCategoryButtonTitle()
   }
   
   // MARK: Category
@@ -140,20 +145,28 @@ class TransactionViewController: UIViewController {
     inputFlowButton.setTitle("Category", for: .normal)
   }
   
-  private func setDefaultCategory() {
-    let defaultCategory = categoryPicker.titleForSegment(at: 0)!
-    categoryPicker.selectedSegmentIndex = 0
-    inputFlowButton.setTitle(defaultCategory, for: .normal)
+  private func updateCategoryButtonTitle() {
+    let title: String
+    if !inputFocused && !inputHasValidContent {
+      title = "Back to amount"
+    } else if userSetCategoryManually {
+      title = categoryPicker.titleForSegment(at: categoryPicker.selectedSegmentIndex)!
+    } else if inputHasValidContent { // set default category
+      title = categoryPicker.titleForSegment(at: 0)!
+    } else {
+      title = "Category"
+    }
+    inputFlowButton.setTitle(title, for: .normal)
   }
   
   @IBAction func categoryChanged(sender: UISegmentedControl) {
-    guard let selectedCategoryName = sender.titleForSegment(at: sender.selectedSegmentIndex) else { return }
-    inputFlowButton.setTitle(selectedCategoryName, for: .normal)
     userSetCategoryManually = true
+    updateCategoryButtonTitle()
   }
   
   @IBAction func categoryTapped() {
-    switchTo(editingMode: .Category)
+    let mode: EditingMode = !inputFocused && !inputHasValidContent ? .amount : .category
+    switchTo(editingMode: mode)
   }
   
   // MARK: Date & time
@@ -182,13 +195,13 @@ class TransactionViewController: UIViewController {
   }
   
   @IBAction func dateTapped() {
-    switchTo(editingMode: .Date)
+    switchTo(editingMode: .date)
   }
   
   // MARK: Add transaction
   
   @IBAction func addTapped() {
-    let amount = Float(amountTextField.text ?? "0")!
+    let amount = Float(amountInput.text ?? "0")!
     let category = TransactionCategory(rawValue: categoryPicker.selectedSegmentIndex)!
     
     if let transaction = transaction { // editing mode
@@ -203,7 +216,7 @@ class TransactionViewController: UIViewController {
     }
     
     clearAmount()
-    amountTextField.becomeFirstResponder()
+    amountInput.becomeFirstResponder()
   }
 }
 
@@ -212,11 +225,11 @@ extension TransactionViewController: PulleyPrimaryContentControllerDelegate {
     switch drawerPosition {
     case .open:
       if keyboardWasOpenWhenDrawerOpened {
-        amountTextField.becomeFirstResponder()
+        amountInput.becomeFirstResponder()
       }
     case .collapsed:
-      keyboardWasOpenWhenDrawerOpened = amountTextField.isFirstResponder
-      amountTextField.resignFirstResponder()
+      keyboardWasOpenWhenDrawerOpened = amountInput.isFirstResponder
+      amountInput.resignFirstResponder()
     }
   }
 }

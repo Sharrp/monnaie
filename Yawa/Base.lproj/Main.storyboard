@@ -259,7 +259,7 @@
                                 <rect key="frame" x="0.0" y="102" width="375" height="246"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="¥0" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nh0-PE-g9D">
-                                        <rect key="frame" x="142.5" y="79" width="90" height="89"/>
+                                        <rect key="frame" x="32" y="79" width="312" height="89"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="89" id="ZCx-9q-rkR"/>
@@ -269,13 +269,15 @@
                                         <textInputTraits key="textInputTraits" keyboardType="decimalPad" keyboardAppearance="alert" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                         <connections>
                                             <action selector="amountTextChanged" destination="J2s-wE-pf2" eventType="editingChanged" id="MFO-iE-bf5"/>
+                                            <action selector="editingDidBegin" destination="J2s-wE-pf2" eventType="editingDidBegin" id="f8j-Tp-rcm"/>
                                         </connections>
                                     </textField>
                                 </subviews>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="nh0-PE-g9D" firstAttribute="centerY" secondItem="CMQ-FS-Azg" secondAttribute="centerY" id="2y3-eQ-trN"/>
-                                    <constraint firstItem="nh0-PE-g9D" firstAttribute="centerX" secondItem="CMQ-FS-Azg" secondAttribute="centerX" id="Q87-vH-oVF"/>
+                                    <constraint firstItem="nh0-PE-g9D" firstAttribute="leading" secondItem="CMQ-FS-Azg" secondAttribute="leading" constant="32" id="OHp-NK-gke"/>
+                                    <constraint firstAttribute="trailing" secondItem="nh0-PE-g9D" secondAttribute="trailing" constant="31" id="OMV-wO-wg9"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -309,7 +311,7 @@
                     <connections>
                         <outlet property="addButton" destination="n2G-7X-LBj" id="JNH-wZ-rUp"/>
                         <outlet property="addButtonBottomConstraint" destination="AF3-sY-wBX" id="5CQ-9V-aZu"/>
-                        <outlet property="amountTextField" destination="nh0-PE-g9D" id="KrA-P8-dRb"/>
+                        <outlet property="amountInput" destination="nh0-PE-g9D" id="KrA-P8-dRb"/>
                         <outlet property="categoryPicker" destination="CIU-RV-71C" id="1cm-D5-Vz9"/>
                         <outlet property="dateButton" destination="BLY-AK-Gmv" id="OyO-c0-7k1"/>
                         <outlet property="dateButtonBottomConstraint" destination="TCq-vG-52l" id="gIT-Z9-yTl"/>
