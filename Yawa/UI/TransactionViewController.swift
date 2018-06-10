@@ -27,8 +27,16 @@ class TransactionViewController: UIViewController {
   @IBOutlet weak var categoryPicker: UISegmentedControl!
   @IBOutlet weak var dateTimePicker: UIDatePicker!
   
+  private var userSetCategoryManually = false
+  
   weak var delegate: TransactionUpdateDelegate?
   var transaction: Transaction?
+  
+  enum EditingMode {
+    case Amount
+    case Date
+    case Category
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -53,32 +61,13 @@ class TransactionViewController: UIViewController {
       button!.setBackgroundColor(color: UIColor(white: 0.7, alpha: 1.0), forState: .highlighted)
     }
 
-    resetCategory()
+    clearCategory()
     amountTextField.becomeFirstResponder()
   }
   
   override func viewWillAppear(_ animated: Bool) {
     let transactionsListVC = self.pulleyViewController!.drawerContentViewController as! TransactionsListViewController
     delegate = transactionsListVC.dataProvider
-  }
-  
-  @IBAction func addTapped() {
-    let amount = Float(amountTextField.text ?? "0")!
-    let category = TransactionCategory(rawValue: categoryPicker.selectedSegmentIndex)!
-    
-    if let transaction = transaction { // editing mode
-      transaction.amount = amount
-      transaction.category = category
-      transaction.date = dateTimePicker.date
-      transaction.modifiedDate = Date()
-      delegate?.update(transaction: transaction)
-    } else { // adding new transaction
-      let transaction = Transaction(amount: amount, category: category, authorName: Settings.main.syncName, date: dateTimePicker.date)
-      delegate?.add(transaction: transaction)
-    }
-    
-    clearAmount()
-    amountTextField.becomeFirstResponder()
   }
   
   @objc func appDidBecomeActive() {
@@ -88,22 +77,12 @@ class TransactionViewController: UIViewController {
   private func resetStateAfterBackground() {
     guard amountTextField.text?.count == 0 else { return }
     dateTimePicker.date = Date()
-    resetCategory()
+    clearCategory()
+    userSetCategoryManually = false
     
     if pulleyViewController?.drawerPosition == .open {
       amountTextField.becomeFirstResponder()
     }
-  }
-  
-  private func clearAmount() {
-    amountTextField.text = ""
-    addButton.isEnabled = false
-  }
-  
-  private func resetCategory() {
-    let defaultCategory = categoryPicker.titleForSegment(at: 0)!
-    categoryPicker.selectedSegmentIndex = 0
-    inputFlowButton.setTitle(defaultCategory, for: .normal)
   }
   
   @objc func keyboardWillShow(_ notification: Notification) {
@@ -123,10 +102,43 @@ class TransactionViewController: UIViewController {
     }
   }
   
-  enum EditingMode {
-    case Amount
-    case Date
-    case Category
+  @IBAction func amountTextChanged() {
+    let value = (amountTextField.text as NSString?)?.floatValue
+    let hasValidValue = value != nil && value! > 0
+    addButton.isEnabled = hasValidValue
+    if !userSetCategoryManually {
+      if hasValidValue {
+        setDefaultCategory()
+      } else {
+        clearCategory()
+      }
+    }
+  }
+  
+  private func clearAmount() {
+    amountTextField.text = ""
+    addButton.isEnabled = false
+  }
+  
+  private func clearCategory() {
+    categoryPicker.selectedSegmentIndex = UISegmentedControlNoSegment
+    inputFlowButton.setTitle("Category", for: .normal)
+  }
+  
+  private func setDefaultCategory() {
+    let defaultCategory = categoryPicker.titleForSegment(at: 0)!
+    categoryPicker.selectedSegmentIndex = 0
+    inputFlowButton.setTitle(defaultCategory, for: .normal)
+  }
+  
+  @IBAction func categoryChanged(sender: UISegmentedControl) {
+    guard let selectedCategoryName = sender.titleForSegment(at: sender.selectedSegmentIndex) else { return }
+    inputFlowButton.setTitle(selectedCategoryName, for: .normal)
+    userSetCategoryManually = true
+  }
+  
+  @IBAction func categoryTapped() {
+    switchTo(editingMode: .Category)
   }
   
   private func switchTo(editingMode: EditingMode) {
@@ -155,18 +167,23 @@ class TransactionViewController: UIViewController {
     }
   }
   
-  @IBAction func categoryChanged(sender: UISegmentedControl) {
-    guard let selectedCategoryName = sender.titleForSegment(at: sender.selectedSegmentIndex) else { return }
-    inputFlowButton.setTitle(selectedCategoryName, for: .normal)
-  }
-  
-  @IBAction func categoryTapped() {
-    switchTo(editingMode: .Category)
-  }
-  
-  @IBAction func amountTextChanged() {
-    let value = (amountTextField.text as NSString?)?.floatValue
-    addButton.isEnabled = value != nil && value! > 0
+  @IBAction func addTapped() {
+    let amount = Float(amountTextField.text ?? "0")!
+    let category = TransactionCategory(rawValue: categoryPicker.selectedSegmentIndex)!
+    
+    if let transaction = transaction { // editing mode
+      transaction.amount = amount
+      transaction.category = category
+      transaction.date = dateTimePicker.date
+      transaction.modifiedDate = Date()
+      delegate?.update(transaction: transaction)
+    } else { // adding new transaction
+      let transaction = Transaction(amount: amount, category: category, authorName: Settings.main.syncName, date: dateTimePicker.date)
+      delegate?.add(transaction: transaction)
+    }
+    
+    clearAmount()
+    amountTextField.becomeFirstResponder()
   }
 }
 
