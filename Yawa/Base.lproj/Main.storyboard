@@ -210,7 +210,7 @@
                                     <action selector="dateChangedWithSender:" destination="J2s-wE-pf2" eventType="valueChanged" id="iJb-Yg-EjW"/>
                                 </connections>
                             </datePicker>
-                            <segmentedControl hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CIU-RV-71C">
+                            <segmentedControl hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="CIU-RV-71C">
                                 <rect key="frame" x="16" y="456" width="343" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="28" id="dBP-hD-vBR"/>
@@ -234,7 +234,7 @@
                                     <constraint firstAttribute="height" constant="56" id="mw9-Rl-yxA"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
-                                <state key="normal" title="CATEGORY">
+                                <state key="normal" title="Category">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
