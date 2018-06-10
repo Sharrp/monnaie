@@ -20,9 +20,10 @@ class TransactionViewController: UIViewController {
   @IBOutlet weak var inputFlowButton: UIButton!
   
   private let gapToKeyboard: CGFloat = 8
+  @IBOutlet weak var dateButtonBottomConstraint: NSLayoutConstraint!
   @IBOutlet weak var inputFlowBottomConstraint: NSLayoutConstraint!
   @IBOutlet weak var addButtonBottomConstraint: NSLayoutConstraint!
-  private var keyboardWasOpenWHenDrawerOpened = false
+  private var keyboardWasOpenWhenDrawerOpened = false
   
   @IBOutlet weak var categoryPicker: UISegmentedControl!
   @IBOutlet weak var dateTimePicker: UIDatePicker!
@@ -51,16 +52,16 @@ class TransactionViewController: UIViewController {
       addButton.isEnabled = true
     }
     
-    for button in [inputFlowButton, addButton, dateButton] {
+    for button in [dateButton, inputFlowButton, addButton] {
       button!.layer.cornerRadius = 28
-      if button == dateButton {
-        button?.layer.cornerRadius = 20
-      }
       button!.clipsToBounds = true
       button!.setBackgroundColor(color: UIColor(white: 0.4, alpha: 1.0), forState: .normal)
       button!.setBackgroundColor(color: UIColor(white: 0.7, alpha: 1.0), forState: .highlighted)
     }
+    dateButton.titleLabel?.numberOfLines = 2
+    dateButton.titleLabel?.textAlignment = .center
 
+    updateDateButton(forDate: Date())
     clearCategory()
     amountTextField.becomeFirstResponder()
   }
@@ -76,7 +77,7 @@ class TransactionViewController: UIViewController {
   
   private func resetStateAfterBackground() {
     guard amountTextField.text?.count == 0 else { return }
-    dateTimePicker.date = Date()
+    resetDate()
     clearCategory()
     userSetCategoryManually = false
     
@@ -92,14 +93,31 @@ class TransactionViewController: UIViewController {
       
       // Say hello to iPhone X
       var bottomInset: CGFloat = 0
-      if #available(iOS 11.0, *) {
-        if let safeAreBottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom {
-          bottomInset = safeAreBottomInset
-        }
+      if let safeAreBottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom {
+        bottomInset = safeAreBottomInset
       }
-      inputFlowBottomConstraint.constant = keyboardHeight + gapToKeyboard - bottomInset
-      addButtonBottomConstraint.constant = keyboardHeight + gapToKeyboard - bottomInset
+      let bottomConstraint = keyboardHeight + gapToKeyboard - bottomInset
+      dateButtonBottomConstraint.constant = bottomConstraint
+      inputFlowBottomConstraint.constant = bottomConstraint
+      addButtonBottomConstraint.constant = bottomConstraint
     }
+  }
+  
+  private func switchTo(editingMode: EditingMode) {
+    dateTimePicker.isHidden = editingMode != .Date
+    categoryPicker.isHidden = editingMode != .Category
+    if editingMode == .Amount {
+      amountTextField.becomeFirstResponder()
+    } else {
+      amountTextField.resignFirstResponder()
+    }
+  }
+  
+  // MARK: Amount
+  
+  private func clearAmount() {
+    amountTextField.text = ""
+    addButton.isEnabled = false
   }
   
   @IBAction func amountTextChanged() {
@@ -115,10 +133,7 @@ class TransactionViewController: UIViewController {
     }
   }
   
-  private func clearAmount() {
-    amountTextField.text = ""
-    addButton.isEnabled = false
-  }
+  // MARK: Category
   
   private func clearCategory() {
     categoryPicker.selectedSegmentIndex = UISegmentedControlNoSegment
@@ -141,31 +156,36 @@ class TransactionViewController: UIViewController {
     switchTo(editingMode: .Category)
   }
   
-  private func switchTo(editingMode: EditingMode) {
-    dateTimePicker.isHidden = editingMode != .Date
-    categoryPicker.isHidden = editingMode != .Category
-    if editingMode == .Amount {
-      amountTextField.becomeFirstResponder()
-    } else {
-      amountTextField.resignFirstResponder()
-    }
+  // MARK: Date & time
+  
+  private func updateDateButton(forDate date: Date) {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "MMM"
+    let month = dateFormatter.string(from: date).uppercased()
+    let dayOfMonth = Calendar.current.component(.day, from: date)
+    
+    let formattedTitle = NSMutableAttributedString(string: "\(dayOfMonth)\n\(month)")
+    let font = UIFont.systemFont(ofSize: 11, weight: .medium)
+    let range = NSRange(location: formattedTitle.length - 3, length: 3)
+    formattedTitle.addAttribute(.font, value: font, range: range)
+    dateButton.setAttributedTitle(formattedTitle, for: .normal)
+  }
+  
+  private func resetDate() {
+    let today = Date()
+    dateTimePicker.date = today
+    updateDateButton(forDate: today)
+  }
+  
+  @IBAction func dateChanged(sender: UIDatePicker) {
+    updateDateButton(forDate: sender.date)
   }
   
   @IBAction func dateTapped() {
     switchTo(editingMode: .Date)
   }
   
-  @IBAction func dateChanged(sender: UIDatePicker) {
-    if Calendar.current.isDate(sender.date, inSameDayAs: Date()) {
-      dateButton.setTitle("Today", for: .normal)
-    } else {
-      let dateFormatter = DateFormatter()
-      dateFormatter.dateStyle = .short
-      dateFormatter.timeStyle = .none
-      let title = dateFormatter.string(from: sender.date)
-      dateButton.setTitle(title, for: .normal)
-    }
-  }
+  // MARK: Add transaction
   
   @IBAction func addTapped() {
     let amount = Float(amountTextField.text ?? "0")!
@@ -191,17 +211,13 @@ extension TransactionViewController: PulleyPrimaryContentControllerDelegate {
   func didSwitchTo(drawerPosition: PulleyPosition) {
     switch drawerPosition {
     case .open:
-      if keyboardWasOpenWHenDrawerOpened {
+      if keyboardWasOpenWhenDrawerOpened {
         amountTextField.becomeFirstResponder()
       }
     case .collapsed:
-      keyboardWasOpenWHenDrawerOpened = amountTextField.isFirstResponder
+      keyboardWasOpenWhenDrawerOpened = amountTextField.isFirstResponder
       amountTextField.resignFirstResponder()
     }
-  }
-  
-  func drawerChangedDistanceFromBottom(drawer: PulleyViewController, distance: CGFloat, bottomSafeArea: CGFloat) {
-    print("TO BOTTOM: \(distance)")
   }
 }
 
