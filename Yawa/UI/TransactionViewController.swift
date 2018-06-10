@@ -150,9 +150,13 @@ class TransactionViewController: UIViewController {
     if !inputFocused && !inputHasValidContent {
       title = "Back to amount"
     } else if userSetCategoryManually {
-      title = categoryPicker.titleForSegment(at: categoryPicker.selectedSegmentIndex)!
+      let category = TransactionCategory(rawValue: categoryPicker.selectedSegmentIndex)!
+      let name = categoryPicker.titleForSegment(at: categoryPicker.selectedSegmentIndex)!
+      title = "\(category.emoji) \(name)"
     } else if inputHasValidContent { // set default category
-      title = categoryPicker.titleForSegment(at: 0)!
+      let category = TransactionCategory(rawValue: 0)!
+      let name = categoryPicker.titleForSegment(at: 0)!
+      title = "\(category.emoji) \(name)"
     } else {
       title = "Category"
     }
