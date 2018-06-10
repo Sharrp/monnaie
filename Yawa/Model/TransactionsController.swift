@@ -90,7 +90,12 @@ class TransactionsController {
   func removeTransaction(inDay day: Int, withIndex transactionIndex: Int) {
     let index = daysIndex[day].first + transactionIndex
     transactions.remove(at: index)
-    rebuiltIndexAndNotify(aboutDays: [day])
+    
+    if daysIndex[day].length == 1 { // we deleted the last transaction for this day
+      rebuiltIndexAndNotify()
+    } else {
+      rebuiltIndexAndNotify(aboutDays: [day])
+    }
   }
   
   func updateNameInTransactionsFromThisDevice(toNewName name: String) {

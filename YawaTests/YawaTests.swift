@@ -10,6 +10,7 @@ import XCTest
 
 class YawaTransactionsControllerTests: XCTestCase {
   var dataProvider: TransactionsController!
+  var transactions: [Transaction]!
   
   let calendar = Calendar(identifier: .gregorian)
   var currentMonth: Int!
@@ -37,10 +38,12 @@ class YawaTransactionsControllerTests: XCTestCase {
       
       [[currentYear, currentMonth, 3], TransactionCategory.cafe, "Jimmy", 1026],
       [[currentYear, currentMonth, 3], TransactionCategory.grocery, "Jimmy", 800],
-      [[currentYear, currentMonth, 3], TransactionCategory.cafe, "Leya", 2400]
+      [[currentYear, currentMonth, 3], TransactionCategory.cafe, "Leya", 2400],
+      
+      [[currentYear, currentMonth, 4], TransactionCategory.bills, "Leya", 1170]
     ]
     
-    let transactions: [Transaction] = data.map {
+    transactions = data.map {
       var dateComponents = DateComponents()
       let dateValues = $0[0] as! [Int]
       dateComponents.year = dateValues[0]
@@ -62,17 +65,18 @@ class YawaTransactionsControllerTests: XCTestCase {
   }
   
   func testDaysCount() {
-    XCTAssert(dataProvider.numberOfDays == 3, "Wrong numberOfDays in TransactionsController")
+    XCTAssert(dataProvider.numberOfDays == 4, "Wrong numberOfDays in TransactionsController")
   }
   
   func testTransactionsCount() {
     XCTAssert(dataProvider.numberOfTransactions(forDay: 0) == 2, "Wrong number of transactions for day 0")
     XCTAssert(dataProvider.numberOfTransactions(forDay: 1) == 4, "Wrong number of transactions for day 1")
     XCTAssert(dataProvider.numberOfTransactions(forDay: 2) == 3, "Wrong number of transactions for day 2")
+    XCTAssert(dataProvider.numberOfTransactions(forDay: 3) == 1, "Wrong number of transactions for day 3")
   }
   
   func testDailyAmount() {
-    let totalAmounts: [Float] = [3056, 3558, 4226]
+    let totalAmounts: [Float] = [3056, 3558, 4226, 1170]
     for (i, amount) in totalAmounts.enumerated() {
       let given = dataProvider.totalAmount(forDay: i)
       XCTAssert(given == amount, "testDailyAmount: \(i), \(amount) expected, \(given) given")
@@ -80,14 +84,15 @@ class YawaTransactionsControllerTests: XCTestCase {
   }
   
   func testCurrentMonthAmount() {
-    XCTAssert(dataProvider.totalAmountForCurrentMonth() == 7784, "Wrong current month total amount")
+    XCTAssert(dataProvider.totalAmountForCurrentMonth() == 8954, "Wrong current month total amount")
   }
   
   func testDaysDeterminedCorrectly() {
     let dates: [Date] = [
       [previousMonthYear, previousMonth, 28],
       [currentYear, currentMonth, 1],
-      [currentYear, currentMonth, 3]
+      [currentYear, currentMonth, 3],
+      [currentYear, currentMonth, 4]
     ].map {
       var components = DateComponents()
       components.year = $0[0]
@@ -100,5 +105,14 @@ class YawaTransactionsControllerTests: XCTestCase {
       let providerDate = dataProvider.date(forDay: i)
       XCTAssert(Calendar.current.compare(date, to: providerDate, toGranularity: .day) == .orderedSame, "Wrong day with index \(i)")
     }
+  }
+  
+  
+  func testConsistencyAfterRemovalTheOnlyTransactionInADay() {
+    let previousDaysAmount = dataProvider.numberOfDays
+    dataProvider.removeTransaction(inDay: 3, withIndex: 0)
+    let given = dataProvider.numberOfDays
+    let expected = previousDaysAmount - 1
+    XCTAssert(given == expected, "testConsistencyAfterRemovalTheOnlyTransactionInADay: \(expected) expected, \(given) given")
   }
 }
