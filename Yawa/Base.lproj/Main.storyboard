@@ -247,7 +247,7 @@
                                     <constraint firstAttribute="height" constant="56" id="bcO-f6-ENJ"/>
                                     <constraint firstAttribute="width" constant="56" id="p3R-No-55w"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Date">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
