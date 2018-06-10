@@ -10,22 +10,34 @@ import XCTest
 
 class YawaTransactionsControllerTests: XCTestCase {
   var dataProvider: TransactionsController!
-
+  
+  let calendar = Calendar(identifier: .gregorian)
+  var currentMonth: Int!
+  var currentYear: Int!
+  var previousMonth: Int!
+  var previousMonthYear: Int!
+  
   override func setUp() {
     super.setUp()
     
+    currentMonth = calendar.component(.month, from: Date())
+    currentYear =  calendar.component(.year, from: Date())
+    let previousMonthDate = calendar.date(byAdding: .month, value: -1, to: Date())!
+    previousMonth = calendar.component(.month, from: previousMonthDate)
+    previousMonthYear = calendar.component(.year, from: previousMonthDate)
+    
     let data = [
-      [[2018, 5, 3], TransactionCategory.cafe, "Jimmy", 1026],
-      [[2018, 5, 3], TransactionCategory.grocery, "Jimmy", 800],
-      [[2018, 5, 3], TransactionCategory.cafe, "Leya", 2400],
+      [[previousMonthYear, previousMonth, 28], TransactionCategory.grocery, "Leya", 1156],
+      [[previousMonthYear, previousMonth, 28], TransactionCategory.grocery, "Leya", 1900],
       
-      [[2018, 5, 1], TransactionCategory.grocery, "Jimmy", 430],
-      [[2018, 5, 1], TransactionCategory.bills, "Jimmy", 88],
-      [[2018, 5, 1], TransactionCategory.grocery, "Leya", 2040],
-      [[2018, 5, 1], TransactionCategory.grocery, "Jimmy", 1000],
+      [[currentYear, currentMonth, 1], TransactionCategory.grocery, "Jimmy", 430],
+      [[currentYear, currentMonth, 1], TransactionCategory.bills, "Jimmy", 88],
+      [[currentYear, currentMonth, 1], TransactionCategory.grocery, "Leya", 2040],
+      [[currentYear, currentMonth, 1], TransactionCategory.grocery, "Jimmy", 1000],
       
-      [[2018, 4, 30], TransactionCategory.grocery, "Leya", 1156],
-      [[2018, 4, 30], TransactionCategory.grocery, "Leya", 1900]
+      [[currentYear, currentMonth, 3], TransactionCategory.cafe, "Jimmy", 1026],
+      [[currentYear, currentMonth, 3], TransactionCategory.grocery, "Jimmy", 800],
+      [[currentYear, currentMonth, 3], TransactionCategory.cafe, "Leya", 2400]
     ]
     
     let transactions: [Transaction] = data.map {
@@ -34,13 +46,13 @@ class YawaTransactionsControllerTests: XCTestCase {
       dateComponents.year = dateValues[0]
       dateComponents.month = dateValues[1]
       dateComponents.day = dateValues[2]
-      let date = Calendar(identifier: .gregorian).date(from: dateComponents)!
+      let date = calendar.date(from: dateComponents)!
       
       let amount = Float($0[3] as! Int)
       let category = $0[1] as! TransactionCategory
       let name = $0[2] as! String
       
-      return Transaction(amount: amount, category: category, author: name, date: date, comment: nil)
+      return Transaction(amount: amount, category: category, authorName: name, date: date)
     }
     dataProvider = TransactionsController(withTransactions: transactions)
   }
@@ -54,15 +66,16 @@ class YawaTransactionsControllerTests: XCTestCase {
   }
   
   func testTransactionsCount() {
-    XCTAssert(dataProvider.numberOfTransactions(forDay: 0) == 3, "Wrong number of transactions for day 0")
+    XCTAssert(dataProvider.numberOfTransactions(forDay: 0) == 2, "Wrong number of transactions for day 0")
     XCTAssert(dataProvider.numberOfTransactions(forDay: 1) == 4, "Wrong number of transactions for day 1")
-    XCTAssert(dataProvider.numberOfTransactions(forDay: 2) == 2, "Wrong number of transactions for day 2")
+    XCTAssert(dataProvider.numberOfTransactions(forDay: 2) == 3, "Wrong number of transactions for day 2")
   }
   
   func testDailyAmount() {
-    let totalAmounts: [Float] = [4226, 3558, 3056]
+    let totalAmounts: [Float] = [3056, 3558, 4226]
     for (i, amount) in totalAmounts.enumerated() {
-      XCTAssert(dataProvider.totalAmount(forDay: i) == amount, "Wrong amount for day \(i)")
+      let given = dataProvider.totalAmount(forDay: i)
+      XCTAssert(given == amount, "testDailyAmount: \(i), \(amount) expected, \(given) given")
     }
   }
   
@@ -72,9 +85,9 @@ class YawaTransactionsControllerTests: XCTestCase {
   
   func testDaysDeterminedCorrectly() {
     let dates: [Date] = [
-      [2018, 5, 3],
-      [2018, 5, 1],
-      [2018, 4, 30]
+      [previousMonthYear, previousMonth, 28],
+      [currentYear, currentMonth, 1],
+      [currentYear, currentMonth, 3]
     ].map {
       var components = DateComponents()
       components.year = $0[0]
