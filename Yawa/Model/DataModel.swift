@@ -17,6 +17,21 @@ enum TransactionCategory: Int, CustomStringConvertible {
   case other
   
   var description: String {
+    return name
+  }
+  
+  var emoji: String {
+    switch self {
+    case .grocery: return "🍙"
+    case .cafe: return "🍜"
+    case .transport: return "🚌"
+    case .entertainment: return "🤘"
+    case .bills: return "💴"
+    case .other: return "📌"
+    }
+  }
+  
+  var name: String {
     switch self {
     case .grocery:
       return "Grocery"
