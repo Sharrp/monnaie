@@ -240,19 +240,6 @@
                                     <action selector="categoryTapped" destination="J2s-wE-pf2" eventType="touchUpInside" id="kVq-a3-6mB"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="¥0" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nh0-PE-g9D">
-                                <rect key="frame" x="16" y="178" width="343" height="89"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="89" id="ZCx-9q-rkR"/>
-                                </constraints>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="72"/>
-                                <textInputTraits key="textInputTraits" keyboardType="decimalPad" keyboardAppearance="alert" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
-                                <connections>
-                                    <action selector="amountTextChanged" destination="J2s-wE-pf2" eventType="editingChanged" id="MFO-iE-bf5"/>
-                                </connections>
-                            </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BLY-AK-Gmv">
                                 <rect key="frame" x="16" y="356" width="56" height="56"/>
                                 <constraints>
@@ -268,6 +255,29 @@
                                     <action selector="dateTapped" destination="J2s-wE-pf2" eventType="touchUpInside" id="R59-9O-dFa"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CMQ-FS-Azg" userLabel="AmountArea">
+                                <rect key="frame" x="0.0" y="102" width="375" height="246"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="¥0" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nh0-PE-g9D">
+                                        <rect key="frame" x="142.5" y="79" width="90" height="89"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="89" id="ZCx-9q-rkR"/>
+                                        </constraints>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" weight="light" pointSize="72"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="decimalPad" keyboardAppearance="alert" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                        <connections>
+                                            <action selector="amountTextChanged" destination="J2s-wE-pf2" eventType="editingChanged" id="MFO-iE-bf5"/>
+                                        </connections>
+                                    </textField>
+                                </subviews>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="nh0-PE-g9D" firstAttribute="centerY" secondItem="CMQ-FS-Azg" secondAttribute="centerY" id="2y3-eQ-trN"/>
+                                    <constraint firstItem="nh0-PE-g9D" firstAttribute="centerX" secondItem="CMQ-FS-Azg" secondAttribute="centerX" id="Q87-vH-oVF"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -277,16 +287,17 @@
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="ggY-Qh-ib6" secondAttribute="bottom" constant="255" id="AJV-bj-Rxi"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="CIU-RV-71C" secondAttribute="trailing" constant="16" id="CPC-5N-1YM"/>
                             <constraint firstItem="TgH-T5-qXh" firstAttribute="width" secondItem="4Qm-UU-hIj" secondAttribute="width" id="FFJ-5f-RkY"/>
+                            <constraint firstItem="CMQ-FS-Azg" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="JPi-ta-J78"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="BLY-AK-Gmv" secondAttribute="bottom" constant="255" id="TCq-vG-52l"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="TgH-T5-qXh" secondAttribute="bottom" constant="20" id="VHo-8j-LIR"/>
-                            <constraint firstItem="nh0-PE-g9D" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="Vay-jP-du9"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="n2G-7X-LBj" secondAttribute="trailing" constant="16" id="Xaq-GL-4J2"/>
+                            <constraint firstItem="CMQ-FS-Azg" firstAttribute="top" secondItem="4Qm-UU-hIj" secondAttribute="top" constant="82" id="cxO-BR-gmm"/>
+                            <constraint firstItem="ggY-Qh-ib6" firstAttribute="top" secondItem="CMQ-FS-Azg" secondAttribute="bottom" constant="8" id="eSQ-Ey-Pbp"/>
                             <constraint firstItem="n2G-7X-LBj" firstAttribute="leading" secondItem="ggY-Qh-ib6" secondAttribute="trailing" constant="8" id="fjh-vY-Lo8"/>
                             <constraint firstItem="TgH-T5-qXh" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="trailing" constant="-375" id="h86-VY-C8l"/>
-                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="nh0-PE-g9D" secondAttribute="trailing" constant="16" id="iWf-dh-v0Z"/>
                             <constraint firstItem="CIU-RV-71C" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="jms-3e-9gj"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="CMQ-FS-Azg" secondAttribute="trailing" id="lqb-U0-RSz"/>
                             <constraint firstItem="ggY-Qh-ib6" firstAttribute="leading" secondItem="BLY-AK-Gmv" secondAttribute="trailing" constant="8" id="udu-za-ouI"/>
-                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="nh0-PE-g9D" secondAttribute="bottom" constant="400" id="xO8-uW-csT"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="4Qm-UU-hIj"/>
                     </view>
