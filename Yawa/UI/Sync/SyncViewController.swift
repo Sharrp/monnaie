@@ -13,6 +13,10 @@ protocol SyncUpdateDelegate: AnyObject {
   func reset(transactionsTo transactions: [Transaction])
 }
 
+extension Notification.Name {
+  static let syncDidDismiss = Notification.Name("syncDidDismiss")
+}
+
 class SyncViewController: UIViewController {
   private let syncManager = SyncManager()
   private let syncHistoryManager = SyncHistoryManager()
@@ -33,9 +37,14 @@ class SyncViewController: UIViewController {
     syncManager.prepareSync()
   }
   
+  private func dismissWithNotification() {
+    self.dismiss(animated: true, completion: nil)
+    NotificationCenter.default.post(name: .syncDidDismiss, object: nil)
+  }
+  
   @IBAction func cancel() {
     syncManager.stopSync()
-    self.dismiss(animated: true, completion: nil)
+    dismissWithNotification()
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -94,7 +103,7 @@ extension SyncViewController: SyncDelegate {
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
       guard let strongSelf = self else { return }
-      strongSelf.dismiss(animated: true, completion: nil)
+      strongSelf.dismissWithNotification()
     }
   }
   
