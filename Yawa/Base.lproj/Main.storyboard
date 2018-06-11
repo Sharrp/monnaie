@@ -95,6 +95,7 @@
                                 <rect key="frame" x="319" y="604" width="40" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="40" id="MdR-WR-MYh"/>
+                                    <constraint firstAttribute="height" constant="30" id="Qxi-nr-xST"/>
                                 </constraints>
                                 <state key="normal" title="Sync"/>
                                 <connections>
@@ -105,6 +106,7 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Mhx-fL-oBB" secondAttribute="bottom" constant="49" id="0rs-bv-KiW"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="CX1-XE-AdQ" secondAttribute="trailing" constant="64" id="1XJ-Wn-LOi"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="fGI-zP-s8Q" secondAttribute="top" constant="20" id="2te-ET-TlH"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="y8w-iz-SoX" secondAttribute="bottom" constant="20" id="4uE-Ch-2Xs"/>
                             <constraint firstItem="y8w-iz-SoX" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="7LC-Ek-8nn"/>
@@ -112,14 +114,13 @@
                             <constraint firstItem="UyP-Ai-Snf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="ISf-QQ-YpA"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="UyP-Ai-Snf" secondAttribute="bottom" constant="49" id="KlU-Si-ar8"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="fGI-zP-s8Q" secondAttribute="trailing" id="TW2-lm-LHe"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Mhx-fL-oBB" secondAttribute="trailing" constant="64" id="ZLx-xd-RCd"/>
                             <constraint firstItem="fGI-zP-s8Q" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="daT-I6-qKh"/>
                             <constraint firstItem="Mhx-fL-oBB" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="134" id="guq-MN-BXX"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="CX1-XE-AdQ" secondAttribute="bottom" constant="20" id="ho9-Ix-PVj"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="WcN-ek-jOK" secondAttribute="trailing" constant="16" id="jUA-m9-vbE"/>
-                            <constraint firstItem="WcN-ek-jOK" firstAttribute="leading" secondItem="Mhx-fL-oBB" secondAttribute="trailing" constant="8" id="kp1-Mi-dTY"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="fGI-zP-s8Q" secondAttribute="bottom" constant="102" id="r2h-ig-yi1"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="WcN-ek-jOK" secondAttribute="bottom" constant="33" id="vkZ-f3-IiG"/>
-                            <constraint firstItem="WcN-ek-jOK" firstAttribute="leading" secondItem="CX1-XE-AdQ" secondAttribute="trailing" constant="8" id="zAn-fV-7q5"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -146,7 +147,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1BZ-ro-xsN">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <connections>
                                     <segue destination="J2s-wE-pf2" kind="embed" id="0Le-LE-2L3"/>
