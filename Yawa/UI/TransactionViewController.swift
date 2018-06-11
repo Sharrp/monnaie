@@ -47,11 +47,25 @@ class TransactionViewController: UIViewController {
     case category
   }
   
+  private var editingMode = EditingMode.amount {
+    didSet {
+      dateTimePicker.isHidden = editingMode != .date
+      categoryPicker.isHidden = editingMode != .category
+      if editingMode == .amount {
+        amountInput.becomeFirstResponder()
+      } else {
+        amountInput.resignFirstResponder()
+      }
+      updateCategoryButtonTitle()
+    }
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
     NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(syncDidDismiss), name: .syncDidDismiss, object: nil)
     
     if let transaction = transaction {
       amountInput.text = formatMoney(amount: transaction.amount, currency: .JPY, symbolEnabled: false)
@@ -111,15 +125,10 @@ class TransactionViewController: UIViewController {
     }
   }
   
-  private func switchTo(editingMode: EditingMode) {
-    dateTimePicker.isHidden = editingMode != .date
-    categoryPicker.isHidden = editingMode != .category
+  @objc func syncDidDismiss() {
     if editingMode == .amount {
       amountInput.becomeFirstResponder()
-    } else {
-      amountInput.resignFirstResponder()
     }
-    updateCategoryButtonTitle()
   }
   
   // MARK: Amount
@@ -170,7 +179,7 @@ class TransactionViewController: UIViewController {
   
   @IBAction func categoryTapped() {
     let mode: EditingMode = !inputFocused && !inputHasValidContent ? .amount : .category
-    switchTo(editingMode: mode)
+    editingMode = mode
   }
   
   // MARK: Date & time
@@ -199,7 +208,7 @@ class TransactionViewController: UIViewController {
   }
   
   @IBAction func dateTapped() {
-    switchTo(editingMode: .date)
+    editingMode = .date
   }
   
   // MARK: Add transaction
