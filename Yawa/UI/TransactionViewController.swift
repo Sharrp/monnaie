@@ -165,6 +165,7 @@ class TransactionViewController: UIViewController {
     } else if inputHasValidContent { // set default category
       let category = TransactionCategory(rawValue: 0)!
       let name = categoryPicker.titleForSegment(at: 0)!
+      categoryPicker.selectedSegmentIndex = 0
       title = "\(category.emoji) \(name)"
     } else {
       title = "Category"
