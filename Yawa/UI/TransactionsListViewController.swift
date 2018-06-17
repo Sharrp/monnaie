@@ -50,7 +50,7 @@ class TransactionsListViewController: UIViewController {
   }
   
   private func scrollToBottom() {
-    let days = dataProvider.numberOfDays
+    let days = dataProvider.totalNumberOfDays()
     guard days > 0 else { return }
     let numberOfRows = dataProvider.numberOfTransactions(forDay: days-1)
     tableView.scrollToRow(at: IndexPath(row: numberOfRows-1, section: days-1), at: .top, animated: false)
@@ -59,7 +59,7 @@ class TransactionsListViewController: UIViewController {
 
 extension TransactionsListViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
-    return dataProvider.numberOfDays
+    return dataProvider.totalNumberOfDays()
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

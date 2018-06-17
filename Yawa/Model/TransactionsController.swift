@@ -8,13 +8,19 @@
 
 import Foundation
 
-private struct DaySection {
+// Represenets range of transactions for a day or a month
+private struct CalendarSection {
   let first: Int
   let length: Int
   
   var firstOfNext: Int {
     return first + length
   }
+}
+
+private struct TransactionsIndex {
+  var days = [CalendarSection]()
+  var months = [CalendarSection]()
 }
 
 protocol TransactionsPresentor: AnyObject {
@@ -26,45 +32,57 @@ protocol TransactionsPresentor: AnyObject {
 class TransactionsController {
   private let storeManager = StoreManager()
   private var transactions: [Transaction]
-  private var daysIndex = [DaySection]() // each item is the first transaction in its day
+  private var index: TransactionsIndex!
   weak var presentor: TransactionsPresentor?
   
   init() {
     transactions = storeManager.loadTransactions().sorted { $0.date < $1.date }
-    daysIndex = buildTableIndex(transactions)
+    index = buildTableIndex(transactions)
   }
   
   // For unit-tests
   init(withTransactions transactions: [Transaction]) {
     self.transactions = transactions.sorted { $0.date < $1.date }
-    daysIndex = buildTableIndex(transactions)
+    index = buildTableIndex(transactions)
   }
   
-  var numberOfDays: Int {
-    return daysIndex.count
+  func numberOfMonths() -> Int {
+    return index.months.count
   }
   
-  func date(forDay day: Int) -> Date {
-    let transactionIndex = daysIndex[day].first
-    return transactions[transactionIndex].date
+  func numberOfDays(inMonth month: Int) -> Int {
+    let first = index.months[month].first
+    let firstOfNext = index.months[month].firstOfNext
+    return index.days.filter { $0.first >= first && $0.first < firstOfNext }.count
+  }
+  
+  func totalNumberOfDays() -> Int {
+    return index.days.count
   }
   
   func numberOfTransactions(forDay day: Int) -> Int {
-    return daysIndex[day].length
+    return index.days[day].length
   }
   
-  func totalNumberOfTransactions() -> Int {
-    return transactions.count
+  func date(forDay day: Int) -> Date {
+    let transactionIndex = index.days[day].first
+    return transactions[transactionIndex].date
+  }
+  
+  func totalAmount(forMonth month: Int) -> Float {
+    let monthSection = index.months[month]
+    let range = monthSection.first..<monthSection.firstOfNext
+    return transactions[range].reduce(0) { $0 + $1.amount }
   }
   
   func totalAmount(forDay day: Int) -> Float {
-    let daySection = daysIndex[day]
+    let daySection = index.days[day]
     let indexRange = daySection.first..<daySection.firstOfNext
     return transactions[indexRange].reduce(0.0) { $0 + $1.amount }
   }
   
   func totalAmountForToday() -> Float {
-    for (i, daySection) in daysIndex.enumerated() {
+    for (i, daySection) in index.days.enumerated() {
       let date = transactions[daySection.first].date
       if Calendar.current.isDate(date, inSameDayAs: Date()) {
         return totalAmount(forDay: i)
@@ -83,15 +101,15 @@ class TransactionsController {
   }
   
   func transaction(forDay day: Int, withIndex transactionIndex: Int) -> Transaction {
-    let index = daysIndex[day].first + transactionIndex
-    return transactions[index]
+    let i = index.days[day].first + transactionIndex
+    return transactions[i]
   }
   
   func removeTransaction(inDay day: Int, withIndex transactionIndex: Int) {
-    let index = daysIndex[day].first + transactionIndex
-    transactions.remove(at: index)
+    let indexToRemove = index.days[day].first + transactionIndex
+    transactions.remove(at: indexToRemove)
     
-    if daysIndex[day].length == 1 { // we deleted the last transaction for this day
+    if index.days[day].length == 1 { // we deleted the last transaction for this day
       rebuiltIndexAndNotify()
     } else {
       rebuiltIndexAndNotify(aboutDays: [day])
@@ -109,7 +127,7 @@ class TransactionsController {
   }
   
   private func rebuiltIndexAndNotify(aboutDays days: [Int]? = nil) {
-    daysIndex = buildTableIndex(transactions)
+    index = buildTableIndex(transactions)
     if let days = days {
       presentor?.didUpdate(days: days)
     } else {
@@ -118,24 +136,37 @@ class TransactionsController {
     storeManager.save(transactions: transactions)
   }
   
-  private func buildTableIndex(_ transactions: [Transaction]) -> [DaySection] {
-    var index = [DaySection]()
-    var lastDay = Date.distantFuture
-    var sectionFirstIndex = -1
+  private func buildTableIndex(_ transactions: [Transaction]) -> TransactionsIndex {
+    var index = TransactionsIndex()
+    guard transactions.count > 0 else { return index }
+    
+    var lastDayDate = transactions[0].date
+    var daySectionFirst = 0
+    var lastMonthDate = transactions[0].date
+    var monthSectionFirst = 0
+    
     for (i, t) in transactions.enumerated() {
-      if !Calendar.current.isDate(lastDay, inSameDayAs: t.date) {
-        if sectionFirstIndex != -1 {
-          let newSection = DaySection(first: sectionFirstIndex, length: i-sectionFirstIndex)
-          index.append(newSection)
+      if i == 0 { continue }
+      
+      if !Calendar.current.isDate(lastDayDate, inSameDayAs: t.date) {
+        let daySection = CalendarSection(first: daySectionFirst, length: i - daySectionFirst)
+        index.days.append(daySection)
+        daySectionFirst = i
+        lastDayDate = t.date
+        
+        if !Calendar.current.isDate(lastMonthDate, equalTo: t.date, toGranularity: .month) {
+          let monthSection = CalendarSection(first: monthSectionFirst, length: i - monthSectionFirst)
+          index.months.append(monthSection)
+          monthSectionFirst = i
+          lastMonthDate = t.date
         }
-        sectionFirstIndex = i
-        lastDay = t.date
       }
     }
-    if transactions.count > 0 {
-      let newSection = DaySection(first: sectionFirstIndex, length: transactions.count-sectionFirstIndex)
-      index.append(newSection)
-    }
+    
+    let daySection = CalendarSection(first: daySectionFirst, length: transactions.count - daySectionFirst)
+    index.days.append(daySection)
+    let monthSection = CalendarSection(first: monthSectionFirst, length: transactions.count - monthSectionFirst)
+    index.months.append(monthSection)
     return index
   }
   
@@ -160,7 +191,7 @@ extension TransactionsController: TransactionUpdateDelegate {
     guard let transactionIndex = transactions.index(where: { $0.hashValue == transaction.hashValue }) else { return }
     transactions[transactionIndex] = transaction
     
-    for (i, daySection) in daysIndex.enumerated() {
+    for (i, daySection) in index.days.enumerated() {
       if transactionIndex < daySection.firstOfNext {
         rebuiltIndexAndNotify(aboutDays: [i])
         break
