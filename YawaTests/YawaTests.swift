@@ -64,8 +64,22 @@ class YawaTransactionsControllerTests: XCTestCase {
     super.tearDown()
   }
   
-  func testDaysCount() {
-    XCTAssert(dataProvider.numberOfDays == 4, "Wrong numberOfDays in TransactionsController")
+  func testNumberOfMonths() {
+    XCTAssert(dataProvider.numberOfMonths() == 2)
+  }
+  
+  func testDaysInMonthCount() {
+    var expected = 1
+    var given = dataProvider.numberOfDays(inMonth: 0)
+    XCTAssert(given == expected)
+    
+    expected = 3
+    given = dataProvider.numberOfDays(inMonth: 1)
+    XCTAssert(given == expected)
+  }
+  
+  func testTotalDaysCount() {
+    XCTAssert(dataProvider.totalNumberOfDays() == 4, "Wrong numberOfDays in TransactionsController")
   }
   
   func testTransactionsCount() {
@@ -73,6 +87,11 @@ class YawaTransactionsControllerTests: XCTestCase {
     XCTAssert(dataProvider.numberOfTransactions(forDay: 1) == 4, "Wrong number of transactions for day 1")
     XCTAssert(dataProvider.numberOfTransactions(forDay: 2) == 3, "Wrong number of transactions for day 2")
     XCTAssert(dataProvider.numberOfTransactions(forDay: 3) == 1, "Wrong number of transactions for day 3")
+  }
+  
+  func testTotalMonthAmount() {
+    XCTAssert(dataProvider.totalAmount(forMonth: 0) == 3056)
+    XCTAssert(dataProvider.totalAmount(forMonth: 1) == 8954)
   }
   
   func testDailyAmount() {
@@ -107,11 +126,10 @@ class YawaTransactionsControllerTests: XCTestCase {
     }
   }
   
-  
   func testConsistencyAfterRemovalTheOnlyTransactionInADay() {
-    let previousDaysAmount = dataProvider.numberOfDays
+    let previousDaysAmount = dataProvider.totalNumberOfDays()
     dataProvider.removeTransaction(inDay: 3, withIndex: 0)
-    let given = dataProvider.numberOfDays
+    let given = dataProvider.totalNumberOfDays()
     let expected = previousDaysAmount - 1
     XCTAssert(given == expected, "testConsistencyAfterRemovalTheOnlyTransactionInADay: \(expected) expected, \(given) given")
   }
