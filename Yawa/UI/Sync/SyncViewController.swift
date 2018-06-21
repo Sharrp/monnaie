@@ -33,7 +33,8 @@ class SyncViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     display(name: Settings.main.syncName)
-    syncManager.delegate = self
+    syncManager.presentor = self
+    syncManager.dataDelegate = self
     syncManager.prepareSync()
   }
   
@@ -54,7 +55,7 @@ class SyncViewController: UIViewController {
   }
 }
 
-extension SyncViewController: SyncDelegate {
+extension SyncViewController: SyncPresentorDelegate {
   private func updateStatus(to newStatus: String) {
     DispatchQueue.main.async { [unowned self] in
       self.syncStatusLabel.text = newStatus
@@ -72,7 +73,9 @@ extension SyncViewController: SyncDelegate {
     syncManager.send(data: data, toPeer: peerID)
     updateStatus(to: "Syncing with \(peerID.displayName)")
   }
-  
+}
+
+extension SyncViewController: SyncDataDelegate {
   func receive(data: Data, fromPeer peerID: MCPeerID) {
     guard let syncData = NSKeyedUnarchiver.unarchiveObject(with: data) as? SyncData else {
       print("Failed to unarchive transactions from peer")
