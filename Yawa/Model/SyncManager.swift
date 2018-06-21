@@ -22,10 +22,13 @@ struct SyncBuddy: Equatable {
   }
 }
 
-protocol SyncDelegate: AnyObject {
+protocol SyncPresentorDelegate: AnyObject {
   func updated(availableBuddies: [SyncBuddy])
   
   func readyToSync(withPeer: MCPeerID)
+}
+
+protocol SyncDataDelegate: AnyObject {
   func receive(data: Data, fromPeer: MCPeerID)
 }
 
@@ -40,7 +43,8 @@ class SyncManager: NSObject {
   private var browser: MCNearbyServiceBrowser!
   private var availableToSyncBuddies = [SyncBuddy]()
   
-  weak var delegate: SyncDelegate?
+  weak var presentor: SyncPresentorDelegate?
+  weak var dataDelegate: SyncDataDelegate?
 
   override init() {
     super.init()
@@ -104,14 +108,14 @@ extension SyncManager: MCNearbyServiceBrowserDelegate {
     let emoji = info?[emojiKey] ?? "🤑"
     let buddy = SyncBuddy(peerID: peerID, emoji: emoji)
     availableToSyncBuddies.append(buddy)
-    delegate?.updated(availableBuddies: availableToSyncBuddies)
+    presentor?.updated(availableBuddies: availableToSyncBuddies)
   }
   
   func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
     print("Lost peer: \(peerID)")
     if let index = availableToSyncBuddies.index(where: { $0.peerID == peerID  }) {
       availableToSyncBuddies.remove(at: index)
-      delegate?.updated(availableBuddies: availableToSyncBuddies)
+      presentor?.updated(availableBuddies: availableToSyncBuddies)
     }
   }
   
@@ -123,7 +127,7 @@ extension SyncManager: MCNearbyServiceBrowserDelegate {
 extension SyncManager: MCSessionDelegate {
   func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
     DispatchQueue.main.async { [unowned self] in
-      self.delegate?.receive(data: data, fromPeer: peerID)
+      self.dataDelegate?.receive(data: data, fromPeer: peerID)
     }
   }
   
@@ -132,7 +136,7 @@ extension SyncManager: MCSessionDelegate {
       // Ensure that only one peer initiates sync
       let shouldInitiateSync = peerID.hashValue < session.myPeerID.hashValue
       if shouldInitiateSync {
-        delegate?.readyToSync(withPeer: peerID)
+        presentor?.readyToSync(withPeer: peerID)
       }
     }
   }
