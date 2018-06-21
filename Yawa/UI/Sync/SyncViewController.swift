@@ -28,7 +28,7 @@ class SyncViewController: UIViewController {
   @IBOutlet weak var nameChangeMessageLabel: UILabel!
   
   @IBOutlet weak var peersTableView: UITableView!
-  private var peers = [MCPeerID]()
+  private var peers = [SyncBuddy]()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -61,8 +61,8 @@ extension SyncViewController: SyncDelegate {
     }
   }
   
-  func didUpdate(peersList: [MCPeerID]) {
-    peers = peersList
+  func updated(availableBuddies: [SyncBuddy]) {
+    peers = availableBuddies
     peersTableView.reloadData()
   }
   
@@ -180,13 +180,13 @@ extension SyncViewController: UITableViewDataSource {
       cell = UITableViewCell(style: .default, reuseIdentifier: cellID)
     }
     
-    cell.textLabel?.text = peers[indexPath.row].displayName
+    cell.textLabel?.text = peers[indexPath.row].name
     return cell
   }
 }
 
 extension SyncViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    syncManager.inviteToSync(peerID: peers[indexPath.row])
+    syncManager.inviteToSync(buddy: peers[indexPath.row])
   }
 }

@@ -9,8 +9,22 @@
 import UIKit
 import MultipeerConnectivity
 
+struct SyncBuddy: Equatable {
+  let peerID: MCPeerID
+  let emoji: String
+  
+  var name: String {
+    return peerID.displayName
+  }
+  
+  public static func == (lhs: SyncBuddy, rhs: SyncBuddy) -> Bool {
+    return lhs.peerID == rhs.peerID
+  }
+}
+
 protocol SyncDelegate: AnyObject {
-  func didUpdate(peersList: [MCPeerID])
+  func updated(availableBuddies: [SyncBuddy])
+  
   func readyToSync(withPeer: MCPeerID)
   func receive(data: Data, fromPeer: MCPeerID)
 }
@@ -19,11 +33,12 @@ class SyncManager: NSObject {
   private let serviceType = "yawasync"
   private let displayNameKey = "displayNameKey"
   private let peerIDKey = "peerIDKey"
+  private let emojiKey = "emoji"
   
   private var session: MCSession!
   private var assistant: MCNearbyServiceAdvertiser!
   private var browser: MCNearbyServiceBrowser!
-  private var discoveredPeers = [MCPeerID]()
+  private var availableToSyncBuddies = [SyncBuddy]()
   
   weak var delegate: SyncDelegate?
 
@@ -55,9 +70,9 @@ class SyncManager: NSObject {
     browser.startBrowsingForPeers()
   }
   
-  func inviteToSync(peerID: MCPeerID) {
-    guard discoveredPeers.contains(peerID) else { return }
-    browser.invitePeer(peerID, to: session, withContext: nil, timeout: 5)
+  func inviteToSync(buddy: SyncBuddy) {
+    guard availableToSyncBuddies.contains(buddy) else { return }
+    browser.invitePeer(buddy.peerID, to: session, withContext: nil, timeout: 5)
   }
   
   func send(data: Data, toPeer peerID: MCPeerID) {
@@ -86,15 +101,17 @@ class SyncManager: NSObject {
 extension SyncManager: MCNearbyServiceBrowserDelegate {
   func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
     print("Found peer: \(peerID)")
-    discoveredPeers.append(peerID)
-    delegate?.didUpdate(peersList: discoveredPeers)
+    let emoji = info?[emojiKey] ?? "🤑"
+    let buddy = SyncBuddy(peerID: peerID, emoji: emoji)
+    availableToSyncBuddies.append(buddy)
+    delegate?.updated(availableBuddies: availableToSyncBuddies)
   }
   
   func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
     print("Lost peer: \(peerID)")
-    if let index = discoveredPeers.index(of: peerID) {
-      discoveredPeers.remove(at: index)
-      delegate?.didUpdate(peersList: discoveredPeers)
+    if let index = availableToSyncBuddies.index(where: { $0.peerID == peerID  }) {
+      availableToSyncBuddies.remove(at: index)
+      delegate?.updated(availableBuddies: availableToSyncBuddies)
     }
   }
   
