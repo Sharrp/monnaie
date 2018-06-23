@@ -9,19 +9,40 @@
 import Foundation
 
 struct StoreManager {
-  private let fileName = "dump.data"
-  private var filePath: String {
+  private let transactionsFileName = "dump.data"
+  private let permissionsFileName = "permissions.data"
+  
+  private func filePath(forName fileName:String) -> String {
     return NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] + "/" + fileName
   }
   
+  // Transactions
+  
   func loadTransactions() -> [Transaction] {
-    if let transactions = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as? [Transaction] {
+    let path = filePath(forName: transactionsFileName)
+    if let transactions = NSKeyedUnarchiver.unarchiveObject(withFile: path) as? [Transaction] {
       return transactions
     }
     return []
   }
   
   func save(transactions: [Transaction]) {
-    NSKeyedArchiver.archiveRootObject(transactions, toFile: filePath)
+    let path = filePath(forName: transactionsFileName)
+    NSKeyedArchiver.archiveRootObject(transactions, toFile: path)
+  }
+  
+  // Permissions
+
+  func loadPermissions() -> [String] {
+    let path = filePath(forName: permissionsFileName)
+    if let permissions = NSKeyedUnarchiver.unarchiveObject(withFile: path) as? [String] {
+      return permissions
+    }
+    return []
+  }
+  
+  func save(permissions: [String]) {
+    let path = filePath(forName: permissionsFileName)
+    NSKeyedArchiver.archiveRootObject(permissions, toFile: path)
   }
 }
