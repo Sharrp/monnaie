@@ -29,11 +29,13 @@ protocol TransactionsPresentor: AnyObject {
   func didUpdateAll()
 }
 
-class TransactionsController {
+class TransactionsController: TransactionsDataSource {
   private let storeManager = StoreManager()
-  private var transactions: [Transaction]
+  private(set) var transactions: [Transaction]
   private var index: TransactionsIndex!
+  
   weak var presentor: TransactionsPresentor?
+  weak var syncManager: P2PSyncManager?
   
   init() {
     transactions = storeManager.loadTransactions().sorted { $0.date < $1.date }
@@ -200,8 +202,8 @@ extension TransactionsController: TransactionUpdateDelegate {
   }
 }
 
-extension TransactionsController: SyncUpdateDelegate {
-  func reset(transactionsTo transactions: [Transaction]) {
+extension TransactionsController: MergeDelegate {
+  func mergeDone(updatedTransactions transactions: [Transaction]) {
     self.transactions = transactions
     rebuiltIndexAndNotify()
   }

@@ -115,7 +115,7 @@ extension Transaction {
   }
 }
 
-enum SyncRequestMode: Int, CustomStringConvertible {
+enum SyncMode: Int, CustomStringConvertible {
   case merge
   case update
   
@@ -129,26 +129,32 @@ enum SyncRequestMode: Int, CustomStringConvertible {
 
 // Meta-object that encapsulates all information required for sync
 class SyncData: NSObject, NSCoding {
+  let mode: SyncMode
   let transactions: [Transaction]
-  let mode: SyncRequestMode
-  let deviceID: String
   
-  init(transactions: [Transaction], mode: SyncRequestMode = .merge) {
+  init(transactions: [Transaction], mode: SyncMode) {
     self.transactions = transactions
     self.mode = mode
-    deviceID = deviceUniqueIdentifier()
   }
   
   required init?(coder decoder: NSCoder) {
     transactions = decoder.decodeObject(forKey: "transactions") as! [Transaction]
-    mode = SyncRequestMode(rawValue: decoder.decodeInteger(forKey: "mode"))!
-    deviceID = decoder.decodeObject(forKey: "deviceID") as! String
+    mode = SyncMode(rawValue: decoder.decodeInteger(forKey: "mode"))!
+  }
+  
+  init?(data: Data) {
+    guard let syncData = NSKeyedUnarchiver.unarchiveObject(with: data) as? SyncData else { return nil }
+    mode = syncData.mode
+    transactions = syncData.transactions
   }
   
   func encode(with coder: NSCoder) {
     coder.encode(transactions, forKey: "transactions")
     coder.encode(mode.rawValue, forKey: "mode")
-    coder.encode(deviceID, forKey: "deviceID")
+  }
+  
+  func archived() -> Data {
+    return NSKeyedArchiver.archivedData(withRootObject: self)
   }
 }
 

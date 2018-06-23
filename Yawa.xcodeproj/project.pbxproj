@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7524B98B209AEF26006027C8 /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98A209AEF26006027C8 /* SyncManager.swift */; };
+		7524B98B209AEF26006027C8 /* P2PSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98A209AEF26006027C8 /* P2PSyncManager.swift */; };
 		7524B98D209B0F9F006027C8 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98C209B0F9F006027C8 /* DataModel.swift */; };
 		7524B98F209B284F006027C8 /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98E209B284F006027C8 /* TransactionViewController.swift */; };
 		7524B992209B3497006027C8 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B991209B3497006027C8 /* Utilities.swift */; };
@@ -25,6 +25,10 @@
 		75DE229820C3BD2A00FD5C78 /* PulleyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DE229520C3BD2A00FD5C78 /* PulleyViewController.swift */; };
 		75DE229920C3BD2A00FD5C78 /* UIView+constrainToParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */; };
 		75DE229A20C3BD2A00FD5C78 /* UIView+constrainToParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */; };
+		DF80D7FB20DE2A5A00ADC203 /* SyncPermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF80D7FA20DE2A5A00ADC203 /* SyncPermissionsManager.swift */; };
+		DF80D7FC20DE2A5A00ADC203 /* SyncPermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF80D7FA20DE2A5A00ADC203 /* SyncPermissionsManager.swift */; };
+		DF80D7FF20DE851600ADC203 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF80D7FE20DE851600ADC203 /* SyncController.swift */; };
+		DF80D80020DE851600ADC203 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF80D7FE20DE851600ADC203 /* SyncController.swift */; };
 		DF8C66C720B00C9A008A7488 /* TransactionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66C620B00C9A008A7488 /* TransactionsController.swift */; };
 		DF8C66CF20B0635D008A7488 /* YawaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66CE20B0635D008A7488 /* YawaTests.swift */; };
 		DF8C66D620B063B4008A7488 /* TransactionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66C620B00C9A008A7488 /* TransactionsController.swift */; };
@@ -33,7 +37,7 @@
 		DF8C66D920B06725008A7488 /* TransactionsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046E02098892600E8B09E /* TransactionsListViewController.swift */; };
 		DF8C66DA20B06727008A7488 /* SyncViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B995209B4451006027C8 /* SyncViewController.swift */; };
 		DF8C66DB20B06732008A7488 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B993209B3BD8006027C8 /* StoreManager.swift */; };
-		DF8C66DC20B06737008A7488 /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98A209AEF26006027C8 /* SyncManager.swift */; };
+		DF8C66DC20B06737008A7488 /* P2PSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98A209AEF26006027C8 /* P2PSyncManager.swift */; };
 		DF8C66DD20B06747008A7488 /* SyncNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */; };
 		DF8C66DE20B06753008A7488 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0C20AB202E00D13420 /* Settings.swift */; };
 		DF8C66DF20B06761008A7488 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B991209B3497006027C8 /* Utilities.swift */; };
@@ -51,7 +55,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7524B98A209AEF26006027C8 /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
+		7524B98A209AEF26006027C8 /* P2PSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PSyncManager.swift; sourceTree = "<group>"; };
 		7524B98C209B0F9F006027C8 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		7524B98E209B284F006027C8 /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		7524B991209B3497006027C8 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
@@ -69,6 +73,8 @@
 		75D32C0C20AB202E00D13420 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		75DE229520C3BD2A00FD5C78 /* PulleyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PulleyViewController.swift; sourceTree = "<group>"; };
 		75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+constrainToParent.swift"; sourceTree = "<group>"; };
+		DF80D7FA20DE2A5A00ADC203 /* SyncPermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncPermissionsManager.swift; sourceTree = "<group>"; };
+		DF80D7FE20DE851600ADC203 /* SyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncController.swift; sourceTree = "<group>"; };
 		DF8C66C620B00C9A008A7488 /* TransactionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsController.swift; sourceTree = "<group>"; };
 		DF8C66CC20B0635D008A7488 /* YawaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YawaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF8C66CE20B0635D008A7488 /* YawaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YawaTests.swift; sourceTree = "<group>"; };
@@ -97,7 +103,7 @@
 		7524B989209AEF09006027C8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				7524B98A209AEF26006027C8 /* SyncManager.swift */,
+				DF80D7FD20DE846900ADC203 /* Sync */,
 				7524B98C209B0F9F006027C8 /* DataModel.swift */,
 				7524B993209B3BD8006027C8 /* StoreManager.swift */,
 				75D32C0C20AB202E00D13420 /* Settings.swift */,
@@ -168,6 +174,16 @@
 				75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */,
 			);
 			path = PulleyViewController;
+			sourceTree = "<group>";
+		};
+		DF80D7FD20DE846900ADC203 /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				7524B98A209AEF26006027C8 /* P2PSyncManager.swift */,
+				DF80D7FA20DE2A5A00ADC203 /* SyncPermissionsManager.swift */,
+				DF80D7FE20DE851600ADC203 /* SyncController.swift */,
+			);
+			path = Sync;
 			sourceTree = "<group>";
 		};
 		DF8C66CD20B0635D008A7488 /* YawaTests */ = {
@@ -284,8 +300,9 @@
 				75DE229920C3BD2A00FD5C78 /* UIView+constrainToParent.swift in Sources */,
 				7524B992209B3497006027C8 /* Utilities.swift in Sources */,
 				7524B994209B3BD8006027C8 /* StoreManager.swift in Sources */,
+				DF80D7FF20DE851600ADC203 /* SyncController.swift in Sources */,
 				75D32C0B20AB1DB300D13420 /* SyncNameViewController.swift in Sources */,
-				7524B98B209AEF26006027C8 /* SyncManager.swift in Sources */,
+				7524B98B209AEF26006027C8 /* P2PSyncManager.swift in Sources */,
 				75C046E12098892600E8B09E /* TransactionsListViewController.swift in Sources */,
 				7524B98F209B284F006027C8 /* TransactionViewController.swift in Sources */,
 				75DE229720C3BD2A00FD5C78 /* PulleyViewController.swift in Sources */,
@@ -294,6 +311,7 @@
 				75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */,
 				75D32C0D20AB202E00D13420 /* Settings.swift in Sources */,
 				7524B996209B4451006027C8 /* SyncViewController.swift in Sources */,
+				DF80D7FB20DE2A5A00ADC203 /* SyncPermissionsManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,16 +323,18 @@
 				75DE229A20C3BD2A00FD5C78 /* UIView+constrainToParent.swift in Sources */,
 				DF8C66DB20B06732008A7488 /* StoreManager.swift in Sources */,
 				DF8C66E020B0676F008A7488 /* TransactionCell.swift in Sources */,
+				DF80D80020DE851600ADC203 /* SyncController.swift in Sources */,
 				DF8C66DF20B06761008A7488 /* Utilities.swift in Sources */,
 				DF8C66DD20B06747008A7488 /* SyncNameViewController.swift in Sources */,
 				DF8C66D620B063B4008A7488 /* TransactionsController.swift in Sources */,
 				DF8C66DE20B06753008A7488 /* Settings.swift in Sources */,
 				75DE229820C3BD2A00FD5C78 /* PulleyViewController.swift in Sources */,
 				DF8C66CF20B0635D008A7488 /* YawaTests.swift in Sources */,
-				DF8C66DC20B06737008A7488 /* SyncManager.swift in Sources */,
+				DF8C66DC20B06737008A7488 /* P2PSyncManager.swift in Sources */,
 				DF8C66D720B0648A008A7488 /* DataModel.swift in Sources */,
 				DF8C66D820B06722008A7488 /* TransactionViewController.swift in Sources */,
 				DF8C66DA20B06727008A7488 /* SyncViewController.swift in Sources */,
+				DF80D7FC20DE2A5A00ADC203 /* SyncPermissionsManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

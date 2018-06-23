@@ -32,20 +32,10 @@ class TransactionsListViewController: UIViewController {
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//    if let transactionVC = segue.destination as? TransactionViewController {
-//      transactionVC.delegate = dataProvider
-//      transactionVC.dismissCardSubscriber = self
-//      transactionVC.cardHeight = view.frame.height - 70
-//
-//      if segue.identifier == "editTransaction" {
-//        guard let indexPath = tableView.indexPathForSelectedRow else { return }
-//        transactionVC.transaction = dataProvider.transaction(forDay: indexPath.section, withIndex: indexPath.row)
-//      }
-//    }
     if let syncVC = segue.destination as? SyncViewController {
-      syncVC.delegate = dataProvider
-      syncVC.transactionsToSync = dataProvider.syncTransactions
       syncVC.nameDelegate = self
+      syncVC.transactionsDataSource = dataProvider
+      syncVC.mergeDelegate = dataProvider
     }
   }
   
