@@ -67,7 +67,7 @@ typealias SyncRequestHandler = (Bool) -> Void
 protocol SyncPresentorDelegate: AnyObject {
   func updated(availableBuddies: [SyncBuddy])
   
-  func syncRequestReceived(fromBuddy: SyncBuddy, handler: SyncRequestHandler)
+  func syncRequestReceived(fromBuddy: SyncBuddy, handler: @escaping SyncRequestHandler)
   func requestDeclined(byBuddy: SyncBuddy)
   
   func syncInProgress(withBuddy: SyncBuddy)
@@ -174,7 +174,9 @@ extension P2PSyncManager: SyncDataSender {
   }
   
   func allDataSent(toBuddy buddy: SyncBuddy) {
-    presentor?.syncFinished(withBuddy: buddy)
+    DispatchQueue.main.async { [weak self] in
+      self?.presentor?.syncFinished(withBuddy: buddy)
+    }
   }
 }
 
@@ -193,7 +195,10 @@ extension P2PSyncManager: MCNearbyServiceBrowserDelegate {
     print("\nLost peer: \(peerID)\n")
     if let index = availableToSyncBuddies.index(where: { $0.peerID == peerID  }) {
       availableToSyncBuddies.remove(at: index)
-      presentor?.updated(availableBuddies: availableToSyncBuddies)
+      DispatchQueue.main.async { [weak self] in
+        guard let buddies = self?.availableToSyncBuddies else { return }
+        self?.presentor?.updated(availableBuddies: buddies)
+      }
     }
   }
   
@@ -211,9 +216,12 @@ extension P2PSyncManager: MCSessionDelegate {
         if allowed {
           self?.permissionsManager.allowSync(withDeviceID: request.deviceID)
           self?.dataDelegate?.canStartSync(withBuddy: buddy)
+          DispatchQueue.main.async { [weak self] in
+            self?.presentor?.syncInProgress(withBuddy: buddy)
+          }
         } else {
           let request = SyncRequest(mode: .declined)
-          self?.send(data: request.archived(), toBuddy: buddy)
+          self?.transfer(data: request.archived(), toPeer: buddy.peerID)
         }
       }
       DispatchQueue.main.async { [weak self] in
@@ -223,7 +231,6 @@ extension P2PSyncManager: MCSessionDelegate {
   }
   
   func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-    print("SESSION DATA")
     guard let buddy = buddy(withPeerID: peerID) else { return }
     guard let request = NSKeyedUnarchiver.unarchiveObject(with: data) as? SyncRequest else {
       print("Failed to unarchive sync request from peer")

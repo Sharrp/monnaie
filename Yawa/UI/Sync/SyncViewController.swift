@@ -26,7 +26,7 @@ class SyncViewController: UIViewController {
   @IBOutlet weak var nameChangeMessageLabel: UILabel!
   
   @IBOutlet weak var peersTableView: UITableView!
-  private var peers = [SyncBuddy]()
+  private var buddies = [SyncBuddy]()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -62,12 +62,24 @@ extension SyncViewController: SyncPresentorDelegate {
   }
   
   func updated(availableBuddies: [SyncBuddy]) {
-    peers = availableBuddies
+    buddies = availableBuddies
     peersTableView.reloadData()
   }
   
-  func syncRequestReceived(fromBuddy: SyncBuddy, handler: SyncRequestHandler) {
-    handler(true)
+  func syncRequestReceived(fromBuddy buddy: SyncBuddy, handler: @escaping SyncRequestHandler) {
+    let alert = UIAlertController(title: "Sync request",
+                                message: "Do you want to sync with \(buddy.name)?",
+                         preferredStyle: .alert)
+    let noAction = UIAlertAction(title: "No", style: .default) { [weak self] _ in
+      handler(false)
+      self?.updateStatus(to: "You declined sync request")
+    }
+    alert.addAction(noAction)
+    let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
+      handler(true)
+    }
+    alert.addAction(yesAction)
+    self.present(alert, animated: true, completion: nil)
   }
   
   func requestDeclined(byBuddy buddy: SyncBuddy) {
@@ -109,7 +121,7 @@ extension SyncViewController: SyncNameUpdateDelegate {
 
 extension SyncViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return peers.count
+    return buddies.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -121,13 +133,15 @@ extension SyncViewController: UITableViewDataSource {
       cell = UITableViewCell(style: .default, reuseIdentifier: cellID)
     }
     
-    cell.textLabel?.text = peers[indexPath.row].name
+    cell.textLabel?.text = buddies[indexPath.row].name
     return cell
   }
 }
 
 extension SyncViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    syncManager.inviteToSync(buddy: peers[indexPath.row])
+    let buddy = buddies[indexPath.row]
+    syncManager.inviteToSync(buddy: buddy)
+    updateStatus(to: "Waiting a response from \(buddy.name)")
   }
 }
