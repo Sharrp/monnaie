@@ -136,13 +136,9 @@ class P2PSyncManager: NSObject {
   
   func inviteToSync(buddy: SyncBuddy) {
     guard availableToSyncBuddies.contains(buddy) else { return }
+    permissionsManager.allowSync(withDeviceID: buddy.deviceID)
     let request = SyncRequest(mode: .requested)
     transfer(data: request.archived(), toPeer: buddy.peerID)
-    
-    // Ensure that only one peer initiates sync
-//    let shouldInitiateSync = peerID.hashValue < session.myPeerID.hashValue
-//    if shouldInitiateSync {
-//    }
   }
   
   private func transfer(data: Data, toPeer peerID: MCPeerID) {
@@ -208,17 +204,21 @@ extension P2PSyncManager: MCNearbyServiceBrowserDelegate {
 }
 
 extension P2PSyncManager: MCSessionDelegate {
+  private func startSync(withBuddy buddy: SyncBuddy) {
+    DispatchQueue.main.async { [weak self] in
+      self?.presentor?.syncInProgress(withBuddy: buddy)
+    }
+    dataDelegate?.canStartSync(withBuddy: buddy)
+  }
+  
   private func handle(syncRequest request: SyncRequest, forBuddy buddy: SyncBuddy) {
     if permissionsManager.isAllowedToSync(withDeviceID: request.deviceID) {
-      dataDelegate?.canStartSync(withBuddy: buddy)
+      startSync(withBuddy: buddy)
     } else {
       let handler = { [weak self] (allowed: Bool) in
         if allowed {
           self?.permissionsManager.allowSync(withDeviceID: request.deviceID)
-          self?.dataDelegate?.canStartSync(withBuddy: buddy)
-          DispatchQueue.main.async { [weak self] in
-            self?.presentor?.syncInProgress(withBuddy: buddy)
-          }
+          self?.startSync(withBuddy: buddy)
         } else {
           let request = SyncRequest(mode: .declined)
           self?.transfer(data: request.archived(), toPeer: buddy.peerID)
@@ -258,10 +258,19 @@ extension P2PSyncManager: MCSessionDelegate {
   
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
     if state == .connected {
-      print(peerIDhashToDeviceID)
       guard let deviceID = peerIDhashToDeviceID[peerID.hashValue] else { return }
       let buddy = SyncBuddy(peerID: peerID, emoji: "🤑", deviceID: deviceID)
       availableToSyncBuddies.append(buddy)
+      
+      // Auto-sync
+      if permissionsManager.isAllowedToSync(withDeviceID: deviceID) {
+        // Ensure that only one peer initiates sync
+        let shouldInitiateSync = peerID.hashValue < session.myPeerID.hashValue
+        if shouldInitiateSync {
+          startSync(withBuddy: buddy)
+        }
+        return
+      }
     } else if state == .notConnected {
       guard let removeIndex = availableToSyncBuddies.index(where: { $0.peerID == peerID }) else { return }
       availableToSyncBuddies.remove(at: removeIndex)
@@ -279,14 +288,11 @@ extension P2PSyncManager: MCSessionDelegate {
 
 extension P2PSyncManager: MCNearbyServiceAdvertiserDelegate {
   func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext contextData: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Swift.Void) {
-    print("\nInvitation from: \(peerID.displayName)\n")
-    
     if let contextData = contextData,
       let context = NSKeyedUnarchiver.unarchiveObject(with: contextData) as? [String: String],
       let deviceID = context["deviceID"] {
       peerIDhashToDeviceID[peerID.hashValue] = deviceID
     }
-    
     invitationHandler(true, session)
   }
   
