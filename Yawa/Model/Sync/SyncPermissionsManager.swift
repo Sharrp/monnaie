@@ -17,8 +17,7 @@ class SyncPermissionsManager {
   }
   
   func isAllowedToSync(withDeviceID deviceID: String) -> Bool {
-    return false
-//    return allowedDeviceIDs.contains(deviceID)
+    return allowedDeviceIDs.contains(deviceID)
   }
   
   func allowSync(withDeviceID deviceID: String) {
