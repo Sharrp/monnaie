@@ -25,6 +25,10 @@
 		75DE229820C3BD2A00FD5C78 /* PulleyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DE229520C3BD2A00FD5C78 /* PulleyViewController.swift */; };
 		75DE229920C3BD2A00FD5C78 /* UIView+constrainToParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */; };
 		75DE229A20C3BD2A00FD5C78 /* UIView+constrainToParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */; };
+		DF0B60AC20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */; };
+		DF0B60AD20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */; };
+		DF0B60AE20F0857E0018AC98 /* DigitKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF0B60AB20F0857E0018AC98 /* DigitKeyboardView.xib */; };
+		DF0B60AF20F0857E0018AC98 /* DigitKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF0B60AB20F0857E0018AC98 /* DigitKeyboardView.xib */; };
 		DF80D7FB20DE2A5A00ADC203 /* SyncPermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF80D7FA20DE2A5A00ADC203 /* SyncPermissionsManager.swift */; };
 		DF80D7FC20DE2A5A00ADC203 /* SyncPermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF80D7FA20DE2A5A00ADC203 /* SyncPermissionsManager.swift */; };
 		DF80D7FF20DE851600ADC203 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF80D7FE20DE851600ADC203 /* SyncController.swift */; };
@@ -73,6 +77,8 @@
 		75D32C0C20AB202E00D13420 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		75DE229520C3BD2A00FD5C78 /* PulleyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PulleyViewController.swift; sourceTree = "<group>"; };
 		75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+constrainToParent.swift"; sourceTree = "<group>"; };
+		DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DigitKeyboardView.swift; sourceTree = "<group>"; };
+		DF0B60AB20F0857E0018AC98 /* DigitKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DigitKeyboardView.xib; sourceTree = "<group>"; };
 		DF80D7FA20DE2A5A00ADC203 /* SyncPermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncPermissionsManager.swift; sourceTree = "<group>"; };
 		DF80D7FE20DE851600ADC203 /* SyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncController.swift; sourceTree = "<group>"; };
 		DF8C66C620B00C9A008A7488 /* TransactionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsController.swift; sourceTree = "<group>"; };
@@ -121,6 +127,7 @@
 				75DE229420C3BC7000FD5C78 /* PulleyViewController */,
 				75D32C0920AB1DA300D13420 /* Sync */,
 				75D32C0220A3093000D13420 /* TransactionCell.swift */,
+				DF0B60A920F0843B0018AC98 /* Keyboard */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -174,6 +181,15 @@
 				75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */,
 			);
 			path = PulleyViewController;
+			sourceTree = "<group>";
+		};
+		DF0B60A920F0843B0018AC98 /* Keyboard */ = {
+			isa = PBXGroup;
+			children = (
+				DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */,
+				DF0B60AB20F0857E0018AC98 /* DigitKeyboardView.xib */,
+			);
+			path = Keyboard;
 			sourceTree = "<group>";
 		};
 		DF80D7FD20DE846900ADC203 /* Sync */ = {
@@ -277,6 +293,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				75C046E92098892600E8B09E /* LaunchScreen.storyboard in Resources */,
+				DF0B60AE20F0857E0018AC98 /* DigitKeyboardView.xib in Resources */,
 				75C046E62098892600E8B09E /* Assets.xcassets in Resources */,
 				75C046E42098892600E8B09E /* Main.storyboard in Resources */,
 			);
@@ -286,6 +303,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF0B60AF20F0857E0018AC98 /* DigitKeyboardView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,6 +328,7 @@
 				7524B98D209B0F9F006027C8 /* DataModel.swift in Sources */,
 				75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */,
 				75D32C0D20AB202E00D13420 /* Settings.swift in Sources */,
+				DF0B60AC20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */,
 				7524B996209B4451006027C8 /* SyncViewController.swift in Sources */,
 				DF80D7FB20DE2A5A00ADC203 /* SyncPermissionsManager.swift in Sources */,
 			);
@@ -333,6 +352,7 @@
 				DF8C66DC20B06737008A7488 /* P2PSyncManager.swift in Sources */,
 				DF8C66D720B0648A008A7488 /* DataModel.swift in Sources */,
 				DF8C66D820B06722008A7488 /* TransactionViewController.swift in Sources */,
+				DF0B60AD20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */,
 				DF8C66DA20B06727008A7488 /* SyncViewController.swift in Sources */,
 				DF80D7FC20DE2A5A00ADC203 /* SyncPermissionsManager.swift in Sources */,
 			);

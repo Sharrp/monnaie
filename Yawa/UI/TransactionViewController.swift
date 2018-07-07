@@ -15,6 +15,7 @@ protocol TransactionUpdateDelegate: AnyObject {
 
 class TransactionViewController: UIViewController {
   @IBOutlet weak var amountInput: UITextField!
+  
   private var inputFocused: Bool {
     return amountInput.isFirstResponder
   }
@@ -27,11 +28,12 @@ class TransactionViewController: UIViewController {
   @IBOutlet weak var dateButton: UIButton!
   @IBOutlet weak var inputFlowButton: UIButton!
   
-  private let gapToKeyboard: CGFloat = 8
+  @IBOutlet weak var keyboardHeightConstraint: NSLayoutConstraint!
+  @IBOutlet weak var keyboardView: DigitKeyboardView!
+  
   @IBOutlet weak var dateButtonBottomConstraint: NSLayoutConstraint!
   @IBOutlet weak var inputFlowBottomConstraint: NSLayoutConstraint!
   @IBOutlet weak var addButtonBottomConstraint: NSLayoutConstraint!
-  private var keyboardWasOpenWhenDrawerOpened = false
   
   @IBOutlet weak var categoryPicker: UISegmentedControl!
   @IBOutlet weak var dateTimePicker: UIDatePicker!
@@ -52,9 +54,9 @@ class TransactionViewController: UIViewController {
       dateTimePicker.isHidden = editingMode != .date
       categoryPicker.isHidden = editingMode != .category
       if editingMode == .amount {
-        amountInput.becomeFirstResponder()
+        setFocusOnAmount()
       } else {
-        amountInput.resignFirstResponder()
+        removeFocusFromAmount()
       }
       updateCategoryButtonTitle()
     }
@@ -64,7 +66,6 @@ class TransactionViewController: UIViewController {
     super.viewDidLoad()
     
     NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(syncDidDismiss), name: .syncDidDismiss, object: nil)
     
     if let transaction = transaction {
@@ -82,10 +83,14 @@ class TransactionViewController: UIViewController {
     }
     dateButton.titleLabel?.numberOfLines = 2
     dateButton.titleLabel?.textAlignment = .center
+    
+    keyboardView.delegate = self
+    keyboardView.textField = amountInput
+    keyboardView.heightContraint = keyboardHeightConstraint
 
     updateDateButton(forDate: Date())
     clearCategory()
-    amountInput.becomeFirstResponder()
+    setFocusOnAmount()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -104,30 +109,13 @@ class TransactionViewController: UIViewController {
     userSetCategoryManually = false
     
     if pulleyViewController?.drawerPosition == .open {
-      amountInput.becomeFirstResponder()
-    }
-  }
-  
-  @objc func keyboardWillShow(_ notification: Notification) {
-    if let info = notification.userInfo as? [String: AnyObject],
-      let sizeValue = info[UIKeyboardFrameEndUserInfoKey] as? NSValue {
-      let keyboardHeight = sizeValue.cgRectValue.size.height
-      
-      // Say hello to iPhone X
-      var bottomInset: CGFloat = 0
-      if let safeAreBottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom {
-        bottomInset = safeAreBottomInset
-      }
-      let bottomConstraint = keyboardHeight + gapToKeyboard - bottomInset
-      dateButtonBottomConstraint.constant = bottomConstraint
-      inputFlowBottomConstraint.constant = bottomConstraint
-      addButtonBottomConstraint.constant = bottomConstraint
+      setFocusOnAmount()
     }
   }
   
   @objc func syncDidDismiss() {
     if editingMode == .amount {
-      amountInput.becomeFirstResponder()
+      setFocusOnAmount()
     }
   }
   
@@ -145,6 +133,16 @@ class TransactionViewController: UIViewController {
   
   @IBAction func editingDidBegin() {
     updateCategoryButtonTitle()
+  }
+  
+  private func setFocusOnAmount() {
+    amountInput.becomeFirstResponder()
+    keyboardView.isHidden = false
+  }
+  
+  private func removeFocusFromAmount() {
+    amountInput.resignFirstResponder()
+    keyboardView.isHidden = true
   }
   
   // MARK: Category
@@ -230,7 +228,7 @@ class TransactionViewController: UIViewController {
     }
     
     clearAmount()
-    amountInput.becomeFirstResponder()
+    setFocusOnAmount()
   }
 }
 
@@ -238,13 +236,24 @@ extension TransactionViewController: PulleyPrimaryContentControllerDelegate {
   func didSwitchTo(drawerPosition: PulleyPosition) {
     switch drawerPosition {
     case .open:
-      if keyboardWasOpenWhenDrawerOpened {
-        amountInput.becomeFirstResponder()
-      }
+      break
     case .collapsed:
-      keyboardWasOpenWhenDrawerOpened = amountInput.isFirstResponder
-      amountInput.resignFirstResponder()
+      break
     }
   }
 }
 
+extension TransactionViewController: DigitKeyboardDelegate {
+  func keyboardHeightChanged(to keyboardHeight: CGFloat) {
+    // Say hello to iPhone X
+    var bottomInset: CGFloat = 0
+    if let safeAreBottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom {
+      bottomInset = safeAreBottomInset
+    }
+    
+    let bottomConstraint = keyboardHeight - bottomInset
+    dateButtonBottomConstraint.constant = bottomConstraint
+    inputFlowBottomConstraint.constant = bottomConstraint
+    addButtonBottomConstraint.constant = bottomConstraint
+  }
+}

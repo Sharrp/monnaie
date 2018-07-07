@@ -211,7 +211,7 @@
                                 </connections>
                             </datePicker>
                             <segmentedControl hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="CIU-RV-71C">
-                                <rect key="frame" x="16" y="456" width="343" height="29"/>
+                                <rect key="frame" x="16" y="469" width="343" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="28" id="dBP-hD-vBR"/>
                                 </constraints>
@@ -281,11 +281,19 @@
                                     <constraint firstAttribute="trailing" secondItem="nh0-PE-g9D" secondAttribute="trailing" constant="31" id="OMV-wO-wg9"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ic6-Ub-Ojj" customClass="DigitKeyboardView" customModule="Yawa" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="420" width="375" height="247"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="247" id="Z5o-uH-ue3"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="ic6-Ub-Ojj" secondAttribute="trailing" id="2oo-N6-jP2"/>
                             <constraint firstItem="BLY-AK-Gmv" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="3ni-8E-gES"/>
-                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="CIU-RV-71C" secondAttribute="bottom" constant="183" id="3yM-JQ-cG0"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="CIU-RV-71C" secondAttribute="bottom" constant="170" id="3yM-JQ-cG0"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="n2G-7X-LBj" secondAttribute="bottom" constant="255" id="AF3-sY-wBX"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="ggY-Qh-ib6" secondAttribute="bottom" constant="255" id="AJV-bj-Rxi"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="CIU-RV-71C" secondAttribute="trailing" constant="16" id="CPC-5N-1YM"/>
@@ -294,8 +302,10 @@
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="BLY-AK-Gmv" secondAttribute="bottom" constant="255" id="TCq-vG-52l"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="TgH-T5-qXh" secondAttribute="bottom" constant="20" id="VHo-8j-LIR"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="n2G-7X-LBj" secondAttribute="trailing" constant="16" id="Xaq-GL-4J2"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="ic6-Ub-Ojj" secondAttribute="bottom" id="ZTB-o4-Qxg"/>
                             <constraint firstItem="CMQ-FS-Azg" firstAttribute="top" secondItem="4Qm-UU-hIj" secondAttribute="top" constant="82" id="cxO-BR-gmm"/>
                             <constraint firstItem="ggY-Qh-ib6" firstAttribute="top" secondItem="CMQ-FS-Azg" secondAttribute="bottom" constant="8" id="eSQ-Ey-Pbp"/>
+                            <constraint firstItem="ic6-Ub-Ojj" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="fOf-AO-rf9"/>
                             <constraint firstItem="n2G-7X-LBj" firstAttribute="leading" secondItem="ggY-Qh-ib6" secondAttribute="trailing" constant="8" id="fjh-vY-Lo8"/>
                             <constraint firstItem="TgH-T5-qXh" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="trailing" constant="-375" id="h86-VY-C8l"/>
                             <constraint firstItem="CIU-RV-71C" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="jms-3e-9gj"/>
@@ -319,6 +329,8 @@
                         <outlet property="dateTimePicker" destination="TgH-T5-qXh" id="8eu-Zr-bZX"/>
                         <outlet property="inputFlowBottomConstraint" destination="AJV-bj-Rxi" id="ejq-d1-MeW"/>
                         <outlet property="inputFlowButton" destination="ggY-Qh-ib6" id="YoT-hi-sOA"/>
+                        <outlet property="keyboardHeightConstraint" destination="Z5o-uH-ue3" id="UrV-DU-otY"/>
+                        <outlet property="keyboardView" destination="ic6-Ub-Ojj" id="uaR-au-z8G"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Thh-DZ-1Qz" userLabel="First Responder" sceneMemberID="firstResponder"/>
