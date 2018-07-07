@@ -76,7 +76,7 @@ class TransactionViewController: UIViewController {
     }
     
     for button in [dateButton, inputFlowButton, addButton] {
-      button!.layer.cornerRadius = 28
+      button!.layer.cornerRadius = 5
       button!.clipsToBounds = true
       button!.setBackgroundColor(color: UIColor(white: 0.4, alpha: 1.0), forState: .normal)
       button!.setBackgroundColor(color: UIColor(white: 0.7, alpha: 1.0), forState: .highlighted)
