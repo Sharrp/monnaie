@@ -132,7 +132,7 @@ class TransactionViewController: UIViewController {
   }
   
   @IBAction func editingDidBegin() {
-    updateCategoryButtonTitle()
+    editingMode = .amount
   }
   
   private func setFocusOnAmount() {

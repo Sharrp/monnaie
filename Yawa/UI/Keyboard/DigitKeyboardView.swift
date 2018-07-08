@@ -95,21 +95,20 @@ class DigitKeyboardView: UIView {
   }
   
   private func removeLastCharacter() {
-    let text = textField.text!
-    textField.text = text[0..<text.count-1]
+    textField.deleteBackward()
   }
   
   /// Event handling
   
   @IBAction func digitTouchUp(sender: UIButton) {
-    let text = textField.text!
-    textField.text = text + "\(sender.tag)"
+    textField.insertText("\(sender.tag)")
   }
   
   @IBAction func backspaceTouchUp(sender: UIButton) {
     let text = textField.text!
     guard text.count > 0 else { return }
     if text == "0." {
+      removeLastCharacter() // to generate EditingChanged event
       textField.text = ""
       return
     }
@@ -117,11 +116,13 @@ class DigitKeyboardView: UIView {
   }
   
   @IBAction func dotTouchUp(sender: UIButton) {
-    guard let text = textField.text else { return }
-    if text.count == 0 {
-      textField.text = "0."
-    } else if !text.contains(".") {
-      textField.text = text + "."
+    if !textField.hasText {
+      textField.insertText("0.")
+      return
+    }
+    
+    if textField.text!.contains(".") {
+      textField.insertText(".")
     }
   }
   
