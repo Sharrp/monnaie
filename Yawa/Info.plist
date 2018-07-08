@@ -39,5 +39,54 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundleAlternateIcons</key>
+		<dict>
+			<key>USD</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>USD</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<string>NO</string>
+			</dict>
+      <key>RUB</key>
+      <dict>
+        <key>CFBundleIconFiles</key>
+        <array>
+          <string>RUB</string>
+        </array>
+        <key>UIPrerenderedIcon</key>
+        <string>NO</string>
+      </dict>
+			<key>JPY</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>JPY</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<string>NO</string>
+			</dict>
+		</dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>USD</string>
+			</array>
+			<key>UIPrerenderedIcon</key>
+			<false/>
+		</dict>
+		<key>UINewsstandIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string></string>
+			</array>
+		</dict>
+	</dict>
 </dict>
 </plist>

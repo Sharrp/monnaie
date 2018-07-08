@@ -16,14 +16,12 @@ struct Settings {
   
   private let syncNameKey = "syncNameKey"
   private let peerIDKey = "peerIDKey"
+  private let didChangeDefaultIconKey = "didChangeDefaultIconKey"
   
   var syncName: String {
     get {
-      if let savedName = UserDefaults.standard.value(forKey: syncNameKey) as? String {
-        return savedName
-      } else {
-        return UIDevice.current.name
-      }
+      guard let savedName = UserDefaults.standard.value(forKey: syncNameKey) as? String else { return UIDevice.current.name }
+      return savedName
     }
     
     set {
@@ -42,6 +40,17 @@ struct Settings {
       guard let peerID = peerID else { return }
       let peerIDData = NSKeyedArchiver.archivedData(withRootObject: peerID)
       UserDefaults.standard.set(peerIDData, forKey: peerIDKey)
+      UserDefaults.standard.synchronize()
+    }
+  }
+  
+  var didChangeDefaultIcon: Bool {
+    get {
+      return UserDefaults.standard.bool(forKey: didChangeDefaultIconKey)
+    }
+    
+    set {
+      UserDefaults.standard.set(newValue, forKey: didChangeDefaultIconKey)
       UserDefaults.standard.synchronize()
     }
   }

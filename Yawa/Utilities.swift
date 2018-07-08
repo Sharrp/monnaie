@@ -31,13 +31,5 @@ extension UIButton {
     let colorImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
     self.setBackgroundImage(colorImage, for: forState)
-    
-//    UIGraphicsBeginImageContext(frame.size)
-//    UIGraphicsGetCurrentContext()!.setFillColor(color.cgColor)
-//    UIGraphicsGetCurrentContext()!.fill(bounds)
-//    UIBezierPath(roundedRect: bounds, cornerRadius: layer.cornerRadius).addClip()
-//    let colorImage = UIGraphicsGetImageFromCurrentImageContext()
-//    UIGraphicsEndImageContext()
-//    self.setBackgroundImage(colorImage, for: forState)
   }
 }

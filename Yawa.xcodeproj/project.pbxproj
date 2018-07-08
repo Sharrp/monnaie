@@ -25,6 +25,18 @@
 		75DE229820C3BD2A00FD5C78 /* PulleyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DE229520C3BD2A00FD5C78 /* PulleyViewController.swift */; };
 		75DE229920C3BD2A00FD5C78 /* UIView+constrainToParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */; };
 		75DE229A20C3BD2A00FD5C78 /* UIView+constrainToParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */; };
+		75F4525420F1DB6D000FD574 /* RUB@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4524E20F1DB6C000FD574 /* RUB@2x.png */; };
+		75F4525520F1DB6D000FD574 /* RUB@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4524E20F1DB6C000FD574 /* RUB@2x.png */; };
+		75F4525620F1DB6D000FD574 /* JPY@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4524F20F1DB6C000FD574 /* JPY@3x.png */; };
+		75F4525720F1DB6D000FD574 /* JPY@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4524F20F1DB6C000FD574 /* JPY@3x.png */; };
+		75F4525820F1DB6D000FD574 /* JPY@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4525020F1DB6D000FD574 /* JPY@2x.png */; };
+		75F4525920F1DB6D000FD574 /* JPY@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4525020F1DB6D000FD574 /* JPY@2x.png */; };
+		75F4525A20F1DB6D000FD574 /* USD@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4525120F1DB6D000FD574 /* USD@2x.png */; };
+		75F4525B20F1DB6D000FD574 /* USD@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4525120F1DB6D000FD574 /* USD@2x.png */; };
+		75F4525C20F1DB6D000FD574 /* USD@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4525220F1DB6D000FD574 /* USD@3x.png */; };
+		75F4525D20F1DB6D000FD574 /* USD@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4525220F1DB6D000FD574 /* USD@3x.png */; };
+		75F4525E20F1DB6D000FD574 /* RUB@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4525320F1DB6D000FD574 /* RUB@3x.png */; };
+		75F4525F20F1DB6D000FD574 /* RUB@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4525320F1DB6D000FD574 /* RUB@3x.png */; };
 		DF0B60AC20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */; };
 		DF0B60AD20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */; };
 		DF0B60AE20F0857E0018AC98 /* DigitKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF0B60AB20F0857E0018AC98 /* DigitKeyboardView.xib */; };
@@ -77,6 +89,12 @@
 		75D32C0C20AB202E00D13420 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		75DE229520C3BD2A00FD5C78 /* PulleyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PulleyViewController.swift; sourceTree = "<group>"; };
 		75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+constrainToParent.swift"; sourceTree = "<group>"; };
+		75F4524E20F1DB6C000FD574 /* RUB@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RUB@2x.png"; sourceTree = "<group>"; };
+		75F4524F20F1DB6C000FD574 /* JPY@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "JPY@3x.png"; sourceTree = "<group>"; };
+		75F4525020F1DB6D000FD574 /* JPY@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "JPY@2x.png"; sourceTree = "<group>"; };
+		75F4525120F1DB6D000FD574 /* USD@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "USD@2x.png"; sourceTree = "<group>"; };
+		75F4525220F1DB6D000FD574 /* USD@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "USD@3x.png"; sourceTree = "<group>"; };
+		75F4525320F1DB6D000FD574 /* RUB@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RUB@3x.png"; sourceTree = "<group>"; };
 		DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DigitKeyboardView.swift; sourceTree = "<group>"; };
 		DF0B60AB20F0857E0018AC98 /* DigitKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DigitKeyboardView.xib; sourceTree = "<group>"; };
 		DF80D7FA20DE2A5A00ADC203 /* SyncPermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncPermissionsManager.swift; sourceTree = "<group>"; };
@@ -122,6 +140,7 @@
 		7524B990209B2A2C006027C8 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				75F4524D20F1D9CD000FD574 /* AppIcon */,
 				75C046E02098892600E8B09E /* TransactionsListViewController.swift */,
 				7524B98E209B284F006027C8 /* TransactionViewController.swift */,
 				75DE229420C3BC7000FD5C78 /* PulleyViewController */,
@@ -181,6 +200,19 @@
 				75DE229620C3BD2A00FD5C78 /* UIView+constrainToParent.swift */,
 			);
 			path = PulleyViewController;
+			sourceTree = "<group>";
+		};
+		75F4524D20F1D9CD000FD574 /* AppIcon */ = {
+			isa = PBXGroup;
+			children = (
+				75F4525020F1DB6D000FD574 /* JPY@2x.png */,
+				75F4524F20F1DB6C000FD574 /* JPY@3x.png */,
+				75F4524E20F1DB6C000FD574 /* RUB@2x.png */,
+				75F4525320F1DB6D000FD574 /* RUB@3x.png */,
+				75F4525120F1DB6D000FD574 /* USD@2x.png */,
+				75F4525220F1DB6D000FD574 /* USD@3x.png */,
+			);
+			path = AppIcon;
 			sourceTree = "<group>";
 		};
 		DF0B60A920F0843B0018AC98 /* Keyboard */ = {
@@ -294,7 +326,13 @@
 			files = (
 				75C046E92098892600E8B09E /* LaunchScreen.storyboard in Resources */,
 				DF0B60AE20F0857E0018AC98 /* DigitKeyboardView.xib in Resources */,
+				75F4525E20F1DB6D000FD574 /* RUB@3x.png in Resources */,
+				75F4525420F1DB6D000FD574 /* RUB@2x.png in Resources */,
+				75F4525620F1DB6D000FD574 /* JPY@3x.png in Resources */,
+				75F4525820F1DB6D000FD574 /* JPY@2x.png in Resources */,
 				75C046E62098892600E8B09E /* Assets.xcassets in Resources */,
+				75F4525C20F1DB6D000FD574 /* USD@3x.png in Resources */,
+				75F4525A20F1DB6D000FD574 /* USD@2x.png in Resources */,
 				75C046E42098892600E8B09E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -303,7 +341,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75F4525920F1DB6D000FD574 /* JPY@2x.png in Resources */,
+				75F4525720F1DB6D000FD574 /* JPY@3x.png in Resources */,
 				DF0B60AF20F0857E0018AC98 /* DigitKeyboardView.xib in Resources */,
+				75F4525D20F1DB6D000FD574 /* USD@3x.png in Resources */,
+				75F4525F20F1DB6D000FD574 /* RUB@3x.png in Resources */,
+				75F4525B20F1DB6D000FD574 /* USD@2x.png in Resources */,
+				75F4525520F1DB6D000FD574 /* RUB@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

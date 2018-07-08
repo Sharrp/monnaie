@@ -91,6 +91,8 @@ class TransactionViewController: UIViewController {
     updateDateButton(forDate: Date())
     clearCategory()
     setFocusOnAmount()
+    
+    updateAppIconToSelectedOrLocaleCurrency()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -255,5 +257,38 @@ extension TransactionViewController: DigitKeyboardDelegate {
     dateButtonBottomConstraint.constant = bottomConstraint
     inputFlowBottomConstraint.constant = bottomConstraint
     addButtonBottomConstraint.constant = bottomConstraint
+  }
+}
+
+extension TransactionViewController {
+  func updateAppIconToSelectedOrLocaleCurrency() {
+    guard UIApplication.shared.supportsAlternateIcons else { return }
+    guard !Settings.main.didChangeDefaultIcon else { return }
+    guard let currencyCode = Locale.current.currencyCode else { return }
+    
+    var currenciesWithCustomIcons = [String]()
+    if let bundleIcons = Bundle.main.object(forInfoDictionaryKey: "CFBundleIcons") as? [String: Any],
+      let alternateIcons = bundleIcons["CFBundleAlternateIcons"] as? [String: Any] {
+      currenciesWithCustomIcons = [String](alternateIcons.keys)
+    }
+    guard currenciesWithCustomIcons.contains(currencyCode) else { return }
+    
+    // Doesn't work in viewDidLoad without a small delay
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [unowned self] in
+      UIApplication.shared.setAlternateIconName(currencyCode) { (error) in
+        if let error = error {
+          print("\nICON ERROR: \(error)\n")
+          return
+        }
+        Settings.main.didChangeDefaultIcon = true
+      }
+      
+      // Ugly hack to not show "You changed app icon" alert
+      // We make a subtle change
+      let tempViewController = UIViewController()
+      self.present(tempViewController, animated: false, completion: {
+        tempViewController.dismiss(animated: false, completion: nil)
+      })
+    }
   }
 }
