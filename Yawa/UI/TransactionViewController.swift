@@ -278,16 +278,19 @@ extension TransactionViewController {
       UIApplication.shared.setAlternateIconName(currencyCode) { (error) in
         if let error = error {
           print("\nICON ERROR: \(error)\n")
+          Settings.main.didChangeDefaultIcon = false // sorry, but callback isn't called in case of success
           return
         }
-        Settings.main.didChangeDefaultIcon = true
       }
+      Settings.main.didChangeDefaultIcon = true
       
       // Ugly hack to not show "You changed app icon" alert
       // We make a subtle change
       let tempViewController = UIViewController()
       self.present(tempViewController, animated: false, completion: {
-        tempViewController.dismiss(animated: false, completion: nil)
+        tempViewController.dismiss(animated: false) {
+          self.amountInput.becomeFirstResponder() // show/dismissing controller removes focus from text field
+        }
       })
     }
   }
