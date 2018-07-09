@@ -229,7 +229,7 @@
                                 </connections>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ggY-Qh-ib6">
-                                <rect key="frame" x="70" y="356" width="235" height="56"/>
+                                <rect key="frame" x="68" y="356" width="239" height="56"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="56" id="mw9-Rl-yxA"/>
                                 </constraints>
@@ -306,11 +306,11 @@
                             <constraint firstItem="CMQ-FS-Azg" firstAttribute="top" secondItem="4Qm-UU-hIj" secondAttribute="top" constant="82" id="cxO-BR-gmm"/>
                             <constraint firstItem="ggY-Qh-ib6" firstAttribute="top" secondItem="CMQ-FS-Azg" secondAttribute="bottom" constant="8" id="eSQ-Ey-Pbp"/>
                             <constraint firstItem="ic6-Ub-Ojj" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="fOf-AO-rf9"/>
-                            <constraint firstItem="n2G-7X-LBj" firstAttribute="leading" secondItem="ggY-Qh-ib6" secondAttribute="trailing" constant="8" id="fjh-vY-Lo8"/>
+                            <constraint firstItem="n2G-7X-LBj" firstAttribute="leading" secondItem="ggY-Qh-ib6" secondAttribute="trailing" constant="6" id="fjh-vY-Lo8"/>
                             <constraint firstItem="TgH-T5-qXh" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="trailing" constant="-375" id="h86-VY-C8l"/>
                             <constraint firstItem="CIU-RV-71C" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="16" id="jms-3e-9gj"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="CMQ-FS-Azg" secondAttribute="trailing" id="lqb-U0-RSz"/>
-                            <constraint firstItem="ggY-Qh-ib6" firstAttribute="leading" secondItem="BLY-AK-Gmv" secondAttribute="trailing" constant="8" id="udu-za-ouI"/>
+                            <constraint firstItem="ggY-Qh-ib6" firstAttribute="leading" secondItem="BLY-AK-Gmv" secondAttribute="trailing" constant="6" id="udu-za-ouI"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="4Qm-UU-hIj"/>
                     </view>
