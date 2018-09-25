@@ -28,8 +28,8 @@ enum BladeState {
 class GuillotineViewController: UIViewController, GuillotineInfoProvider {
   
   private var bladeViewController: UIViewController!
-  @IBOutlet var bladeBottomInsetConstraint: NSLayoutConstraint!
-  @IBOutlet var bladeHeightConstraint: NSLayoutConstraint!
+  @IBOutlet weak var bladeBottomInsetConstraint: NSLayoutConstraint!
+  @IBOutlet weak var bladeHeightConstraint: NSLayoutConstraint!
   
   private var panGesture: UIPanGestureRecognizer!
   private var directionDetectionDistance: CGFloat = 10
@@ -74,6 +74,9 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
       bladeHeightConstraint.constant = view.frame.height - insets.bottom - bladeBottomInsetConstraint.constant + additionalHeightToCoverOnSprings
       bladeBottomInsetConstraint.constant = bottomInset(forState: bladeState)
       didntCaclulateInsetsYet = false
+      
+      // To compensate existence of additionalHeightToCoverOnSprings
+      bladeViewController.additionalSafeAreaInsets = UIEdgeInsetsMake(additionalHeightToCoverOnSprings + insets.top, 0, 0, 0)
     }
   }
   
