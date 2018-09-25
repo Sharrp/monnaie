@@ -95,11 +95,6 @@ class TransactionViewController: UIViewController {
     updateAppIconToSelectedOrLocaleCurrency()
   }
   
-  override func viewWillAppear(_ animated: Bool) {
-    let transactionsListVC = self.pulleyViewController!.drawerContentViewController as! TransactionsListViewController
-    delegate = transactionsListVC.dataProvider
-  }
-  
   @objc func appDidBecomeActive() {
     resetStateAfterBackground()
   }
@@ -231,6 +226,13 @@ class TransactionViewController: UIViewController {
     
     clearAmount()
     setFocusOnAmount()
+  }
+}
+
+extension TransactionViewController: GuillotineBladeUpdateDelegate {
+  func didUpdate(bladeVC: UIViewController) {
+    guard let transactionsListVC = bladeVC as? TransactionsListViewController else { return }
+    delegate = transactionsListVC.dataProvider
   }
 }
 
