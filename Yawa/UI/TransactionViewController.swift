@@ -42,6 +42,7 @@ class TransactionViewController: UIViewController {
   
   weak var delegate: TransactionUpdateDelegate?
   var transaction: Transaction?
+  private var guillotineInfoProvider: GuillotineInfoProvider?
   
   enum EditingMode {
     case amount
@@ -105,7 +106,7 @@ class TransactionViewController: UIViewController {
     clearCategory()
     userSetCategoryManually = false
     
-    if pulleyViewController?.drawerPosition == .open {
+    if guillotineInfoProvider?.bladeState == .collapsed {
       setFocusOnAmount()
     }
   }
@@ -230,20 +231,10 @@ class TransactionViewController: UIViewController {
 }
 
 extension TransactionViewController: GuillotineBladeUpdateDelegate {
-  func didUpdate(bladeVC: UIViewController) {
+  func didUpdate(bladeVC: UIViewController, infoProvider: GuillotineInfoProvider) {
     guard let transactionsListVC = bladeVC as? TransactionsListViewController else { return }
     delegate = transactionsListVC.dataProvider
-  }
-}
-
-extension TransactionViewController: PulleyPrimaryContentControllerDelegate {
-  func didSwitchTo(drawerPosition: PulleyPosition) {
-    switch drawerPosition {
-    case .open:
-      break
-    case .collapsed:
-      break
-    }
+    guillotineInfoProvider = infoProvider
   }
 }
 

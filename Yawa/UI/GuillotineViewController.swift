@@ -9,18 +9,23 @@
 import UIKit
 
 protocol GuillotineBaseUpdateDelegate {
-  func didUpdate(baseVC: UIViewController)
+  func didUpdate(baseVC: UIViewController, infoProvider: GuillotineInfoProvider)
 }
 
 protocol GuillotineBladeUpdateDelegate {
-  func didUpdate(bladeVC: UIViewController)
+  func didUpdate(bladeVC: UIViewController, infoProvider: GuillotineInfoProvider)
 }
 
-class GuillotineViewController: UIViewController {
-  private enum BladeState {
-    case collapsed
-    case expanded
-  }
+protocol GuillotineInfoProvider {
+  var bladeState: BladeState { get }
+}
+
+enum BladeState {
+  case collapsed
+  case expanded
+}
+
+class GuillotineViewController: UIViewController, GuillotineInfoProvider {
   
   private var bladeViewController: UIViewController!
   @IBOutlet var bladeBottomInsetConstraint: NSLayoutConstraint!
@@ -35,7 +40,7 @@ class GuillotineViewController: UIViewController {
   private let dampingRatio: CGFloat = 0.7
   private let duration = 0.35
   
-  private var bladeState = BladeState.collapsed
+  private(set) var bladeState = BladeState.collapsed
   private var collapsedBottomInset: CGFloat = 0
   private let expandedBottomInset: CGFloat = 32
   private var didntCaclulateInsetsYet = true
@@ -53,8 +58,8 @@ class GuillotineViewController: UIViewController {
     guard let baseVC = childViewControllers.first else { return }
     guard let bladeVC = childViewControllers.last else { return }
     bladeViewController = bladeVC
-    (baseVC as? GuillotineBladeUpdateDelegate)?.didUpdate(bladeVC: bladeVC)
-    (bladeVC as? GuillotineBaseUpdateDelegate)?.didUpdate(baseVC: baseVC)
+    (baseVC as? GuillotineBladeUpdateDelegate)?.didUpdate(bladeVC: bladeVC, infoProvider: self)
+    (bladeVC as? GuillotineBaseUpdateDelegate)?.didUpdate(baseVC: baseVC, infoProvider: self)
     bladeVC.view.layer.cornerRadius = 14
     
     view.addGestureRecognizer(panGesture)
