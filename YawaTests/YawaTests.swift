@@ -133,4 +133,18 @@ class YawaTransactionsControllerTests: XCTestCase {
     let expected = previousDaysAmount - 1
     XCTAssert(given == expected, "testConsistencyAfterRemovalTheOnlyTransactionInADay: \(expected) expected, \(given) given")
   }
+  
+  func testCategoriesSummary() {
+    let currentMonth = dataProvider.numberOfMonths() - 1
+    let summary = dataProvider.categoriesSummary(forMonth: currentMonth)
+    
+    let expectedAmounts: [Float] = [4270, 3426, 1258]
+    let expectedCategories: [TransactionCategory] = [.grocery, .cafe, .bills]
+    
+    XCTAssert(summary.count == expectedCategories.count, "Expected \(expectedCategories.count) categories in summary")
+    for i in 0..<expectedCategories.count {
+      XCTAssert(summary[i].amount == expectedAmounts[i], "Wrong amount for category \(i). Expected: \(expectedAmounts[i]), given: \(summary[i].amount)")
+      XCTAssert(summary[i].category == expectedCategories[i], "Wrong category at index \(i). Expected: \(summary[i].category), given: \(expectedCategories[i])")
+    }
+  }
 }
