@@ -100,7 +100,7 @@ class TransactionsController: TransactionsDataSource {
     return thisMonthTransactions.reduce(0) { $0 + $1.amount }
   }
   
-  func catgoriesSummary(forMonth month: Int) -> CategoriesSummary {
+  func categoriesSummary(forMonth month: Int) -> CategoriesSummary {
     let monthSection = index.months[month]
     let monthRange = monthSection.first..<monthSection.firstOfNext
     

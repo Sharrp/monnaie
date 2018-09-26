@@ -19,7 +19,7 @@ extension SummaryProvider: UITableViewDataSource {
   func updateData() {
     guard let transactionsController = transactionsController else { return }
     let currentMonth = transactionsController.numberOfMonths() - 1
-    summary = transactionsController.catgoriesSummary(forMonth: currentMonth)
+    summary = transactionsController.categoriesSummary(forMonth: currentMonth)
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
