@@ -8,7 +8,12 @@
 
 import UIKit
 
-class TransactionsListViewController: UIViewController {
+class HistorySummaryViewController: UIViewController {
+  private enum TransactionsViewMode: Int {
+    case history
+    case summary
+  }
+  
   @IBOutlet weak var tableView: UITableView!
   
   @IBOutlet weak var dayLabel: UILabel!
@@ -18,6 +23,9 @@ class TransactionsListViewController: UIViewController {
   
   private let dateFormatter = DateFormatter()
   let dataProvider = TransactionsController()
+  private let summaryProvider = SummaryProvider()
+  
+  private var historyLastContentOffset: CGFloat = 0
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -25,9 +33,9 @@ class TransactionsListViewController: UIViewController {
     dataProvider.presentor = self
     dateFormatter.dateStyle = .medium
     dateFormatter.timeStyle = .none
+    summaryProvider.transactionsController = dataProvider
     
     updateTotal()
-    
     scrollToBottom()
   }
   
@@ -45,9 +53,30 @@ class TransactionsListViewController: UIViewController {
     let numberOfRows = dataProvider.numberOfTransactions(forDay: days-1)
     tableView.scrollToRow(at: IndexPath(row: numberOfRows-1, section: days-1), at: .top, animated: false)
   }
+  
+  @IBAction func viewModeChanged(sender: UISegmentedControl) {
+    guard let viewMode = TransactionsViewMode(rawValue: sender.selectedSegmentIndex) else { return }
+    let contentOffset: CGFloat
+    switch viewMode {
+    case .history:
+      tableView.dataSource = self
+      tableView.delegate = nil
+      contentOffset = historyLastContentOffset
+    case .summary:
+      historyLastContentOffset = tableView.contentOffset.y
+      summaryProvider.updateData()
+      tableView.dataSource = summaryProvider
+      tableView.delegate = summaryProvider
+      contentOffset = 0
+    }
+    
+    tableView.reloadData()
+    tableView.layoutIfNeeded()
+    tableView.contentOffset = CGPoint(x: 0, y: contentOffset)
+  }
 }
 
-extension TransactionsListViewController: UITableViewDataSource {
+extension HistorySummaryViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
     return dataProvider.totalNumberOfDays()
   }
@@ -67,9 +96,8 @@ extension TransactionsListViewController: UITableViewDataSource {
       title = dateFormatter.string(from: day)
     }
     
-    // Daily amount in each section
-    let dailySum = dataProvider.totalAmount(forDay: section)
-    title += " — " + formatMoney(amount: dailySum, currency: .JPY)
+    let daySum = dataProvider.totalAmount(forDay: section)
+    title += " — " + formatMoney(amount: daySum, currency: .JPY)
     
     return title
   }
@@ -104,13 +132,13 @@ extension TransactionsListViewController: UITableViewDataSource {
   }
 }
 
-extension TransactionsListViewController: SyncNameUpdateDelegate {
+extension HistorySummaryViewController: SyncNameUpdateDelegate {
   func nameUpdated(toName name: String) {
     dataProvider.updateNameInTransactionsFromThisDevice(toNewName: name)
   }
 }
 
-extension TransactionsListViewController: TransactionsPresentor {
+extension HistorySummaryViewController: TransactionsPresentor {
   private func updateTotal() {
     let todaySum = dataProvider.totalAmountForToday()
     dayAmountLabel.text = formatMoney(amount: todaySum, currency: .JPY)

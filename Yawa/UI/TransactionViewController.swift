@@ -232,7 +232,7 @@ class TransactionViewController: UIViewController {
 
 extension TransactionViewController: GuillotineBladeUpdateDelegate {
   func didUpdate(bladeVC: UIViewController, infoProvider: GuillotineInfoProvider) {
-    guard let transactionsListVC = bladeVC as? TransactionsListViewController else { return }
+    guard let transactionsListVC = bladeVC as? HistorySummaryViewController else { return }
     delegate = transactionsListVC.dataProvider
     guillotineInfoProvider = infoProvider
   }

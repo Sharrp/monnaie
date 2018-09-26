@@ -29,6 +29,8 @@ protocol TransactionsPresentor: AnyObject {
   func didUpdateAll()
 }
 
+typealias CategoriesSummary = [(category: TransactionCategory, amount: Float)]
+
 class TransactionsController: TransactionsDataSource {
   private let storeManager = StoreManager()
   private(set) var transactions: [Transaction]
@@ -96,6 +98,21 @@ class TransactionsController: TransactionsDataSource {
   func totalAmountForCurrentMonth() -> Float {
     let thisMonthTransactions = transactions.filter { Calendar.current.isDate($0.date, equalTo: Date(), toGranularity: .month) }
     return thisMonthTransactions.reduce(0) { $0 + $1.amount }
+  }
+  
+  func catgoriesSummary(forMonth month: Int) -> CategoriesSummary {
+    let monthSection = index.months[month]
+    let monthRange = monthSection.first..<monthSection.firstOfNext
+    
+    var categoryToAmount = [TransactionCategory: Float]()
+    for transaction in transactions[monthRange] {
+      if let currentAmount = categoryToAmount[transaction.category] {
+        categoryToAmount[transaction.category] = currentAmount + transaction.amount
+      } else {
+        categoryToAmount[transaction.category] = transaction.amount
+      }
+    }
+    return categoryToAmount.keys.map{ (category: $0, amount: categoryToAmount[$0]!) }.sorted{ $0.amount > $1.amount }
   }
   
   var syncTransactions: [Transaction] {
