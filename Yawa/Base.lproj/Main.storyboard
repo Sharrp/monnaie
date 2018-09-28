@@ -161,13 +161,17 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WcN-ek-jOK">
-                                <rect key="frame" x="319" y="604" width="40" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="WcN-ek-jOK">
+                                <rect key="frame" x="303" y="590" width="56" height="56"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="40" id="MdR-WR-MYh"/>
-                                    <constraint firstAttribute="height" constant="30" id="Qxi-nr-xST"/>
+                                    <constraint firstAttribute="width" constant="56" id="MdR-WR-MYh"/>
+                                    <constraint firstAttribute="height" constant="56" id="Qxi-nr-xST"/>
                                 </constraints>
-                                <state key="normal" title="Sync"/>
+                                <state key="normal" image="sync-icon">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                                 <connections>
                                     <segue destination="Cq3-tA-THa" kind="presentation" id="Zmj-GF-4m1"/>
                                 </connections>
@@ -192,7 +196,7 @@
                                 </items>
                             </navigationBar>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Mhx-fL-oBB" secondAttribute="bottom" constant="49" id="0rs-bv-KiW"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="CX1-XE-AdQ" secondAttribute="trailing" constant="64" id="1XJ-Wn-LOi"/>
@@ -212,7 +216,7 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="NaU-ZR-wJp" secondAttribute="top" id="kUG-Rc-pLH"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="NaU-ZR-wJp" secondAttribute="trailing" id="knJ-DN-Q9l"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="fGI-zP-s8Q" secondAttribute="bottom" constant="102" id="r2h-ig-yi1"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="WcN-ek-jOK" secondAttribute="bottom" constant="33" id="vkZ-f3-IiG"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="WcN-ek-jOK" secondAttribute="bottom" constant="21" id="vkZ-f3-IiG"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -608,4 +612,7 @@ Feel free to change your name here 👇</string>
             <point key="canvasLocation" x="-2233" y="1852"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="sync-icon" width="112" height="112"/>
+    </resources>
 </document>
