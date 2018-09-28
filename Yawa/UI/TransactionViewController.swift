@@ -35,10 +35,11 @@ class TransactionViewController: UIViewController {
   @IBOutlet weak var inputFlowBottomConstraint: NSLayoutConstraint!
   @IBOutlet weak var addButtonBottomConstraint: NSLayoutConstraint!
   
-  @IBOutlet weak var categoryPicker: UISegmentedControl!
-  @IBOutlet weak var dateTimePicker: UIDatePicker!
-  
+  @IBOutlet weak var categoryCollectionView: UICollectionView!
+  private let categoriesProvider = CategoriesProvider()
   private var userSetCategoryManually = false
+  
+  @IBOutlet weak var dateTimePicker: UIDatePicker!
   
   weak var delegate: TransactionUpdateDelegate?
   var transaction: Transaction?
@@ -53,7 +54,7 @@ class TransactionViewController: UIViewController {
   private var editingMode = EditingMode.amount {
     didSet {
       dateTimePicker.isHidden = editingMode != .date
-      categoryPicker.isHidden = editingMode != .category
+      categoryCollectionView.isHidden = editingMode != .category
       if editingMode == .amount {
         setFocusOnAmount()
       } else {
@@ -71,13 +72,13 @@ class TransactionViewController: UIViewController {
     
     if let transaction = transaction {
       amountInput.text = formatMoney(amount: transaction.amount, currency: .JPY, symbolEnabled: false)
-      categoryPicker.selectedSegmentIndex = transaction.category.rawValue
+      selectCategory(atIndex: transaction.category.rawValue)
       dateTimePicker.date = transaction.date
       addButton.isEnabled = true
     }
     
     for button in [dateButton, inputFlowButton, addButton] {
-      button!.layer.cornerRadius = 5
+      button!.layer.cornerRadius = 8
       button!.clipsToBounds = true
       button!.setBackgroundColor(color: UIColor(white: 0.4, alpha: 1.0), forState: .normal)
       button!.setBackgroundColor(color: UIColor(white: 0.7, alpha: 1.0), forState: .highlighted)
@@ -88,6 +89,10 @@ class TransactionViewController: UIViewController {
     keyboardView.delegate = self
     keyboardView.textField = amountInput
     keyboardView.heightContraint = keyboardHeightConstraint
+    
+    categoryCollectionView.dataSource = categoriesProvider
+    categoryCollectionView.delegate = categoriesProvider
+    categoriesProvider.delegate = self
 
     updateDateButton(forDate: Date())
     clearCategory()
@@ -145,8 +150,20 @@ class TransactionViewController: UIViewController {
   
   // MARK: Category
   
+  private func selectCategory(atIndex index: Int) {
+    let indexPath = IndexPath(row: index, section: 0)
+    categoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .top)
+  }
+  
+  private func deselectCategory() {
+    guard let selectedItems = categoryCollectionView.indexPathsForSelectedItems else { return }
+    if selectedItems.count > 0 {
+      categoryCollectionView.deselectItem(at: selectedItems[0], animated: false)
+    }
+  }
+  
   private func clearCategory() {
-    categoryPicker.selectedSegmentIndex = UISegmentedControlNoSegment
+    deselectCategory()
     inputFlowButton.setTitle("Category", for: .normal)
   }
   
@@ -155,23 +172,16 @@ class TransactionViewController: UIViewController {
     if !inputFocused && !inputHasValidContent {
       title = "Back to amount"
     } else if userSetCategoryManually {
-      let category = TransactionCategory(rawValue: categoryPicker.selectedSegmentIndex)!
-      let name = categoryPicker.titleForSegment(at: categoryPicker.selectedSegmentIndex)!
-      title = "\(category.emoji) \(name)"
+      let category = categoriesProvider.selectedCategory
+      title = "\(category.emoji) \(category.name)"
     } else if inputHasValidContent { // set default category
-      let category = TransactionCategory(rawValue: 0)!
-      let name = categoryPicker.titleForSegment(at: 0)!
-      categoryPicker.selectedSegmentIndex = 0
-      title = "\(category.emoji) \(name)"
+      let category = TransactionCategory.defaultCategory
+      selectCategory(atIndex: category.rawValue)
+      title = "\(category.emoji) \(category.name)"
     } else {
       title = "Category"
     }
     inputFlowButton.setTitle(title, for: .normal)
-  }
-  
-  @IBAction func categoryChanged(sender: UISegmentedControl) {
-    userSetCategoryManually = true
-    updateCategoryButtonTitle()
   }
   
   @IBAction func categoryTapped() {
@@ -212,7 +222,7 @@ class TransactionViewController: UIViewController {
   
   @IBAction func addTapped() {
     let amount = Float(amountInput.text ?? "0")!
-    let category = TransactionCategory(rawValue: categoryPicker.selectedSegmentIndex)!
+    let category = categoriesProvider.selectedCategory
     
     if let transaction = transaction { // editing mode
       transaction.amount = amount
@@ -286,5 +296,12 @@ extension TransactionViewController {
         }
       })
     }
+  }
+}
+
+extension TransactionViewController: CategorySelectionDelegate {
+  func didSelect(category: TransactionCategory) {
+    userSetCategoryManually = true
+    updateCategoryButtonTitle()
   }
 }

@@ -16,6 +16,24 @@ enum TransactionCategory: Int, CustomStringConvertible {
   case bills
   case other
   
+  static func allCases() -> [TransactionCategory] {
+    var rawValue = 0
+    var cases = [TransactionCategory]()
+    while true {
+      if let enumValue = TransactionCategory(rawValue: rawValue) {
+        cases.append(enumValue)
+        rawValue += 1
+      } else {
+        break
+      }
+    }
+    return cases
+  }
+  
+  static var defaultCategory: TransactionCategory {
+    return .grocery
+  }
+  
   var description: String {
     return name
   }

@@ -17,6 +17,8 @@
 		7529F95A2157F2CA00FD8884 /* GuillotineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7529F9582157F2C900FD8884 /* GuillotineViewController.swift */; };
 		7529F95C215BCD6900FD8884 /* SummaryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7529F95B215BCD6900FD8884 /* SummaryProvider.swift */; };
 		7529F95D215BCD6900FD8884 /* SummaryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7529F95B215BCD6900FD8884 /* SummaryProvider.swift */; };
+		7529F95F215E7A9900FD8884 /* CategorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7529F95E215E7A9900FD8884 /* CategorySelection.swift */; };
+		7529F960215E7A9900FD8884 /* CategorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7529F95E215E7A9900FD8884 /* CategorySelection.swift */; };
 		75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046DE2098892500E8B09E /* AppDelegate.swift */; };
 		75C046E12098892600E8B09E /* HistorySummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046E02098892600E8B09E /* HistorySummaryViewController.swift */; };
 		75C046E42098892600E8B09E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C046E22098892600E8B09E /* Main.storyboard */; };
@@ -79,6 +81,7 @@
 		7524B995209B4451006027C8 /* SyncViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncViewController.swift; sourceTree = "<group>"; };
 		7529F9582157F2C900FD8884 /* GuillotineViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuillotineViewController.swift; sourceTree = "<group>"; };
 		7529F95B215BCD6900FD8884 /* SummaryProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryProvider.swift; sourceTree = "<group>"; };
+		7529F95E215E7A9900FD8884 /* CategorySelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySelection.swift; sourceTree = "<group>"; };
 		75C046DB2098892500E8B09E /* Yawa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yawa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75C046DE2098892500E8B09E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75C046E02098892600E8B09E /* HistorySummaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySummaryViewController.swift; sourceTree = "<group>"; };
@@ -144,6 +147,7 @@
 				75F4524D20F1D9CD000FD574 /* AppIcon */,
 				75C046E02098892600E8B09E /* HistorySummaryViewController.swift */,
 				7524B98E209B284F006027C8 /* TransactionViewController.swift */,
+				7529F95E215E7A9900FD8884 /* CategorySelection.swift */,
 				7529F9582157F2C900FD8884 /* GuillotineViewController.swift */,
 				75D32C0920AB1DA300D13420 /* Sync */,
 				75D32C0220A3093000D13420 /* HistorySummaryCells.swift */,
@@ -354,6 +358,7 @@
 				7524B992209B3497006027C8 /* Utilities.swift in Sources */,
 				7524B994209B3BD8006027C8 /* StoreManager.swift in Sources */,
 				7529F9592157F2CA00FD8884 /* GuillotineViewController.swift in Sources */,
+				7529F95F215E7A9900FD8884 /* CategorySelection.swift in Sources */,
 				DF80D7FF20DE851600ADC203 /* SyncController.swift in Sources */,
 				75D32C0B20AB1DB300D13420 /* SyncNameViewController.swift in Sources */,
 				7524B98B209AEF26006027C8 /* P2PSyncManager.swift in Sources */,
@@ -378,6 +383,7 @@
 				DF8C66DB20B06732008A7488 /* StoreManager.swift in Sources */,
 				DF8C66E020B0676F008A7488 /* HistorySummaryCells.swift in Sources */,
 				7529F95A2157F2CA00FD8884 /* GuillotineViewController.swift in Sources */,
+				7529F960215E7A9900FD8884 /* CategorySelection.swift in Sources */,
 				DF80D80020DE851600ADC203 /* SyncController.swift in Sources */,
 				DF8C66DF20B06761008A7488 /* Utilities.swift in Sources */,
 				DF8C66DD20B06747008A7488 /* SyncNameViewController.swift in Sources */,
