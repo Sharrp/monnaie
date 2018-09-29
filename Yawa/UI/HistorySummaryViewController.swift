@@ -132,6 +132,12 @@ extension HistorySummaryViewController: UITableViewDataSource {
   }
 }
 
+extension HistorySummaryViewController: BladeScrollViewDelegate {
+  var scrollView: UIScrollView? {
+    return tableView
+  }
+}
+
 extension HistorySummaryViewController: SyncNameUpdateDelegate {
   func nameUpdated(toName name: String) {
     dataProvider.updateNameInTransactionsFromThisDevice(toNewName: name)

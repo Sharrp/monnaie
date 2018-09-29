@@ -16,6 +16,10 @@ protocol GuillotineBladeUpdateDelegate {
   func didUpdate(bladeVC: UIViewController, infoProvider: GuillotineInfoProvider)
 }
 
+protocol BladeScrollViewDelegate {
+  var scrollView: UIScrollView? { get }
+}
+
 protocol GuillotineInfoProvider {
   var bladeState: BladeState { get }
 }
@@ -50,6 +54,7 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     panGesture = UIPanGestureRecognizer(target: self, action: #selector(panHandler))
+    panGesture.delegate = self
   }
   
   override func viewDidLoad() {
@@ -173,5 +178,15 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
   
   private func elasticTranslation(forExcess excess: CGFloat, onDistance distance: CGFloat) -> CGFloat {
     return distance * (1 + log10(1 + 0.5*excess/distance))
+  }
+}
+
+extension GuillotineViewController: UIGestureRecognizerDelegate {
+  // To avoid conflicts of the gesture with gestures in tableView
+  func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    guard let scrollView = (bladeViewController as? BladeScrollViewDelegate)?.scrollView else { return true }
+    let touchLocation = gestureRecognizer.location(ofTouch: 0, in: scrollView)
+    let touchesScrollView = scrollView.bounds.contains(touchLocation)
+    return !touchesScrollView
   }
 }
