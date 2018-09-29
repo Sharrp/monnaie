@@ -16,7 +16,7 @@ class YawaTransactionsControllerTests: XCTestCase {
   var currentMonth: Int!
   var currentYear: Int!
   var previousMonth: Int!
-  var previousMonthYear: Int!
+  var yearOfPreviousMonth: Int!
   
   override func setUp() {
     super.setUp()
@@ -25,11 +25,11 @@ class YawaTransactionsControllerTests: XCTestCase {
     currentYear =  calendar.component(.year, from: Date())
     let previousMonthDate = calendar.date(byAdding: .month, value: -1, to: Date())!
     previousMonth = calendar.component(.month, from: previousMonthDate)
-    previousMonthYear = calendar.component(.year, from: previousMonthDate)
+    yearOfPreviousMonth = calendar.component(.year, from: previousMonthDate)
     
     let data = [
-      [[previousMonthYear, previousMonth, 28], TransactionCategory.grocery, "Leya", 1156],
-      [[previousMonthYear, previousMonth, 28], TransactionCategory.grocery, "Leya", 1900],
+      [[yearOfPreviousMonth, previousMonth, 28], TransactionCategory.grocery, "Leya", 1156],
+      [[yearOfPreviousMonth, previousMonth, 28], TransactionCategory.grocery, "Leya", 1900],
       
       [[currentYear, currentMonth, 1], TransactionCategory.grocery, "Jimmy", 430],
       [[currentYear, currentMonth, 1], TransactionCategory.bills, "Jimmy", 88],
@@ -108,7 +108,7 @@ class YawaTransactionsControllerTests: XCTestCase {
   
   func testDaysDeterminedCorrectly() {
     let dates: [Date] = [
-      [previousMonthYear, previousMonth, 28],
+      [yearOfPreviousMonth, previousMonth, 28],
       [currentYear, currentMonth, 1],
       [currentYear, currentMonth, 3],
       [currentYear, currentMonth, 4]
