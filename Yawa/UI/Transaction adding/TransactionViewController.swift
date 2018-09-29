@@ -80,8 +80,8 @@ class TransactionViewController: UIViewController {
     for button in [dateButton, inputFlowButton, addButton] {
       button!.layer.cornerRadius = 8
       button!.clipsToBounds = true
-      button!.setBackgroundColor(color: UIColor(white: 0.4, alpha: 1.0), forState: .normal)
-      button!.setBackgroundColor(color: UIColor(white: 0.7, alpha: 1.0), forState: .highlighted)
+      button!.setBackgroundColor(color: UIColor(white: 1, alpha: 0.1), forState: .normal)
+      button!.setBackgroundColor(color: UIColor(white: 1, alpha: 0.3), forState: .highlighted)
     }
     dateButton.titleLabel?.numberOfLines = 2
     dateButton.titleLabel?.textAlignment = .center
