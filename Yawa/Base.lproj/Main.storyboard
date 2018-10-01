@@ -227,7 +227,6 @@
                         <outlet property="dayLabel" destination="UyP-Ai-Snf" id="Iaa-Cs-KKY"/>
                         <outlet property="monthAmountLabel" destination="CX1-XE-AdQ" id="4oA-cW-ngU"/>
                         <outlet property="monthLabel" destination="Mhx-fL-oBB" id="wrd-S6-u7X"/>
-                        <outlet property="syncButton" destination="WcN-ek-jOK" id="UQI-eu-DZf"/>
                         <outlet property="tableView" destination="fGI-zP-s8Q" id="Yii-n4-49b"/>
                     </connections>
                 </viewController>
