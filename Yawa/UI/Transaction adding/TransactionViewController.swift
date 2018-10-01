@@ -96,6 +96,8 @@ class TransactionViewController: UIViewController {
     categoryCollectionView.dataSource = categoriesProvider
     categoryCollectionView.delegate = categoriesProvider
     categoriesProvider.delegate = self
+    
+    dateTimePicker.setValue(UIColor.white, forKey: "textColor")
 
     updateDateButton(forDate: Date())
     clearCategory()
