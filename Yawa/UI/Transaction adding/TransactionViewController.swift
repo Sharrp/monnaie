@@ -77,6 +77,9 @@ class TransactionViewController: UIViewController {
       addButton.isEnabled = true
     }
     
+    let coloredPlaceholder = NSAttributedString(string: "¥0", attributes: [.foregroundColor: UIColor(white: 1.0, alpha: 0.3)])
+    amountInput.attributedPlaceholder = coloredPlaceholder
+    
     for button in [dateButton, inputFlowButton, addButton] {
       button!.layer.cornerRadius = 8
       button!.clipsToBounds = true
