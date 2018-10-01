@@ -161,12 +161,12 @@
                                 <color key="textColor" white="1" alpha="0.80317451584507038" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="TopLeft" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="WcN-ek-jOK">
-                                <rect key="frame" x="16" y="606" width="40" height="40"/>
+                            <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="WcN-ek-jOK">
+                                <rect key="frame" x="8" y="598" width="56" height="56"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="40" id="MdR-WR-MYh"/>
-                                    <constraint firstAttribute="height" constant="40" id="Qxi-nr-xST"/>
+                                    <constraint firstAttribute="width" constant="56" id="MdR-WR-MYh"/>
+                                    <constraint firstAttribute="height" constant="56" id="Qxi-nr-xST"/>
                                 </constraints>
                                 <state key="normal" image="sync-icon">
                                     <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -212,11 +212,11 @@
                             <constraint firstItem="fGI-zP-s8Q" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="daT-I6-qKh"/>
                             <constraint firstItem="Mhx-fL-oBB" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="80" id="guq-MN-BXX"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="CX1-XE-AdQ" secondAttribute="bottom" constant="20" id="ho9-Ix-PVj"/>
-                            <constraint firstItem="WcN-ek-jOK" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="jUA-m9-vbE"/>
+                            <constraint firstItem="WcN-ek-jOK" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="jUA-m9-vbE"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="NaU-ZR-wJp" secondAttribute="top" id="kUG-Rc-pLH"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="NaU-ZR-wJp" secondAttribute="trailing" id="knJ-DN-Q9l"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="fGI-zP-s8Q" secondAttribute="bottom" constant="102" id="r2h-ig-yi1"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="WcN-ek-jOK" secondAttribute="bottom" constant="21" id="vkZ-f3-IiG"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="WcN-ek-jOK" secondAttribute="bottom" constant="13" id="vkZ-f3-IiG"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -227,6 +227,7 @@
                         <outlet property="dayLabel" destination="UyP-Ai-Snf" id="Iaa-Cs-KKY"/>
                         <outlet property="monthAmountLabel" destination="CX1-XE-AdQ" id="4oA-cW-ngU"/>
                         <outlet property="monthLabel" destination="Mhx-fL-oBB" id="wrd-S6-u7X"/>
+                        <outlet property="syncButton" destination="WcN-ek-jOK" id="UQI-eu-DZf"/>
                         <outlet property="tableView" destination="fGI-zP-s8Q" id="Yii-n4-49b"/>
                     </connections>
                 </viewController>
@@ -614,6 +615,6 @@ Feel free to change your name here 👇</string>
         </scene>
     </scenes>
     <resources>
-        <image name="sync-icon" width="112" height="112"/>
+        <image name="sync-icon" width="80" height="80"/>
     </resources>
 </document>

@@ -20,6 +20,7 @@ class HistorySummaryViewController: UIViewController {
   @IBOutlet weak var dayAmountLabel: UILabel!
   @IBOutlet weak var monthLabel: UILabel!
   @IBOutlet weak var monthAmountLabel: UILabel!
+  @IBOutlet weak var syncButton: UIButton!
   
   private let dateFormatter = DateFormatter()
   let dataProvider = TransactionsController()
@@ -34,6 +35,8 @@ class HistorySummaryViewController: UIViewController {
     dateFormatter.dateStyle = .medium
     dateFormatter.timeStyle = .none
     summaryProvider.transactionsController = dataProvider
+    
+    syncButton.imageView?.contentMode = .scaleAspectFit
     
     updateTotal()
     scrollToBottom()
