@@ -24,13 +24,18 @@ protocol GuillotineInfoProvider {
   var bladeState: BladeState { get }
 }
 
+protocol GuilliotineSlideProgressDelegate {
+  func didUpdateProgress(to progress: CGFloat)
+  func willSwitch(toState: BladeState, withDuration: Double, andTimingProvider: UITimingCurveProvider)
+}
+
 enum BladeState {
   case collapsed
   case expanded
 }
 
 class GuillotineViewController: UIViewController, GuillotineInfoProvider {
-  
+  private var baseViewController: UIViewController!
   private var bladeViewController: UIViewController!
   @IBOutlet weak var bladeBottomInsetConstraint: NSLayoutConstraint!
   @IBOutlet weak var bladeHeightConstraint: NSLayoutConstraint!
@@ -62,6 +67,7 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
     
     guard let baseVC = childViewControllers.first else { return }
     guard let bladeVC = childViewControllers.last else { return }
+    baseViewController = baseVC
     bladeViewController = bladeVC
     (baseVC as? GuillotineBladeUpdateDelegate)?.didUpdate(bladeVC: bladeVC, infoProvider: self)
     (bladeVC as? GuillotineBaseUpdateDelegate)?.didUpdate(baseVC: baseVC, infoProvider: self)
@@ -120,9 +126,10 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
       if panIsNotVertical { break }
       
       let timingProvider = UISpringTimingParameters(dampingRatio: dampingRatio)
-      let animator = UIViewPropertyAnimator(duration: 0.8*duration, timingParameters: timingProvider)
+      let finishingDuration = 0.8*duration
+      let animator = UIViewPropertyAnimator(duration: finishingDuration, timingParameters: timingProvider)
       
-      // Determine next state
+      // Determine the next state
       let velocity = pan.velocity(in: view)
       if velocity.y == 0 {
         let inititalInset = bottomInset(forState: bladeState)
@@ -140,6 +147,7 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
         self.view.layoutIfNeeded()
       }
       animator.startAnimation()
+      (baseViewController as? GuilliotineSlideProgressDelegate)?.willSwitch(toState: bladeState, withDuration: finishingDuration, andTimingProvider: timingProvider)
     case .possible:
       break
     }
@@ -174,6 +182,9 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
     }
     bladeBottomInsetConstraint.constant = displayedInset
     view.setNeedsLayout()
+    
+    let progress = (collapsedBottomInset - displayedInset) / distance
+    (baseViewController as? GuilliotineSlideProgressDelegate)?.didUpdateProgress(to: progress)
   }
   
   private func elasticTranslation(forExcess excess: CGFloat, onDistance distance: CGFloat) -> CGFloat {

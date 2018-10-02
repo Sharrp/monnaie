@@ -41,11 +41,12 @@ class TransactionViewController: UIViewController {
   
   @IBOutlet weak var dateTimePicker: UIDatePicker!
   
+  private var controlsAnimator = UIViewPropertyAnimator()
   weak var delegate: TransactionUpdateDelegate?
   var transaction: Transaction?
   private var guillotineInfoProvider: GuillotineInfoProvider?
   
-  enum EditingMode {
+  private enum EditingMode {
     case amount
     case date
     case category
@@ -308,5 +309,41 @@ extension TransactionViewController: CategorySelectionDelegate {
   func didSelect(category: TransactionCategory) {
     userSetCategoryManually = true
     updateCategoryButtonTitle()
+  }
+}
+
+extension TransactionViewController: GuilliotineSlideProgressDelegate {
+  func didUpdateProgress(to progress: CGFloat) {
+    let restrictedProgress = min(1, max(0, progress))
+    let targetTransform = CGAffineTransform(translationX: 0, y: keyboardView.frame.height * restrictedProgress)
+    for control in [keyboardView, inputFlowButton, dateButton, addButton, categoryCollectionView, dateTimePicker] {
+      control?.transform = targetTransform
+      control?.alpha = 1 - restrictedProgress
+    }
+    amountInput.alpha = 1 - 4*restrictedProgress
+  }
+  
+  func willSwitch(toState bladeState: BladeState, withDuration duration: Double, andTimingProvider timing: UITimingCurveProvider) {
+    let targetTransform: CGAffineTransform
+    let targetAlpha: CGFloat
+    switch bladeState {
+    case .collapsed:
+      targetTransform = .identity
+      targetAlpha = 1
+    case .expanded:
+      targetTransform = CGAffineTransform(translationX: 0, y: view.frame.height - inputFlowButton.frame.origin.y)
+      targetAlpha = 0
+    }
+    
+    controlsAnimator = UIViewPropertyAnimator(duration: duration, timingParameters: timing)
+    controlsAnimator.addAnimations { [unowned self] in
+      let controlsToUpdateTransform: [UIView] = [self.keyboardView, self.inputFlowButton, self.dateButton, self.addButton, self.categoryCollectionView, self.dateTimePicker]
+      for control in controlsToUpdateTransform {
+        control.transform = targetTransform
+        control.alpha = targetAlpha
+      }
+      self.amountInput.alpha = targetAlpha
+    }
+    controlsAnimator.startAnimation()
   }
 }
