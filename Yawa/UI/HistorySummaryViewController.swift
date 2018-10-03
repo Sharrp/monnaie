@@ -14,6 +14,8 @@ class HistorySummaryViewController: UIViewController {
     case summary
   }
   
+  @IBOutlet weak var navigationBar: UINavigationBar!
+  private var navBarBorder = UIView()
   @IBOutlet weak var tableView: UITableView!
   
   @IBOutlet weak var dayLabel: UILabel!
@@ -34,9 +36,21 @@ class HistorySummaryViewController: UIViewController {
     dateFormatter.dateStyle = .medium
     dateFormatter.timeStyle = .none
     summaryProvider.transactionsController = dataProvider
+    tableView.separatorColor = UIColor(white: 1, alpha: 0.2)
+    
+    navigationBar.setBackgroundImage(UIImage(), for: .default)
+    navigationBar.shadowImage = UIImage()
+    navigationBar.isTranslucent = true
+    navigationBar.addSubview(navBarBorder)
+    navBarBorder.backgroundColor = UIColor(white: 1, alpha: 0.2)
     
     updateTotal()
     scrollToBottom()
+  }
+  
+  override func loadView() {
+    super.loadView()
+    navBarBorder.frame = CGRect(x: 0, y: navigationBar.frame.height, width: view.frame.width, height: 1)
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -112,12 +126,16 @@ extension HistorySummaryViewController: UITableViewDataSource {
     }
     
     let transaction = dataProvider.transaction(forDay: indexPath.section, withIndex: indexPath.row)
-    cell.textLabel?.text = "\(transaction.category)"
+    cell.backgroundColor = .clear
+    cell.emojiLabel.text = "\(transaction.category.emoji)"
+    cell.categoryLabel.text = "\(transaction.category.name)"
     cell.amountLabel.text = formatMoney(amount: transaction.amount, currency: .JPY)
-    if transaction.authorName != Settings.main.syncName {
-      cell.detailTextLabel?.text = "\(transaction.authorName)"
+    if transaction.authorName == Settings.main.syncName {
+      cell.authorLabel.text = ""
+      cell.topMarginConstraint.constant = 19
     } else {
-      cell.detailTextLabel?.text = ""
+      cell.authorLabel.text = "\(transaction.authorName)"
+      cell.topMarginConstraint.constant = 8
     }
     return cell
   }
@@ -129,6 +147,18 @@ extension HistorySummaryViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     guard editingStyle == .delete else { return }
     dataProvider.removeTransaction(inDay: indexPath.section, withIndex: indexPath.row)
+  }
+}
+
+extension HistorySummaryViewController: UITableViewDelegate {
+  func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    view.tintColor = .clear
+    guard let header = view as? UITableViewHeaderFooterView else { return }
+    header.textLabel?.textColor = UIColor(white: 1, alpha: 0.8)
+  }
+  
+  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    return 60
   }
 }
 

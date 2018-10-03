@@ -9,6 +9,10 @@
 import UIKit
 
 class TransactionCell: UITableViewCell {
+  @IBOutlet weak var emojiLabel: UILabel!
+  @IBOutlet weak var categoryLabel: UILabel!
+  @IBOutlet weak var authorLabel: UILabel!
+  @IBOutlet weak var topMarginConstraint: NSLayoutConstraint!
   @IBOutlet var amountLabel: UILabel!
 }
 

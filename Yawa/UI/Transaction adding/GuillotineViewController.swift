@@ -82,12 +82,12 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
     if didntCaclulateInsetsYet {
       let insets = view.safeAreaInsets
       collapsedBottomInset = view.frame.height - insets.top - insets.bottom - alwaysVisibleHeight
-      bladeHeightConstraint.constant = view.frame.height - insets.bottom - bladeBottomInsetConstraint.constant + additionalHeightToCoverOnSprings
+      bladeHeightConstraint.constant = view.frame.height - insets.bottom - bladeBottomInsetConstraint.constant //+ additionalHeightToCoverOnSprings
       bladeBottomInsetConstraint.constant = bottomInset(forState: bladeState)
       didntCaclulateInsetsYet = false
       
       // To compensate existence of additionalHeightToCoverOnSprings
-      bladeViewController.additionalSafeAreaInsets = UIEdgeInsetsMake(additionalHeightToCoverOnSprings + insets.top, 0, 0, 0)
+//      bladeViewController.additionalSafeAreaInsets = UIEdgeInsetsMake(additionalHeightToCoverOnSprings + insets.top, 0, 0, 0)
     }
   }
   

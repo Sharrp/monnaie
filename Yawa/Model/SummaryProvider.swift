@@ -18,6 +18,7 @@ class SummaryProvider: NSObject {
 extension SummaryProvider: UITableViewDataSource {
   func updateData() {
     guard let transactionsController = transactionsController else { return }
+    guard transactionsController.numberOfMonths() > 0 else { return }
     let currentMonth = transactionsController.numberOfMonths() - 1
     summary = transactionsController.categoriesSummary(forMonth: currentMonth)
   }
@@ -39,6 +40,7 @@ extension SummaryProvider: UITableViewDataSource {
       cell = SummaryCell(style: .default, reuseIdentifier: cellID)
     }
     
+    cell.backgroundColor = .clear
     cell.emojiLabel.text = categoryInfo.category.emoji
     cell.categoryLabel.text = categoryInfo.category.name
     
@@ -54,5 +56,9 @@ extension SummaryProvider: UITableViewDataSource {
 extension SummaryProvider: UITableViewDelegate {
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return 60
+  }
+  
+  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    return .leastNormalMagnitude
   }
 }
