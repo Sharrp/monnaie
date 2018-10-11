@@ -16,6 +16,16 @@ enum TransactionCategory: Int, CustomStringConvertible {
   case bills
   case other
   
+  init?(name: String) {
+    for category in TransactionCategory.allCases() {
+      if category.name == name {
+        self = category
+        return
+      }
+    }
+    return nil
+  }
+  
   static func allCases() -> [TransactionCategory] {
     var rawValue = 0
     var cases = [TransactionCategory]()
@@ -75,16 +85,14 @@ class Transaction: NSObject, NSCoding {
   var date: Date // date of transaction in real world (set by user)
   let createdDate: Date // date when user created the transaction
   var modifiedDate: Date // last modification date
-  private let authorID: String
   
-  init(amount: Float, category: TransactionCategory, authorName: String, date: Date) {
+  init(amount: Float, category: TransactionCategory, authorName: String, transactionDate: Date, creationDate: Date = Date()) {
     self.amount = amount
     self.category = category
     self.authorName = authorName
-    self.date = date
-    self.createdDate = Date()
-    self.modifiedDate = self.createdDate
-    authorID = deviceUniqueIdentifier()
+    self.date = transactionDate
+    self.createdDate = creationDate
+    self.modifiedDate = Date()
   }
   
   required init(coder decoder: NSCoder) {
@@ -96,7 +104,6 @@ class Transaction: NSObject, NSCoding {
     date = decoder.decodeObject(forKey: "date") as! Date
     createdDate = decoder.decodeObject(forKey: "createdDate") as! Date
     modifiedDate = decoder.decodeObject(forKey: "modifiedDate") as! Date
-    authorID = decoder.decodeObject(forKey: "authorID") as! String
   }
   
   func encode(with coder: NSCoder) {
@@ -107,23 +114,17 @@ class Transaction: NSObject, NSCoding {
     coder.encode(date, forKey: "date")
     coder.encode(createdDate, forKey: "createdDate")
     coder.encode(modifiedDate, forKey: "modifiedDate")
-    coder.encode(authorID, forKey: "authorID")
-  }
-  
-  var isCreatedOnCurrentDevice: Bool {
-    return authorID == deviceUniqueIdentifier()
   }
 }
 
 extension Transaction {
   override func isEqual(_ object: Any?) -> Bool {
     guard let transaction = object as? Transaction else { return false }
-    let equal = authorID == transaction.authorID && date == transaction.date
-    return equal
+    return date == transaction.date
   }
   
   override var hashValue: Int {
-    return "\(authorID)\(date)".hashValue
+    return "\(date)".hashValue
   }
 }
 

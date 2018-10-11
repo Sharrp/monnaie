@@ -137,10 +137,11 @@ class TransactionsController: TransactionsDataSource {
   
   func updateNameInTransactionsFromThisDevice(toNewName name: String) {
     for transaction in transactions {
-      if transaction.isCreatedOnCurrentDevice {
-        transaction.authorName = name
-        transaction.modifiedDate = Date()
-      }
+      // FIXME
+//      if transaction.isCreatedOnCurrentDevice {
+//        transaction.authorName = name
+//        transaction.modifiedDate = Date()
+//      }
     }
     rebuiltIndexAndNotify()
   }
@@ -223,5 +224,96 @@ extension TransactionsController: MergeDelegate {
   func mergeDone(updatedTransactions transactions: [Transaction]) {
     self.transactions = transactions
     rebuiltIndexAndNotify()
+  }
+}
+
+// CSV export / import
+extension TransactionsController {
+  private var dateFormatString: String {
+    return "yyyy-MM-dd_HH:mm:ss.SSS"
+  }
+  
+  func exportDataAsCSV() -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = dateFormatString
+    
+    var csv = "transaction date;creation date;author;category;amount\n"
+    for t in transactions {
+      let createdDate = dateFormatter.string(from: t.createdDate)
+      let transactionDate = dateFormatter.string(from: t.date)
+      csv += "\(transactionDate);\(createdDate);\(t.authorName);\(t.category.name);\(t.amount)\n"
+    }
+    return csv
+  }
+  
+  enum ImportMode {
+    case merge
+    case replace
+  }
+  
+  enum ImportResult {
+    case success(String)
+    case failure(String)
+    
+    var title: String {
+      switch self {
+      case .success:
+        return "Import finished"
+      case .failure:
+        return "Import failed"
+      }
+    }
+    
+    var message: String {
+      switch self {
+      case .success(let text):
+        return text
+      case .failure(let text):
+        return text
+      }
+    }
+  }
+  
+  func importDataFromCSV(csv: String?, mode: ImportMode) -> ImportResult {
+    let failureResult = ImportResult.failure("""
+        First line of CSV should have column titles.
+        Other lines are transactions with format:
+        {transaction date};{creation date};{author};{category};{amount}.
+        Export your existing data to have an example.
+    """)
+    guard let csv = csv else { return failureResult }
+    
+    var importedTransactions = [Transaction]()
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = dateFormatString
+    for (i, line) in csv.components(separatedBy: "\n").enumerated() {
+      if i == 0 { continue } // Skip title line
+      let components = line.components(separatedBy: ";")
+      guard components.count == 5 else { return failureResult }
+      let author = components[2]
+      let categoryName = components[3]
+      guard let transactionDate = dateFormatter.date(from: components[0]),
+        let creationDate = dateFormatter.date(from: components[1]),
+        author.count > 0,
+        let category = TransactionCategory(name: categoryName),
+        let amount = Float(components[4])
+        else { continue }
+      
+      let transaction = Transaction(amount: amount, category: category, authorName: author,
+                                    transactionDate: transactionDate, creationDate: creationDate)
+      importedTransactions.append(transaction)
+    }
+    guard importedTransactions.count > 0 else { return failureResult }
+    
+    switch mode {
+    case .merge:
+      for transaction in importedTransactions {
+        insertWithSort(transaction: transaction)
+      }
+    case .replace:
+      self.transactions = importedTransactions.sorted { $0.date < $1.date }
+    }
+    rebuiltIndexAndNotify()
+    return .success("Successfully imported \(importedTransactions.count) transactions")
   }
 }

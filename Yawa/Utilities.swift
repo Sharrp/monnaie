@@ -15,6 +15,20 @@ func deviceUniqueIdentifier() -> String {
   return "\(UIDevice.current.name.hashValue)"
 }
 
+extension FileManager {
+  func removeFiles(fromDirectory dirPath: String) {
+    do {
+      let files = try contentsOfDirectory(atPath: dirPath)
+      for fileName in files {
+        let filePath = dirPath + "/" + fileName
+        try removeItem(atPath: filePath)
+      }
+    } catch let error {
+      print("Error while cleaning directory \(dirPath): \(error)")
+    }
+  }
+}
+
 enum Currency {
   case JPY
 }

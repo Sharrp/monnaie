@@ -48,6 +48,23 @@ class HistorySummaryViewController: UIViewController {
     scrollToBottom()
   }
   
+  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    shareCsv()
+  }
+  
+  private func shareCsv() {
+    let filename = NSTemporaryDirectory() + "/export-finances-\(Date()).csv".replacingOccurrences(of: " ", with: "_")
+    let csv = dataProvider.exportDataAsCSV()
+    do {
+      try csv.write(toFile: filename, atomically: true, encoding: String.Encoding.utf8)
+      let fileURL = NSURL(fileURLWithPath: filename)
+      let activityVC = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+      present(activityVC, animated: true, completion: nil)
+    } catch let error {
+      print("cannot write file: \(error)")
+    }
+  }
+  
   override func loadView() {
     super.loadView()
     navBarBorder.frame = CGRect(x: 0, y: navigationBar.frame.height, width: view.frame.width, height: 1)

@@ -36,7 +36,7 @@ enum BladeState {
 
 class GuillotineViewController: UIViewController, GuillotineInfoProvider {
   private var baseViewController: UIViewController!
-  private var bladeViewController: UIViewController!
+  var bladeViewController: UIViewController!
   @IBOutlet weak var bladeBottomInsetConstraint: NSLayoutConstraint!
   @IBOutlet weak var bladeHeightConstraint: NSLayoutConstraint!
   
