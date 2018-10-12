@@ -50,6 +50,10 @@ class TransactionsController: TransactionsDataSource {
     index = buildTableIndex(transactions)
   }
   
+  func numberOfTransactions() -> Int {
+    return transactions.count
+  }
+  
   func numberOfMonths() -> Int {
     return index.months.count
   }

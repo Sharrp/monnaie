@@ -34,12 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     guard let rootVC = window?.rootViewController as? GuillotineViewController else { return }
     guard let targetVC = rootVC.bladeViewController as? HistorySummaryViewController else { return }
     let importer = targetVC.dataProvider
-    let handleImportResult = { [weak self] (result: TransactionsController.ImportResult) in
-      let alertController = UIAlertController(title: result.title, message: result.message, preferredStyle: .alert)
-      let okAction = UIAlertAction(title: "Ok", style: .default)
-      alertController.addAction(okAction)
-      self?.window?.rootViewController?.present(alertController, animated: true)
-      
+    
+    let removeImportedFile = {
       do {
         try FileManager.default.removeItem(at: fileURL)
       } catch {
@@ -47,21 +43,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       }
     }
     
-    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-    let mergeAction = UIAlertAction(title: "Merge", style: .default) { action in
+    let handleImportResult = { [weak self] (result: TransactionsController.ImportResult) in
+      let alertController = UIAlertController(title: result.title, message: result.message, preferredStyle: .alert)
+      let okAction = UIAlertAction(title: "Ok", style: .default)
+      alertController.addAction(okAction)
+      self?.window?.rootViewController?.present(alertController, animated: true)
+      
+      removeImportedFile()
+    }
+    
+    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+      removeImportedFile()
+    }
+    let mergeAction = UIAlertAction(title: "Merge", style: .default) { _ in
       let csv = try? String(contentsOf: fileURL)
       let result = importer.importDataFromCSV(csv: csv, mode: .merge)
-      handleImportResult(result)
-    }
-    let replaceAction = UIAlertAction(title: "Replace", style: .destructive) { action in
-      let csv = try? String(contentsOf: fileURL)
-      let result = importer.importDataFromCSV(csv: csv, mode: .replace)
       handleImportResult(result)
     }
     
     let message = "Please choose how to add transactions from \"\(fileURL.lastPathComponent)\" to your existing transactions"
     let alertController = UIAlertController(title: "Choose CSV import mode", message: message, preferredStyle: .actionSheet)
-    [cancelAction, mergeAction, replaceAction].forEach { alertController.addAction($0) }
+    [cancelAction, mergeAction].forEach { alertController.addAction($0) }
+    
+    if importer.numberOfTransactions() > 0 {
+      let replaceAction = UIAlertAction(title: "Replace", style: .destructive) { _ in
+        let csv = try? String(contentsOf: fileURL)
+        let result = importer.importDataFromCSV(csv: csv, mode: .replace)
+        handleImportResult(result)
+      }
+      alertController.addAction(replaceAction)
+    }
+    
     window?.rootViewController?.present(alertController, animated: true)
   }
 }
