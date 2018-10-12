@@ -53,15 +53,21 @@ class HistorySummaryViewController: UIViewController {
   }
   
   private func shareCsv() {
-    let filename = NSTemporaryDirectory() + "/export-finances-\(Date()).csv".replacingOccurrences(of: " ", with: "_")
+    let filename = NSTemporaryDirectory() + "export-finances-\(Date()).csv".replacingOccurrences(of: " ", with: "_")
     let csv = dataProvider.exportDataAsCSV()
     do {
       try csv.write(toFile: filename, atomically: true, encoding: String.Encoding.utf8)
-      let fileURL = NSURL(fileURLWithPath: filename)
+      let fileURL = URL(fileURLWithPath: filename)
       let activityVC = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
-      present(activityVC, animated: true, completion: nil)
-    } catch let error {
-      print("cannot write file: \(error)")
+      activityVC.completionWithItemsHandler = { _, completed, _, _ in
+        guard completed else { return }
+        // Clean entire directory instead of one file
+        // in case any of previous exports were interrupted after file creation but before shraing is finished
+        FileManager.default.removeFiles(fromDirectory: NSTemporaryDirectory())
+      }
+      present(activityVC, animated: true)
+    } catch {
+      print("Cannot write export file: \(error)")
     }
   }
   
