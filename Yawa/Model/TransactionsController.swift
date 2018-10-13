@@ -140,14 +140,14 @@ class TransactionsController: TransactionsDataSource {
   }
   
   func updateNameInTransactionsFromThisDevice(toNewName name: String) {
-    for transaction in transactions {
+//    for transaction in transactions {
       // FIXME
 //      if transaction.isCreatedOnCurrentDevice {
 //        transaction.authorName = name
 //        transaction.modifiedDate = Date()
 //      }
-    }
-    rebuiltIndexAndNotify()
+//    }
+//    rebuiltIndexAndNotify()
   }
   
   private func rebuiltIndexAndNotify(aboutDays days: [Int]? = nil) {

@@ -234,7 +234,6 @@ class TransactionViewController: UIViewController {
       transaction.amount = amount
       transaction.category = category
       transaction.date = dateTimePicker.date
-      transaction.modifiedDate = Date()
       delegate?.update(transaction: transaction)
     } else { // adding new transaction
       let transaction = Transaction(amount: amount, category: category, authorName: Settings.main.syncName, transactionDate: dateTimePicker.date)
