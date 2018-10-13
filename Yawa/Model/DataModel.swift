@@ -140,7 +140,7 @@ extension Transaction {
   }
   
   override var hash: Int {
-    return date.hashValue
+    return createdDate.hashValue
   }
 }
 
