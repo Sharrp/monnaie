@@ -292,6 +292,7 @@ extension TransactionsController {
     dateFormatter.dateFormat = dateFormatString
     for (i, line) in csv.components(separatedBy: "\n").enumerated() {
       if i == 0 { continue } // Skip title line
+      guard line.count > 0 else { continue }
       let components = line.components(separatedBy: ";")
       guard components.count == 5 else { return failureResult }
       let author = components[2]
