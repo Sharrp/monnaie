@@ -76,7 +76,7 @@ protocol SyncPresentorDelegate: AnyObject {
 }
 
 protocol SyncDataDelegate: AnyObject {
-  func canStartSync(withBuddy buddy: SyncBuddy)
+  func startSync(withBuddy buddy: SyncBuddy)
   func receive(data: Data, fromBuddy: SyncBuddy)
 }
 
@@ -208,7 +208,7 @@ extension P2PSyncManager: MCSessionDelegate {
     DispatchQueue.main.async { [weak self] in
       self?.presentor?.syncInProgress(withBuddy: buddy)
     }
-    dataDelegate?.canStartSync(withBuddy: buddy)
+    dataDelegate?.startSync(withBuddy: buddy)
   }
   
   private func handle(syncRequest request: SyncRequest, forBuddy buddy: SyncBuddy) {
