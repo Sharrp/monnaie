@@ -30,6 +30,14 @@
 		75D32C0B20AB1DB300D13420 /* SyncNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */; };
 		75D32C0D20AB202E00D13420 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0C20AB202E00D13420 /* Settings.swift */; };
 		75DBCAAB2171A40900B7476A /* Merger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DBCAAA2171A40900B7476A /* Merger.swift */; };
+		75DBCAAD2171A94000B7476A /* YawaMergerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DBCAAC2171A94000B7476A /* YawaMergerTests.swift */; };
+		75DBCAAE2171A94B00B7476A /* Merger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DBCAAA2171A40900B7476A /* Merger.swift */; };
+		75DBCAB12171AB1B00B7476A /* initial.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCAB02171AB1B00B7476A /* initial.csv */; };
+		75DBCAB32171FA3600B7476A /* updated-both.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCAB22171FA3600B7476A /* updated-both.csv */; };
+		75DBCAB5217201ED00B7476A /* deleted-both.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCAB42171FD5100B7476A /* deleted-both.csv */; };
+		75DBCAB92172061800B7476A /* real-life-initial-remote.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCAB82172060100B7476A /* real-life-initial-remote.csv */; };
+		75DBCABB21720F3800B7476A /* real-life-no-collision.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCAB62172059300B7476A /* real-life-no-collision.csv */; };
+		75DBCABC21720F5300B7476A /* real-life-complex.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCABA21720F2600B7476A /* real-life-complex.csv */; };
 		75F4525420F1DB6D000FD574 /* RUB@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4524E20F1DB6C000FD574 /* RUB@2x.png */; };
 		75F4525520F1DB6D000FD574 /* RUB@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4524E20F1DB6C000FD574 /* RUB@2x.png */; };
 		75F4525620F1DB6D000FD574 /* JPY@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 75F4524F20F1DB6C000FD574 /* JPY@3x.png */; };
@@ -51,7 +59,7 @@
 		DF80D7FF20DE851600ADC203 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF80D7FE20DE851600ADC203 /* SyncController.swift */; };
 		DF80D80020DE851600ADC203 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF80D7FE20DE851600ADC203 /* SyncController.swift */; };
 		DF8C66C720B00C9A008A7488 /* TransactionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66C620B00C9A008A7488 /* TransactionsController.swift */; };
-		DF8C66CF20B0635D008A7488 /* YawaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66CE20B0635D008A7488 /* YawaTests.swift */; };
+		DF8C66CF20B0635D008A7488 /* YawaTransactionsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66CE20B0635D008A7488 /* YawaTransactionsControllerTests.swift */; };
 		DF8C66D620B063B4008A7488 /* TransactionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66C620B00C9A008A7488 /* TransactionsController.swift */; };
 		DF8C66D720B0648A008A7488 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98C209B0F9F006027C8 /* DataModel.swift */; };
 		DF8C66D820B06722008A7488 /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98E209B284F006027C8 /* TransactionViewController.swift */; };
@@ -110,6 +118,13 @@
 		75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncNameViewController.swift; sourceTree = "<group>"; };
 		75D32C0C20AB202E00D13420 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		75DBCAAA2171A40900B7476A /* Merger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Merger.swift; sourceTree = "<group>"; };
+		75DBCAAC2171A94000B7476A /* YawaMergerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YawaMergerTests.swift; sourceTree = "<group>"; };
+		75DBCAB02171AB1B00B7476A /* initial.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = initial.csv; sourceTree = "<group>"; };
+		75DBCAB22171FA3600B7476A /* updated-both.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "updated-both.csv"; sourceTree = "<group>"; };
+		75DBCAB42171FD5100B7476A /* deleted-both.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = "deleted-both.csv"; sourceTree = "<group>"; };
+		75DBCAB62172059300B7476A /* real-life-no-collision.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = "real-life-no-collision.csv"; sourceTree = "<group>"; };
+		75DBCAB82172060100B7476A /* real-life-initial-remote.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = "real-life-initial-remote.csv"; sourceTree = "<group>"; };
+		75DBCABA21720F2600B7476A /* real-life-complex.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = "real-life-complex.csv"; sourceTree = "<group>"; };
 		75F4524E20F1DB6C000FD574 /* RUB@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RUB@2x.png"; sourceTree = "<group>"; };
 		75F4524F20F1DB6C000FD574 /* JPY@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "JPY@3x.png"; sourceTree = "<group>"; };
 		75F4525020F1DB6D000FD574 /* JPY@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "JPY@2x.png"; sourceTree = "<group>"; };
@@ -122,7 +137,7 @@
 		DF80D7FE20DE851600ADC203 /* SyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncController.swift; sourceTree = "<group>"; };
 		DF8C66C620B00C9A008A7488 /* TransactionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsController.swift; sourceTree = "<group>"; };
 		DF8C66CC20B0635D008A7488 /* YawaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YawaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		DF8C66CE20B0635D008A7488 /* YawaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YawaTests.swift; sourceTree = "<group>"; };
+		DF8C66CE20B0635D008A7488 /* YawaTransactionsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YawaTransactionsControllerTests.swift; sourceTree = "<group>"; };
 		DF8C66D020B0635D008A7488 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DF959F38209C733C000AB980 /* Sync.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Sync.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -224,6 +239,19 @@
 			path = Sync;
 			sourceTree = "<group>";
 		};
+		75DBCAAF2171AAF000B7476A /* csv */ = {
+			isa = PBXGroup;
+			children = (
+				75DBCAB02171AB1B00B7476A /* initial.csv */,
+				75DBCAB22171FA3600B7476A /* updated-both.csv */,
+				75DBCAB42171FD5100B7476A /* deleted-both.csv */,
+				75DBCAB82172060100B7476A /* real-life-initial-remote.csv */,
+				75DBCAB62172059300B7476A /* real-life-no-collision.csv */,
+				75DBCABA21720F2600B7476A /* real-life-complex.csv */,
+			);
+			path = csv;
+			sourceTree = "<group>";
+		};
 		75F4524D20F1D9CD000FD574 /* AppIcon */ = {
 			isa = PBXGroup;
 			children = (
@@ -261,8 +289,10 @@
 		DF8C66CD20B0635D008A7488 /* YawaTests */ = {
 			isa = PBXGroup;
 			children = (
-				DF8C66CE20B0635D008A7488 /* YawaTests.swift */,
 				DF8C66D020B0635D008A7488 /* Info.plist */,
+				75DBCAAF2171AAF000B7476A /* csv */,
+				DF8C66CE20B0635D008A7488 /* YawaTransactionsControllerTests.swift */,
+				75DBCAAC2171A94000B7476A /* YawaMergerTests.swift */,
 			);
 			path = YawaTests;
 			sourceTree = "<group>";
@@ -371,8 +401,14 @@
 				DF0B60AF20F0857E0018AC98 /* DigitKeyboardView.xib in Resources */,
 				75F4525D20F1DB6D000FD574 /* USD@3x.png in Resources */,
 				75F4525F20F1DB6D000FD574 /* RUB@3x.png in Resources */,
+				75DBCABB21720F3800B7476A /* real-life-no-collision.csv in Resources */,
 				75F4525B20F1DB6D000FD574 /* USD@2x.png in Resources */,
+				75DBCAB32171FA3600B7476A /* updated-both.csv in Resources */,
+				75DBCAB92172061800B7476A /* real-life-initial-remote.csv in Resources */,
+				75DBCAB12171AB1B00B7476A /* initial.csv in Resources */,
 				75F4525520F1DB6D000FD574 /* RUB@2x.png in Resources */,
+				75DBCABC21720F5300B7476A /* real-life-complex.csv in Resources */,
+				75DBCAB5217201ED00B7476A /* deleted-both.csv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +447,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF8C66D920B06725008A7488 /* HistorySummaryViewController.swift in Sources */,
+				75DBCAAE2171A94B00B7476A /* Merger.swift in Sources */,
 				DF8C66DB20B06732008A7488 /* StoreManager.swift in Sources */,
 				DF8C66E020B0676F008A7488 /* HistorySummaryCells.swift in Sources */,
 				7529F95A2157F2CA00FD8884 /* GuillotineViewController.swift in Sources */,
@@ -422,9 +459,10 @@
 				DF8C66D620B063B4008A7488 /* TransactionsController.swift in Sources */,
 				DF8C66DE20B06753008A7488 /* Settings.swift in Sources */,
 				7529F95D215BCD6900FD8884 /* SummaryProvider.swift in Sources */,
-				DF8C66CF20B0635D008A7488 /* YawaTests.swift in Sources */,
+				DF8C66CF20B0635D008A7488 /* YawaTransactionsControllerTests.swift in Sources */,
 				DF8C66DC20B06737008A7488 /* P2PSyncManager.swift in Sources */,
 				DF8C66D720B0648A008A7488 /* DataModel.swift in Sources */,
+				75DBCAAD2171A94000B7476A /* YawaMergerTests.swift in Sources */,
 				DF8C66D820B06722008A7488 /* TransactionViewController.swift in Sources */,
 				DF0B60AD20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */,
 				DF8C66DA20B06727008A7488 /* SyncViewController.swift in Sources */,

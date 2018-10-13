@@ -55,7 +55,7 @@ class YawaTransactionsControllerTests: XCTestCase {
       let category = $0[1] as! TransactionCategory
       let name = $0[2] as! String
       
-      return Transaction(amount: amount, category: category, authorName: name, date: date)
+      return Transaction(amount: amount, category: category, authorName: name, transactionDate: date)
     }
     dataProvider = TransactionsController(withTransactions: transactions)
   }
