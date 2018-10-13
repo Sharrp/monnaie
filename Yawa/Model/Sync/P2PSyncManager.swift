@@ -22,15 +22,15 @@ struct SyncBuddy: Equatable {
     return lhs.peerID == rhs.peerID
   }
 }
-
-// Incapsulates objects data need to request sync and respond to it
-// As well as data send during sync
 enum SyncRequestMode: Int {
   case requested
   case declined
   case active
 }
 
+
+// Incapsulates object's data needed to request sync and respond to it
+// As well as data sended during a sync
 class SyncRequest: NSObject, NSCoding {
   let mode: SyncRequestMode
   let deviceID: String
