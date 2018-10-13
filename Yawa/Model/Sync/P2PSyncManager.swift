@@ -180,7 +180,7 @@ extension P2PSyncManager: MCNearbyServiceBrowserDelegate {
   func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
     print("\nFound peer: \(peerID)\n")
     if let deviceID = info?["deviceID"] {
-      peerIDhashToDeviceID[peerID.hashValue] = deviceID
+      peerIDhashToDeviceID[peerID.hash] = deviceID
     }
     let context = ["deviceID": deviceUniqueIdentifier()]
     let data = NSKeyedArchiver.archivedData(withRootObject: context)
@@ -258,14 +258,14 @@ extension P2PSyncManager: MCSessionDelegate {
   
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
     if state == .connected {
-      guard let deviceID = peerIDhashToDeviceID[peerID.hashValue] else { return }
+      guard let deviceID = peerIDhashToDeviceID[peerID.hash] else { return }
       let buddy = SyncBuddy(peerID: peerID, emoji: "🤑", deviceID: deviceID)
       availableToSyncBuddies.append(buddy)
       
       // Auto-sync
       if permissionsManager.isAllowedToSync(withDeviceID: deviceID) {
         // Ensure that only one peer initiates sync
-        let shouldInitiateSync = peerID.hashValue < session.myPeerID.hashValue
+        let shouldInitiateSync = peerID.hash < session.myPeerID.hash
         if shouldInitiateSync {
           startSync(withBuddy: buddy)
         }
@@ -291,7 +291,7 @@ extension P2PSyncManager: MCNearbyServiceAdvertiserDelegate {
     if let contextData = contextData,
       let context = NSKeyedUnarchiver.unarchiveObject(with: contextData) as? [String: String],
       let deviceID = context["deviceID"] {
-      peerIDhashToDeviceID[peerID.hashValue] = deviceID
+      peerIDhashToDeviceID[peerID.hash] = deviceID
     }
     invitationHandler(true, session)
   }

@@ -12,7 +12,7 @@ func deviceUniqueIdentifier() -> String {
   if let uuid = UIDevice.current.identifierForVendor?.uuidString {
     return uuid
   }
-  return "\(UIDevice.current.name.hashValue)"
+  return "\(UIDevice.current.name.hash)"
 }
 
 extension FileManager {

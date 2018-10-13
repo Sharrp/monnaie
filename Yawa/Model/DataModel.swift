@@ -123,8 +123,8 @@ extension Transaction {
     return date == transaction.date
   }
   
-  override var hashValue: Int {
-    return "\(date)".hashValue
+  override var hash: Int {
+    return date.hashValue
   }
 }
 

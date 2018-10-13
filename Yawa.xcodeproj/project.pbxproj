@@ -152,7 +152,6 @@
 				75D32C0C20AB202E00D13420 /* Settings.swift */,
 				DF8C66C620B00C9A008A7488 /* TransactionsController.swift */,
 				7529F95B215BCD6900FD8884 /* SummaryProvider.swift */,
-				DF959F38209C733C000AB980 /* Sync.md */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -248,6 +247,7 @@
 		DF80D7FD20DE846900ADC203 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
+				DF959F38209C733C000AB980 /* Sync.md */,
 				7524B98A209AEF26006027C8 /* P2PSyncManager.swift */,
 				DF80D7FA20DE2A5A00ADC203 /* SyncPermissionsManager.swift */,
 				DF80D7FE20DE851600ADC203 /* SyncController.swift */,

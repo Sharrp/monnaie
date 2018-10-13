@@ -212,7 +212,7 @@ extension TransactionsController: TransactionUpdateDelegate {
   }
   
   func update(transaction: Transaction) {
-    guard let transactionIndex = transactions.index(where: { $0.hashValue == transaction.hashValue }) else { return }
+    guard let transactionIndex = transactions.index(where: { $0.hash == transaction.hash }) else { return }
     transactions[transactionIndex] = transaction
     
     for (i, daySection) in index.days.enumerated() {
