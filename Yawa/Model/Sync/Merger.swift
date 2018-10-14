@@ -49,6 +49,7 @@ struct Merger {
       }
     }
     
-    return merged.sorted { $0.date < $1.date }
+    merged.sort{ $0.date < $1.date }
+    return merged
   }
 }

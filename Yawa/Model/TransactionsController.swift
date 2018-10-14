@@ -280,9 +280,7 @@ extension TransactionsController {
   
   func importDataFromCSV(csv: String?, mode: ImportMode) -> ImportResult {
     let failureResult = ImportResult.failure("""
-        First line of CSV should have column titles.
-        Other lines are transactions with format:
-        {transaction date};{creation date};{author};{category};{amount}.
+        Incorrect CSV format.
         Export your existing data to have an example.
     """)
     guard let csv = csv else { return failureResult }
@@ -301,7 +299,8 @@ extension TransactionsController {
         let creationDate = dateFormatter.date(from: components[1]),
         author.count > 0,
         let category = TransactionCategory(name: categoryName),
-        let amount = Float(components[4])
+        let amount = Float(components[4]),
+        amount > 0
         else { continue }
       
       let transaction = Transaction(amount: amount, category: category, authorName: author,
@@ -312,11 +311,9 @@ extension TransactionsController {
     
     switch mode {
     case .merge:
-      for transaction in importedTransactions {
-        insertWithSort(transaction: transaction)
-      }
+      transactions = Merger().merge(local: transactions, remote: importedTransactions, previousSyncTransactions: [])
     case .replace:
-      self.transactions = importedTransactions.sorted { $0.date < $1.date }
+      transactions = importedTransactions.sorted { $0.date < $1.date }
     }
     rebuiltIndexAndNotify()
     return .success("Successfully imported \(importedTransactions.count) transactions")
