@@ -298,7 +298,7 @@ extension TransactionsController {
       guard let transactionDate = dateFormatter.date(from: components[0]),
         let creationDate = dateFormatter.date(from: components[1]),
         author.count > 0,
-        let category = TransactionCategory(name: categoryName),
+        let category = TransactionCategory(exportName: categoryName),
         let amount = Float(components[4]),
         amount > 0
         else { continue }

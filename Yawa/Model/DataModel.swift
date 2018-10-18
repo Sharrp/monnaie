@@ -16,7 +16,7 @@ enum TransactionCategory: Int, CustomStringConvertible {
   case bills
   case other
   
-  init?(name: String) {
+  init?(exportName name: String) {
     for category in TransactionCategory.allCases() {
       if category.name == name {
         self = category
@@ -61,18 +61,23 @@ enum TransactionCategory: Int, CustomStringConvertible {
   
   var name: String {
     switch self {
-    case .grocery:
-      return "Grocery"
-    case .cafe:
-      return "Cafe"
-    case .transport:
-      return "Transport"
-    case .entertainment:
-      return "Entertainment"
-    case .bills:
-      return "Bills"
-    case .other:
-      return "Other"
+    case .grocery: return "Grocery"
+    case .cafe: return "Cafe"
+    case .transport: return "Transport"
+    case .entertainment: return "Entertainment"
+    case .bills: return "Bills"
+    case .other: return "Other"
+    }
+  }
+  
+  var exportName: String {
+    switch self {
+    case .grocery: return "Grocery"
+    case .cafe: return "Cafe"
+    case .transport: return "Transport"
+    case .entertainment: return "Entertainment"
+    case .bills: return "Bills"
+    case .other: return "Other"
     }
   }
 }
