@@ -83,7 +83,7 @@ enum TransactionCategory: Int, CustomStringConvertible {
 }
 
 class Transaction: NSObject, NSCoding {
-  var amount: Float {
+  var amount: Double {
     didSet {
       modifiedDate = Date()
     }
@@ -107,17 +107,17 @@ class Transaction: NSObject, NSCoding {
   let createdDate: Date // date when user created the transaction
   private(set) var modifiedDate: Date // last modification date
   
-  init(amount: Float, category: TransactionCategory, authorName: String, transactionDate: Date, creationDate: Date = Date()) {
+  init(amount: Double, category: TransactionCategory, authorName: String, transactionDate: Date, creationDate: Date = Date(), modifiedDate: Date = Date()) {
     self.amount = amount
     self.category = category
     self.authorName = authorName
     self.date = transactionDate
     self.createdDate = creationDate
-    self.modifiedDate = Date()
+    self.modifiedDate = modifiedDate
   }
   
   required init(coder decoder: NSCoder) {
-    amount = decoder.decodeFloat(forKey: "amount")
+    amount = decoder.decodeDouble(forKey: "amount")
     let categoryRawValue = decoder.decodeInteger(forKey: "category")
     category = TransactionCategory(rawValue: categoryRawValue)!
     authorName = decoder.decodeObject(forKey: "authorName") as! String
@@ -141,7 +141,11 @@ class Transaction: NSObject, NSCoding {
 extension Transaction {
   override func isEqual(_ object: Any?) -> Bool {
     guard let transaction = object as? Transaction else { return false }
-    return date == transaction.date
+    return amount == transaction.amount &&
+      authorName == transaction.authorName &&
+      category == transaction.category &&
+      abs(createdDate.timeIntervalSince(transaction.createdDate)) < 1e-6 &&
+      abs(date.timeIntervalSince(transaction.date)) < 1e-6
   }
   
   override var hash: Int {
@@ -153,6 +157,16 @@ extension Transaction {
   override var description: String {
     return "\(authorName), \(date): \(category), \(amount)"
   }
+}
+
+func ==(lhs: [Transaction], rhs: [Transaction]) -> Bool {
+  guard lhs.count == rhs.count else { return false }
+  for i in 0..<lhs.count {
+    if lhs[i] != rhs[i] {
+      return false
+    }
+  }
+  return true
 }
 
 enum SyncMode: Int, CustomStringConvertible {

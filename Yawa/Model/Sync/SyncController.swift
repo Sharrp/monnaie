@@ -9,17 +9,17 @@
 import Foundation
 
 protocol MergeDelegate: AnyObject {
-  func mergeDone(updatedTransactions: [Transaction])
+  func mergeDone(replacingTransactions: [Transaction])
 }
 
-protocol TransactionsDataSource: AnyObject {
-  var transactions: [Transaction] { get }
+protocol SyncTransactionsDataSource: AnyObject {
+  func syncTransactions() -> [Transaction]
 }
 
 // Responsible for coordinating sync-related data operations: data preparation and merge
 class SyncController {
   weak var mergeDelegate: MergeDelegate?
-  weak var dataSource: TransactionsDataSource?
+  weak var dataSource: SyncTransactionsDataSource?
   weak var dataSender: SyncDataSender?
   
   private let syncHistoryManager = SyncHistoryManager()
@@ -27,7 +27,7 @@ class SyncController {
 
 extension SyncController: SyncDataDelegate {
   func startSync(withBuddy buddy: SyncBuddy) {
-    guard let transactions = dataSource?.transactions else { return }
+    guard let transactions = dataSource?.syncTransactions() else { return }
     let syncData = SyncData(transactions: transactions, mode: .merge)
     dataSender?.send(data: syncData.archived(), toBuddy: buddy)
   }
@@ -38,7 +38,7 @@ extension SyncController: SyncDataDelegate {
     let transactions: [Transaction]
     switch syncData.mode {
     case .merge:
-      guard let transactionsToSync = dataSource?.transactions else { return }
+      guard let transactionsToSync = dataSource?.syncTransactions() else { return }
       let previousSyncTransactions = syncHistoryManager.transactionsListAtPreviousSync(forDeviceID: buddy.deviceID)
       transactions = Merger().merge(local: transactionsToSync,
                            remote: syncData.transactions,
@@ -51,7 +51,7 @@ extension SyncController: SyncDataDelegate {
       transactions = syncData.transactions
     }
     
-    mergeDelegate?.mergeDone(updatedTransactions: transactions)
+    mergeDelegate?.mergeDone(replacingTransactions: transactions)
     let thisSyncTransactionsList = transactions.map { $0.hash }
     syncHistoryManager.update(transactionsList: thisSyncTransactionsList, forDeviceID: buddy.deviceID)
     dataSender?.allDataSent(toBuddy: buddy)

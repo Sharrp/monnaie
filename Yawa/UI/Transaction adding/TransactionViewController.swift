@@ -227,7 +227,7 @@ class TransactionViewController: UIViewController {
   // MARK: Add transaction
   
   @IBAction func addTapped() {
-    let amount = Float(amountInput.text ?? "0")!
+    let amount = Double(amountInput.text ?? "0")!
     let category = categoriesProvider.selectedCategory
     
     if let transaction = transaction { // editing mode

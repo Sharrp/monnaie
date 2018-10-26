@@ -17,10 +17,8 @@ class SummaryProvider: NSObject {
 
 extension SummaryProvider: UITableViewDataSource {
   func updateData() {
-    guard let transactionsController = transactionsController else { return }
-    guard transactionsController.numberOfMonths() > 0 else { return }
-    let currentMonth = transactionsController.numberOfMonths() - 1
-    summary = transactionsController.categoriesSummary(forMonth: currentMonth)
+    guard let updatedSummary = transactionsController?.categoriesSummary(forMonth: Date()) else { return }
+    summary = updatedSummary
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

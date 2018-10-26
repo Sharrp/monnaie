@@ -33,7 +33,7 @@ enum Currency {
   case JPY
 }
 
-func formatMoney(amount: Float, currency: Currency, symbolEnabled: Bool = true) -> String {
+func formatMoney(amount: Double, currency: Currency, symbolEnabled: Bool = true) -> String {
   return NSString(format: "%@%.0f", symbolEnabled ? "¥" : "", amount) as String
 }
 
@@ -63,5 +63,28 @@ extension UIColor {
       green: (hex >> 8) & 0xFF,
       blue: hex & 0xFF
     )
+  }
+}
+
+extension DateFormatter {
+  convenience init(dateFormat: String) {
+    self.init()
+    self.dateFormat = dateFormat
+  }
+}
+
+extension Date {
+  init?(calendar: Calendar, year: Int, month: Int, day: Int = 1, nanoseconds: Int = 0) {
+    var dateComponents = DateComponents()
+    dateComponents.year = year
+    dateComponents.month = month
+    dateComponents.day = day
+    dateComponents.nanosecond = nanoseconds
+    guard let date = calendar.date(from: dateComponents) else { return nil }
+    self = date
+  }
+  
+  func isSameDay(date: Date) -> Bool {
+    return Calendar.current.compare(self, to: date, toGranularity: .day) == .orderedSame
   }
 }

@@ -10,16 +10,19 @@ import XCTest
 
 class YawaTransactionsControllerTests: XCTestCase {
   var dataProvider: TransactionsController!
-  var transactions: [Transaction]!
   
   let calendar = Calendar(identifier: .gregorian)
   var currentMonth: Int!
   var currentYear: Int!
-  var previousMonth: Int!
   var yearOfPreviousMonth: Int!
+  var previousMonth: Int!
+  let previousMonthDay = 28
+  var testingDays = [Date]()
   
   override func setUp() {
     super.setUp()
+    
+    dataProvider = TransactionsController(dbName: "testing")
     
     currentMonth = calendar.component(.month, from: Date())
     currentYear =  calendar.component(.year, from: Date())
@@ -28,123 +31,140 @@ class YawaTransactionsControllerTests: XCTestCase {
     yearOfPreviousMonth = calendar.component(.year, from: previousMonthDate)
     
     let data = [
-      [[yearOfPreviousMonth, previousMonth, 28], TransactionCategory.grocery, "Leya", 1156],
-      [[yearOfPreviousMonth, previousMonth, 28], TransactionCategory.grocery, "Leya", 1900],
+      [[currentYear, currentMonth, 3], TransactionCategory.cafe, "Jimmy", 1026],
+      [[currentYear, currentMonth, 3], TransactionCategory.grocery, "Jimmy", 800],
+      [[currentYear, currentMonth, 3], TransactionCategory.cafe, "Leya", 2400],
       
       [[currentYear, currentMonth, 1], TransactionCategory.grocery, "Jimmy", 430],
       [[currentYear, currentMonth, 1], TransactionCategory.bills, "Jimmy", 88],
       [[currentYear, currentMonth, 1], TransactionCategory.grocery, "Leya", 2040],
       [[currentYear, currentMonth, 1], TransactionCategory.grocery, "Jimmy", 1000],
       
-      [[currentYear, currentMonth, 3], TransactionCategory.cafe, "Jimmy", 1026],
-      [[currentYear, currentMonth, 3], TransactionCategory.grocery, "Jimmy", 800],
-      [[currentYear, currentMonth, 3], TransactionCategory.cafe, "Leya", 2400],
+      [[yearOfPreviousMonth, previousMonth, previousMonthDay], TransactionCategory.grocery, "Leya", 1156],
+      [[yearOfPreviousMonth, previousMonth, previousMonthDay], TransactionCategory.grocery, "Leya", 1900],
       
       [[currentYear, currentMonth, 4], TransactionCategory.bills, "Leya", 1170]
     ]
     
-    transactions = data.map {
-      var dateComponents = DateComponents()
+    data.forEach {
       let dateValues = $0[0] as! [Int]
-      dateComponents.year = dateValues[0]
-      dateComponents.month = dateValues[1]
-      dateComponents.day = dateValues[2]
-      let date = calendar.date(from: dateComponents)!
+      let nanoseconds = Int((Date().timeIntervalSince1970.truncatingRemainder(dividingBy: 1)) * 1e9)
+      let date = Date(calendar: calendar, year: dateValues[0], month: dateValues[1], day: dateValues[2], nanoseconds: nanoseconds)!
       
-      let amount = Float($0[3] as! Int)
+      let dayDate = Date(calendar: calendar, year: dateValues[0], month: dateValues[1], day: dateValues[2])!
+      if !testingDays.contains(where: { dayDate.isSameDay(date: $0) }) {
+        testingDays.append(date)
+      }
+      
+      let amount = Double($0[3] as! Int)
       let category = $0[1] as! TransactionCategory
       let name = $0[2] as! String
       
-      return Transaction(amount: amount, category: category, authorName: name, transactionDate: date)
+      let transaction = Transaction(amount: amount, category: category, authorName: name, transactionDate: date)
+      dataProvider.add(transaction: transaction)
     }
-    dataProvider = TransactionsController(withTransactions: transactions)
+    testingDays.sort()
   }
 
   override func tearDown() {
-    super.tearDown()
+    dataProvider.removeDB()
   }
   
-  func testNumberOfMonths() {
-    XCTAssert(dataProvider.numberOfMonths() == 2)
+  func testOldestTransactionDate() {
+    guard let oldestDate = dataProvider.oldestTransactionDate() else { XCTFail(); return }
+    XCTAssert(yearOfPreviousMonth == Calendar.current.component(.year, from: oldestDate))
+    XCTAssert(previousMonth == Calendar.current.component(.month, from: oldestDate))
+    XCTAssert(previousMonthDay == Calendar.current.component(.day, from: oldestDate))
   }
   
-  func testDaysInMonthCount() {
-    var expected = 1
-    var given = dataProvider.numberOfDays(inMonth: 0)
-    XCTAssert(given == expected)
-    
-    expected = 3
-    given = dataProvider.numberOfDays(inMonth: 1)
-    XCTAssert(given == expected)
+  func testNumberOfTransactions() {
+    let expectedCounts = [2, 4, 3, 1]
+    for (i, date) in testingDays.enumerated() {
+      XCTAssert(expectedCounts[i] == dataProvider.numberOfTransactions(onDay: date))
+    }
+    XCTAssert(0 == dataProvider.numberOfTransactions(onDay: Date(calendar: calendar, year: currentYear, month: currentMonth, day: 2)!))
   }
-  
-  func testTotalDaysCount() {
-    XCTAssert(dataProvider.totalNumberOfDays() == 4, "Wrong numberOfDays in TransactionsController")
-  }
-  
-  func testTransactionsCount() {
-    XCTAssert(dataProvider.numberOfTransactions(forDay: 0) == 2, "Wrong number of transactions for day 0")
-    XCTAssert(dataProvider.numberOfTransactions(forDay: 1) == 4, "Wrong number of transactions for day 1")
-    XCTAssert(dataProvider.numberOfTransactions(forDay: 2) == 3, "Wrong number of transactions for day 2")
-    XCTAssert(dataProvider.numberOfTransactions(forDay: 3) == 1, "Wrong number of transactions for day 3")
-  }
-  
+
   func testTotalMonthAmount() {
-    XCTAssert(dataProvider.totalAmount(forMonth: 0) == 3056)
-    XCTAssert(dataProvider.totalAmount(forMonth: 1) == 8954)
+    XCTAssert(3056 == dataProvider.totalAmount(forMonth: testingDays.first!))
+    XCTAssert(8954 == dataProvider.totalAmount(forMonth: testingDays.last!))
+    XCTAssert(0 == dataProvider.totalAmount(forMonth: Date.distantPast))
   }
   
-  func testDailyAmount() {
-    let totalAmounts: [Float] = [3056, 3558, 4226, 1170]
-    for (i, amount) in totalAmounts.enumerated() {
-      let given = dataProvider.totalAmount(forDay: i)
-      XCTAssert(given == amount, "testDailyAmount: \(i), \(amount) expected, \(given) given")
+  func testTotalDayAmount() {
+    let expectedAmounts: [Double] = [3056, 3558, 4226, 1170]
+    for (i, date) in testingDays.enumerated() {
+      XCTAssert(expectedAmounts[i] == dataProvider.totalAmount(forDay: date))
+    }
+    XCTAssert(0 == dataProvider.totalAmount(forDay: Date.distantPast))
+  }
+  
+  func testGetTransaction() {
+    guard let t1 = dataProvider.transaction(index: 0, forDay: testingDays[1]) else { XCTFail(); return }
+    XCTAssert(t1.category == .grocery)
+    XCTAssert(t1.authorName == "Jimmy")
+    XCTAssert(t1.amount == 430.0)
+    
+    guard let t2 = dataProvider.transaction(index: 2, forDay: testingDays[2]) else { XCTFail(); return }
+    XCTAssert(t2.category == .cafe)
+    XCTAssert(t2.authorName == "Leya")
+    XCTAssert(t2.amount == 2400.0)
+    
+    guard nil == dataProvider.transaction(index: 12402, forDay: testingDays[0]) else { XCTFail(); return }
+    guard nil == dataProvider.transaction(index: 0, forDay: Date.distantPast) else { XCTFail(); return }
+  }
+  
+  func testUpdateTransaction() {
+    let testingTransaction = { [unowned self] in
+      return self.dataProvider.transaction(index: 2, forDay: self.testingDays[1])
+    }
+    
+    guard let t1 = testingTransaction() else { XCTFail(); return }
+    let newAmount = 112.0
+    let newCategory = TransactionCategory.entertainment
+    t1.amount = newAmount
+    t1.category = newCategory
+    dataProvider.update(transaction: t1)
+    
+    guard let t2 = testingTransaction() else { XCTFail(); return }
+    XCTAssert(t2.category == newCategory)
+    XCTAssert(t2.amount == newAmount)
+    
+    let newAuthor = "Jackie Chan"
+    t1.authorName = newAuthor
+    dataProvider.update(transaction: t1)
+    guard let t3 = testingTransaction() else { XCTFail(); return }
+    XCTAssert(t3.authorName == newAuthor)
+    
+    let day0Transaction0 = dataProvider.transaction(index: 0, forDay: testingDays[0])!
+    t1.date = Date(timeInterval: 3600, since: day0Transaction0.date)
+    dataProvider.update(transaction: t1)
+    XCTAssert(3 == dataProvider.numberOfTransactions(onDay: day0Transaction0.date))
+    let t1MovedToNewDay = dataProvider.transaction(index: 2, forDay: testingDays[0])
+    XCTAssert(t1 == t1MovedToNewDay)
+  }
+  
+  func testRemoveTransaction() {
+    let indexesToRemove = [0, 2, 2, 0]
+    for (i, date) in testingDays.enumerated() {
+      let index = indexesToRemove[i]
+      guard let transaction = dataProvider.transaction(index: index, forDay: date) else { XCTFail(); return }
+      let initialTransactionsCount = dataProvider.numberOfTransactions(onDay: date)
+      let initialDayAmount = dataProvider.totalAmount(forDay: date)
+      dataProvider.remove(transaction: transaction)
+      XCTAssert(initialTransactionsCount - 1 == dataProvider.numberOfTransactions(onDay: date))
+      XCTAssert(initialDayAmount - transaction.amount == dataProvider.totalAmount(forDay: date))
     }
   }
   
-  func testCurrentMonthAmount() {
-    XCTAssert(dataProvider.totalAmountForCurrentMonth() == 8954, "Wrong current month total amount")
-  }
-  
-  func testDaysDeterminedCorrectly() {
-    let dates: [Date] = [
-      [yearOfPreviousMonth, previousMonth, 28],
-      [currentYear, currentMonth, 1],
-      [currentYear, currentMonth, 3],
-      [currentYear, currentMonth, 4]
-    ].map {
-      var components = DateComponents()
-      components.year = $0[0]
-      components.month = $0[1]
-      components.day = $0[2]
-      return Calendar(identifier: .gregorian).date(from: components)!
-    }
-    
-    for (i, date) in dates.enumerated() {
-      let providerDate = dataProvider.date(forDay: i)
-      XCTAssert(Calendar.current.compare(date, to: providerDate, toGranularity: .day) == .orderedSame, "Wrong day with index \(i)")
-    }
-  }
-  
-  func testConsistencyAfterRemovalTheOnlyTransactionInADay() {
-    let previousDaysAmount = dataProvider.totalNumberOfDays()
-    dataProvider.removeTransaction(inDay: 3, withIndex: 0)
-    let given = dataProvider.totalNumberOfDays()
-    let expected = previousDaysAmount - 1
-    XCTAssert(given == expected, "testConsistencyAfterRemovalTheOnlyTransactionInADay: \(expected) expected, \(given) given")
-  }
-  
-  func testCategoriesSummary() {
-    let currentMonth = dataProvider.numberOfMonths() - 1
-    let summary = dataProvider.categoriesSummary(forMonth: currentMonth)
-    
-    let expectedAmounts: [Float] = [4270, 3426, 1258]
-    let expectedCategories: [TransactionCategory] = [.grocery, .cafe, .bills]
-    
-    XCTAssert(summary.count == expectedCategories.count, "Expected \(expectedCategories.count) categories in summary")
-    for i in 0..<expectedCategories.count {
-      XCTAssert(summary[i].amount == expectedAmounts[i], "Wrong amount for category \(i). Expected: \(expectedAmounts[i]), given: \(summary[i].amount)")
-      XCTAssert(summary[i].category == expectedCategories[i], "Wrong category at index \(i). Expected: \(summary[i].category), given: \(expectedCategories[i])")
+  func testSummary() {
+    let categories: [TransactionCategory] = [.grocery, .cafe, .bills]
+    let totalAmount = [4270.0, 3426, 1258]
+    let summary = dataProvider.categoriesSummary(forMonth: testingDays.last!)
+    XCTAssert(summary.count == categories.count)
+    for (i, category) in categories.enumerated() {
+      XCTAssert(category == summary[i].category)
+      XCTAssert(totalAmount[i] == summary[i].amount)
     }
   }
 }

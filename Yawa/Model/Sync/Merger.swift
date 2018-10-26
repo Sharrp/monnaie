@@ -38,7 +38,7 @@ struct Merger {
         if !previousSyncTransactions.contains(transaction.hash) {
           merged.append(transaction)
           processedTransactions.append(transaction.hash)
-        }
+        } // else — was in local last time but not here anymore — deleted, should not be added to final merged results
       }
     }
     

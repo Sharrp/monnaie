@@ -66,7 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let alertController = UIAlertController(title: "Choose CSV import mode", message: message, preferredStyle: .actionSheet)
     [cancelAction, mergeAction].forEach { alertController.addAction($0) }
     
-    if importer.numberOfTransactions() > 0 {
+    if !importer.isEmpty() {
       let replaceAction = UIAlertAction(title: "Replace", style: .destructive) { _ in
         let csv = try? String(contentsOf: fileURL)
         let result = importer.importDataFromCSV(csv: csv, mode: .replace)

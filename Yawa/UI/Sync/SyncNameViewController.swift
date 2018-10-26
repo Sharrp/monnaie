@@ -9,7 +9,7 @@
 import UIKit
 
 protocol SyncNameUpdateDelegate: AnyObject {
-  func nameUpdated(toName name: String)
+  func nameUpdated(from oldName: String, to newName: String)
 }
 
 class SyncNameViewController: UIViewController {
@@ -30,8 +30,9 @@ class SyncNameViewController: UIViewController {
   
   @IBAction func savePressed() {
     if let newName = nameTextField.text {
+      let oldName = Settings.main.syncName
       Settings.main.syncName = newName
-      delegate?.nameUpdated(toName: newName)
+      delegate?.nameUpdated(from: oldName, to: newName)
     }
     dismiss()
   }

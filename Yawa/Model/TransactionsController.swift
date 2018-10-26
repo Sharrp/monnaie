@@ -2,247 +2,304 @@
 //  TransactionsController.swift
 //  Yawa
 //
-//  Created by Anton Vronskii on 2018/05/19.
+//  Created by Anton Vronskii on 2018/10/17.
 //  Copyright © 2018 Anton Vronskii. All rights reserved.
 //
 
 import Foundation
-
-// Represenets range of transactions for a day or a month
-private struct CalendarSection {
-  let first: Int
-  let length: Int
-  
-  var firstOfNext: Int {
-    return first + length
-  }
-}
-
-private struct TransactionsIndex {
-  var days = [CalendarSection]()
-  var months = [CalendarSection]()
-}
+import SQLite3
 
 protocol TransactionsPresentor: AnyObject {
-  func didUpdate(days: [Int])
-  func didUpdateTransactions(atIndexPaths indexPaths: [IndexPath])
+  func didUpdate(days: [Date])
   func didUpdateAll()
 }
 
-typealias CategoriesSummary = [(category: TransactionCategory, amount: Float)]
+typealias CategoriesSummary = [(category: TransactionCategory, amount: Double)]
 
-class TransactionsController: TransactionsDataSource {
-  private let storeManager = StoreManager()
-  private(set) var transactions: [Transaction]
-  private var index: TransactionsIndex!
-  
+class TransactionsController: TransactionUpdateDelegate {
   weak var presentor: TransactionsPresentor?
-  weak var syncManager: P2PSyncManager?
   
-  init() {
-    transactions = storeManager.loadTransactions().sorted { $0.date < $1.date }
-    index = buildTableIndex(transactions)
+  var db: OpaquePointer!
+  private let transactionsTableName = "transactions"
+  private let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+  private let dbFileName: String
+  private var dbPath: URL {
+    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(dbFileName + ".sqlite")
+  }
+  private var dateFormatString = "yyyy-MM-dd_HH:mm:ss.SSS"
+  private var sqlDateFarmatString = "yyyy-MM-dd"
+  
+  init(dbName dbFileName: String = "testing") {
+    self.dbFileName = dbFileName
+    guard sqlite3_open(dbPath.path, &db) == SQLITE_OK else { print("error opening database"); return }
+    
+    let createTableRequest = """
+      CREATE TABLE IF NOT EXISTS \(transactionsTableName)
+      (createdDate REAL PRIMARY KEY, date REAL, dateString, modifiedDate REAL, amount REAL, author TEXT, category TEXT)
+    """
+    if sqlite3_exec(db, createTableRequest, nil, nil, nil) != SQLITE_OK {
+      printError(on: "table creation", db)
+    }
   }
   
-  // For unit-tests
-  init(withTransactions transactions: [Transaction]) {
-    self.transactions = transactions.sorted { $0.date < $1.date }
-    index = buildTableIndex(transactions)
+  deinit {
+    sqlite3_close(db)
   }
   
-  func numberOfTransactions() -> Int {
-    return transactions.count
+  /// MARK: Testing
+  
+  func removeDB() {
+    do {
+      sqlite3_close(db)
+      try FileManager.default.removeItem(at: dbPath)
+    } catch {
+      print("Removing DB error: \(error)")
+    }
   }
   
-  func numberOfMonths() -> Int {
-    return index.months.count
-  }
-  
-  func numberOfDays(inMonth month: Int) -> Int {
-    let first = index.months[month].first
-    let firstOfNext = index.months[month].firstOfNext
-    return index.days.filter { $0.first >= first && $0.first < firstOfNext }.count
-  }
-  
-  func totalNumberOfDays() -> Int {
-    return index.days.count
-  }
-  
-  func numberOfTransactions(forDay day: Int) -> Int {
-    return index.days[day].length
-  }
-  
-  func date(forDay day: Int) -> Date {
-    let transactionIndex = index.days[day].first
-    return transactions[transactionIndex].date
-  }
-  
-  func totalAmount(forMonth month: Int) -> Float {
-    let monthSection = index.months[month]
-    let range = monthSection.first..<monthSection.firstOfNext
-    return transactions[range].reduce(0) { $0 + $1.amount }
-  }
-  
-  func totalAmount(forDay day: Int) -> Float {
-    let daySection = index.days[day]
-    let indexRange = daySection.first..<daySection.firstOfNext
-    return transactions[indexRange].reduce(0.0) { $0 + $1.amount }
-  }
-  
-  func totalAmountForToday() -> Float {
-    for (i, daySection) in index.days.enumerated() {
-      let date = transactions[daySection.first].date
-      if Calendar.current.isDate(date, inSameDayAs: Date()) {
-        return totalAmount(forDay: i)
+  func allDates() -> [Date] {
+    let sql = "SELECT date FROM Transactions ORDER BY date ASC"
+    var dates = [Date]()
+    guard let statement = prepareStatement(sql: sql) else { return dates }
+    while sqlite3_step(statement) == SQLITE_ROW {
+      let dateTimestamp = sqlite3_column_double(statement, 0)
+      let dateCandidate = Date(timeIntervalSince1970: dateTimestamp)
+      if !dates.contains(where: { dateCandidate.isSameDay(date: $0) }) {
+        dates.append(dateCandidate)
       }
     }
-    return 0
+    sqlite3_finalize(statement)
+    return dates
   }
   
-  func totalAmountForCurrentMonth() -> Float {
-    let thisMonthTransactions = transactions.filter { Calendar.current.isDate($0.date, equalTo: Date(), toGranularity: .month) }
-    return thisMonthTransactions.reduce(0) { $0 + $1.amount }
-  }
+  /// MARK: Public
   
-  func categoriesSummary(forMonth month: Int) -> CategoriesSummary {
-    let monthSection = index.months[month]
-    let monthRange = monthSection.first..<monthSection.firstOfNext
+  func add(transaction: Transaction) {
+    let sql = "INSERT INTO \(transactionsTableName) (createdDate, date, dateString, modifiedDate, amount, author, category) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    let statement = prepareStatement(sql: sql)
+    guard sqlite3_bind_double(statement, 1, transaction.createdDate.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_double(statement, 2, transaction.date.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
     
-    var categoryToAmount = [TransactionCategory: Float]()
-    for transaction in transactions[monthRange] {
-      if let currentAmount = categoryToAmount[transaction.category] {
-        categoryToAmount[transaction.category] = currentAmount + transaction.amount
-      } else {
-        categoryToAmount[transaction.category] = transaction.amount
-      }
-    }
-    return categoryToAmount.keys.map{ (category: $0, amount: categoryToAmount[$0]!) }.sorted{ $0.amount > $1.amount }
-  }
-  
-  var syncTransactions: [Transaction] {
-    return transactions
-  }
-  
-  func transaction(forDay day: Int, withIndex transactionIndex: Int) -> Transaction {
-    let i = index.days[day].first + transactionIndex
-    return transactions[i]
-  }
-  
-  func removeTransaction(inDay day: Int, withIndex transactionIndex: Int) {
-    let indexToRemove = index.days[day].first + transactionIndex
-    transactions.remove(at: indexToRemove)
+    let dateString = DateFormatter(dateFormat: sqlDateFarmatString).string(from: transaction.date)
+    guard sqlite3_bind_text(statement, 3, dateString, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_double(statement, 4, transaction.modifiedDate.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_double(statement, 5, Double(transaction.amount)) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_text(statement, 6, transaction.authorName, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_text(statement, 7, transaction.category.name, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
     
-    if index.days[day].length == 1 { // we deleted the last transaction for this day
-      rebuiltIndexAndNotify()
-    } else {
-      rebuiltIndexAndNotify(aboutDays: [day])
+    if sqlite3_step(statement) != SQLITE_DONE {
+      printError(on: "binding", db)
     }
+    sqlite3_finalize(statement)
+    notifyPresentor(aboutDays: [transaction.date])
   }
   
-  func updateNameInTransactionsFromThisDevice(toNewName name: String) {
-//    for transaction in transactions {
-      // FIXME
-//      if transaction.isCreatedOnCurrentDevice {
-//        transaction.authorName = name
-//        transaction.modifiedDate = Date()
-//      }
-//    }
-//    rebuiltIndexAndNotify()
+  func update(transaction: Transaction) {
+    let dateString = DateFormatter(dateFormat: sqlDateFarmatString).string(from: transaction.date)
+    let sql = """
+    UPDATE \(transactionsTableName)
+    SET amount='\(transaction.amount)',
+    author='\(transaction.authorName)',
+    category='\(transaction.category.name)',
+    date='\(transaction.date.timeIntervalSince1970)', dateString='\(dateString)',
+    modifiedDate='\(Date().timeIntervalSince1970)'
+    WHERE createdDate='\(transaction.createdDate.timeIntervalSince1970)'
+    """
+    let statement = prepareStatement(sql: sql)
+    if sqlite3_step(statement) != SQLITE_DONE {
+      printError(on: "updating", db)
+    }
+    sqlite3_finalize(statement)
+    notifyPresentor(aboutDays: [transaction.date])
   }
   
-  private func rebuiltIndexAndNotify(aboutDays days: [Int]? = nil) {
-    index = buildTableIndex(transactions)
+  func remove(transaction: Transaction) {
+    let sql = "DELETE FROM \(transactionsTableName) WHERE createdDate='\(transaction.createdDate.timeIntervalSince1970)'"
+    let statement = prepareStatement(sql: sql)
+    if sqlite3_step(statement) != SQLITE_DONE {
+      printError(on: "removing", db)
+    }
+    sqlite3_finalize(statement)
+    notifyPresentor(aboutDays: [transaction.date])
+  }
+  
+  func isEmpty() -> Bool {
+    let sql = "SELECT count(*) FROM \(transactionsTableName)"
+    let count = sqlIntValue(sql: sql) ?? 0
+    return count == 0
+  }
+  
+  func transaction(index: Int, forDay dayDate: Date) -> Transaction? {
+    let dateString = DateFormatter(dateFormat: sqlDateFarmatString).string(from: dayDate)
+    let sql = "SELECT * FROM \(transactionsTableName) WHERE dateString='\(dateString)' ORDER BY date ASC LIMIT 1 OFFSET \(index)"
+    let statement = prepareStatement(sql: sql)
+    guard sqlite3_step(statement) == SQLITE_ROW else { return nil }
+    let transaction = getTransaction(withStatement: statement)
+    sqlite3_finalize(statement)
+    return transaction
+  }
+  
+  func oldestTransactionDate() -> Date? {
+    let sql = "SELECT date FROM \(transactionsTableName) ORDER BY date ASC LIMIT 1"
+    guard let timestamp = sqlDoubleValue(sql: sql) else { return nil }
+    return Date(timeIntervalSince1970: timestamp)
+  }
+  
+  func numberOfTransactions(onDay dayDate: Date) -> Int {
+    let dateString = DateFormatter(dateFormat: sqlDateFarmatString).string(from: dayDate)
+    let sql = "SELECT count(*) FROM \(transactionsTableName) WHERE dateString='\(dateString)'"
+    return sqlIntValue(sql: sql) ?? 0
+  }
+  
+  func totalAmount(forMonth monthDate: Date) -> Double {
+    let (year, month, _) = components(ofDate: monthDate)
+    let monthName = String(format: "%d%02d", year, month)
+    let sql = "SELECT sum(amount) FROM \(transactionsTableName) WHERE strftime('%Y%m', dateString)='\(monthName)'"
+    return sqlDoubleValue(sql: sql) ?? 0
+  }
+  
+  func totalAmount(forDay dayDate: Date) -> Double {
+    let dateString = DateFormatter(dateFormat: sqlDateFarmatString).string(from: dayDate)
+    let sql = "SELECT sum(amount) FROM \(transactionsTableName) WHERE dateString='\(dateString)'"
+    return sqlDoubleValue(sql: sql) ?? 0
+  }
+  
+  func categoriesSummary(forMonth monthDate: Date) -> CategoriesSummary {
+    let (year, month, _) = components(ofDate: monthDate)
+    let monthName = String(format: "%d%02d", year, month)
+    let sql = """
+    SELECT category, sum(amount)
+    FROM Transactions
+    WHERE strftime('%Y%m', dateString)='\(monthName)'
+    GROUP BY category ORDER BY sum(amount) DESC
+    """
+    var summary = CategoriesSummary()
+    guard let statement = prepareStatement(sql: sql) else { return summary }
+    while sqlite3_step(statement) == SQLITE_ROW {
+      let categoryName = String(cString: sqlite3_column_text(statement, 0))
+      guard let category = TransactionCategory(exportName: categoryName) else { continue }
+      let amount = sqlite3_column_double(statement, 1)
+      summary.append((category: category, amount: amount))
+    }
+    sqlite3_finalize(statement)
+    return summary
+  }
+  
+  func changeOnwer(from oldName: String, to newName: String) {
+    let sql = "UPDATE \(transactionsTableName) SET author='\(newName)' WHERE author='\(oldName)'"
+    let statement = prepareStatement(sql: sql)
+    guard sqlite3_step(statement) == SQLITE_DONE else { printError(on: "renaming", db); return }
+    sqlite3_finalize(statement)
+    notifyPresentor()
+  }
+  
+  // MARK: SQLite helpers
+  
+  private func printError(on operation: String, _ db: OpaquePointer) {
+    let errmsg = String(cString: sqlite3_errmsg(db)!)
+    print("DB error (\(operation)): \(errmsg)")
+  }
+  
+  private func prepareStatement(sql: String) -> OpaquePointer? {
+    var statement: OpaquePointer?
+    guard sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK else {
+      printError(on: "preparing", db)
+      return nil
+    }
+    return statement
+  }
+  
+  private func sqlIntValue(sql: String) -> Int? {
+    guard let statement = prepareStatement(sql: sql) else { return nil }
+    guard sqlite3_step(statement) == SQLITE_ROW else { return nil }
+    let value = Int(sqlite3_column_int(statement, 0))
+    sqlite3_finalize(statement)
+    return value
+  }
+  
+  private func sqlDoubleValue(sql: String) -> Double? {
+    guard let statement = prepareStatement(sql: sql) else { return nil }
+    guard sqlite3_step(statement) == SQLITE_ROW else { return nil }
+    let value = sqlite3_column_double(statement, 0)
+    sqlite3_finalize(statement)
+    return value
+  }
+  
+  private func removeAll() {
+    let sql = "DELETE FROM \(transactionsTableName)"
+    let statement = prepareStatement(sql: sql)
+    if sqlite3_step(statement) != SQLITE_DONE {
+      printError(on: "removing", db)
+    }
+    sqlite3_finalize(statement)
+  }
+  
+  // MARK: Generic helpers
+  
+  private func components(ofDate date: Date) -> (year: Int, month: Int, day: Int) {
+    let day = Calendar.current.component(.day, from: date)
+    let month = Calendar.current.component(.month, from: date)
+    let year = Calendar.current.component(.year, from: date)
+    return (year, month, day)
+  }
+  
+  private func getTransaction(withStatement statement: OpaquePointer?) -> Transaction? {
+    let categoryName = String(cString: sqlite3_column_text(statement, 6))
+    guard let category = TransactionCategory(exportName: categoryName) else { return nil }
+    
+    let createdDateTimestamp = sqlite3_column_double(statement, 0)
+    let createdDate = Date(timeIntervalSince1970: createdDateTimestamp)
+    let dateTimestamp = sqlite3_column_double(statement, 1)
+    let date = Date(timeIntervalSince1970: dateTimestamp)
+    let modifiedDateTimestamp = sqlite3_column_double(statement, 3)
+    let modifiedDate = Date(timeIntervalSince1970: modifiedDateTimestamp)
+    
+    let amount = sqlite3_column_double(statement, 4)
+    let author = String(cString: sqlite3_column_text(statement, 5))
+    return Transaction(amount: amount, category: category, authorName: author,
+                       transactionDate: date, creationDate: createdDate, modifiedDate: modifiedDate)
+  }
+  
+  internal func notifyPresentor(aboutDays days: [Date]? = nil) {
     if let days = days {
       presentor?.didUpdate(days: days)
     } else {
       presentor?.didUpdateAll()
     }
-    storeManager.save(transactions: transactions)
-  }
-  
-  private func buildTableIndex(_ transactions: [Transaction]) -> TransactionsIndex {
-    var index = TransactionsIndex()
-    guard transactions.count > 0 else { return index }
-    
-    var lastDayDate = transactions[0].date
-    var daySectionFirst = 0
-    var lastMonthDate = transactions[0].date
-    var monthSectionFirst = 0
-    
-    for (i, t) in transactions.enumerated() {
-      if i == 0 { continue }
-      
-      if !Calendar.current.isDate(lastDayDate, inSameDayAs: t.date) {
-        let daySection = CalendarSection(first: daySectionFirst, length: i - daySectionFirst)
-        index.days.append(daySection)
-        daySectionFirst = i
-        lastDayDate = t.date
-        
-        if !Calendar.current.isDate(lastMonthDate, equalTo: t.date, toGranularity: .month) {
-          let monthSection = CalendarSection(first: monthSectionFirst, length: i - monthSectionFirst)
-          index.months.append(monthSection)
-          monthSectionFirst = i
-          lastMonthDate = t.date
-        }
-      }
-    }
-    
-    let daySection = CalendarSection(first: daySectionFirst, length: transactions.count - daySectionFirst)
-    index.days.append(daySection)
-    let monthSection = CalendarSection(first: monthSectionFirst, length: transactions.count - monthSectionFirst)
-    index.months.append(monthSection)
-    return index
-  }
-  
-  private func insertWithSort(transaction newTransaction: Transaction) {
-    for (i, transaction) in transactions.enumerated() {
-      if newTransaction.date < transaction.date {
-        transactions.insert(newTransaction, at: i)
-        return
-      }
-    }
-    transactions.insert(newTransaction, at: transactions.count)
   }
 }
 
-extension TransactionsController: TransactionUpdateDelegate {
-  func add(transaction: Transaction) {
-    insertWithSort(transaction: transaction)
-    rebuiltIndexAndNotify()
-  }
-  
-  func update(transaction: Transaction) {
-    guard let transactionIndex = transactions.index(where: { $0.hash == transaction.hash }) else { return }
-    transactions[transactionIndex] = transaction
-    
-    for (i, daySection) in index.days.enumerated() {
-      if transactionIndex < daySection.firstOfNext {
-        rebuiltIndexAndNotify(aboutDays: [i])
-        break
-      }
+extension TransactionsController: SyncTransactionsDataSource {
+  func syncTransactions() -> [Transaction] {
+    let sql = "SELECT * FROM \(transactionsTableName) ORDER BY date ASC "
+    let statement = prepareStatement(sql: sql)
+    var transactions = [Transaction]()
+    while sqlite3_step(statement) == SQLITE_ROW {
+      guard let transaction = getTransaction(withStatement: statement) else { continue }
+      transactions.append(transaction)
     }
+    sqlite3_finalize(statement)
+    return transactions
   }
 }
 
 extension TransactionsController: MergeDelegate {
-  func mergeDone(updatedTransactions transactions: [Transaction]) {
-    self.transactions = transactions
-    rebuiltIndexAndNotify()
+  func mergeDone(replacingTransactions transactions: [Transaction]) {
+    removeAll()
+    for transaction in transactions {
+      add(transaction: transaction)
+    }
+    notifyPresentor()
   }
 }
 
-// CSV export / import
 extension TransactionsController {
-  private var dateFormatString: String {
-    return "yyyy-MM-dd_HH:mm:ss.SSS"
-  }
-  
   func exportDataAsCSV() -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = dateFormatString
     
     var csv = "transaction date;creation date;author;category;amount\n"
-    for t in transactions {
+    for t in syncTransactions() {
       let createdDate = dateFormatter.string(from: t.createdDate)
       let transactionDate = dateFormatter.string(from: t.date)
       csv += "\(transactionDate);\(createdDate);\(t.authorName);\(t.category.name);\(t.amount)\n"
@@ -299,7 +356,7 @@ extension TransactionsController {
         let creationDate = dateFormatter.date(from: components[1]),
         author.count > 0,
         let category = TransactionCategory(exportName: categoryName),
-        let amount = Float(components[4]),
+        let amount = Double(components[4]),
         amount > 0
         else { continue }
       
@@ -311,11 +368,12 @@ extension TransactionsController {
     
     switch mode {
     case .merge:
-      transactions = Merger().merge(local: transactions, remote: importedTransactions, previousSyncTransactions: [])
+      let transactions = Merger().merge(local: syncTransactions(), remote: importedTransactions, previousSyncTransactions: [])
+      mergeDone(replacingTransactions: transactions)
     case .replace:
-      transactions = importedTransactions.sorted { $0.date < $1.date }
+      mergeDone(replacingTransactions: importedTransactions)
     }
-    rebuiltIndexAndNotify()
+    notifyPresentor()
     return .success("Successfully imported \(importedTransactions.count) transactions")
   }
 }

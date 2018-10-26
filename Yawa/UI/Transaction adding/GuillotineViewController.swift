@@ -92,6 +92,10 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
     }
   }
   
+  override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    return UIInterfaceOrientationMask(arrayLiteral: [.portrait, .portraitUpsideDown])
+  }
+  
   private func bottomInset(forState state: BladeState) -> CGFloat {
     switch state {
     case .collapsed:

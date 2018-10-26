@@ -18,7 +18,7 @@ class SyncViewController: UIViewController {
   let syncManager = P2PSyncManager()
   weak var nameDelegate: SyncNameUpdateDelegate?
   weak var mergeDelegate: MergeDelegate?
-  weak var transactionsDataSource: TransactionsDataSource?
+  weak var transactionsDataSource: SyncTransactionsDataSource?
   
   private let syncController = SyncController()
   
@@ -112,10 +112,10 @@ extension SyncViewController: SyncNameUpdateDelegate {
     """
   }
   
-  func nameUpdated(toName name: String) {
-    display(name: name)
-    nameDelegate?.nameUpdated(toName: name)
-    syncManager.deviceNameUpdated(toName: name)
+  func nameUpdated(from oldName: String, to newName: String) {
+    display(name: newName)
+    nameDelegate?.nameUpdated(from: oldName, to: newName)
+    syncManager.deviceNameUpdated(toName: newName)
   }
 }
 

@@ -84,11 +84,8 @@ class HistorySummaryViewController: UIViewController {
     }
   }
   
-  private func scrollToBottom() {
-    let days = dataProvider.totalNumberOfDays()
-    guard days > 0 else { return }
-    let numberOfRows = dataProvider.numberOfTransactions(forDay: days-1)
-    tableView.scrollToRow(at: IndexPath(row: numberOfRows-1, section: days-1), at: .top, animated: false)
+  private func scrollToBottom(animated: Bool = false) { // TODO: update when month switcher is done
+    tableView.setContentOffset(CGPoint(x: 0, y: CGFloat.greatestFiniteMagnitude), animated: false)
   }
   
   @IBAction func viewModeChanged(sender: UISegmentedControl) {
@@ -115,27 +112,38 @@ class HistorySummaryViewController: UIViewController {
 
 extension HistorySummaryViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
-    return dataProvider.totalNumberOfDays()
+//    let range = Calendar.current.range(of: .day, in: .month, for: Date())!
+//    let numberOfDays = range.count
+    return Calendar.current.component(.day, from: Date())
+  }
+  
+  private func date(forSection section: Int) -> Date? {
+    let today = Date()
+    var components = DateComponents()
+    components.day = section + 1
+    components.month = Calendar.current.component(.month, from: today)
+    components.year = Calendar.current.component(.year, from: today)
+    return Calendar.current.date(from: components)
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return dataProvider.numberOfTransactions(forDay: section)
+    guard let dateForSection = date(forSection: section) else { return 0 }
+    return dataProvider.numberOfTransactions(onDay: dateForSection)
   }
   
   func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    let day = dataProvider.date(forDay: section)
+    guard let dateForSection = date(forSection: section) else { return nil }
     var title: String
-    if Calendar.current.isDate(day, inSameDayAs: Date()) {
+    if Calendar.current.isDate(dateForSection, inSameDayAs: Date()) {
       title = "Today"
-    } else if Calendar.current.isDate(day, inSameDayAs: Date(timeIntervalSinceNow: -86400)) {
+    } else if Calendar.current.isDate(dateForSection, inSameDayAs: Date(timeIntervalSinceNow: -86400)) {
       title = "Yesterday"
     } else {
-      title = dateFormatter.string(from: day)
+      title = dateFormatter.string(from: dateForSection)
     }
     
-    let daySum = dataProvider.totalAmount(forDay: section)
+    let daySum = dataProvider.totalAmount(forDay: dateForSection)
     title += " — " + formatMoney(amount: daySum, currency: .JPY)
-    
     return title
   }
   
@@ -148,7 +156,8 @@ extension HistorySummaryViewController: UITableViewDataSource {
       cell = TransactionCell(style: .subtitle, reuseIdentifier: cellID)
     }
     
-    let transaction = dataProvider.transaction(forDay: indexPath.section, withIndex: indexPath.row)
+    guard let dateForSection = date(forSection: indexPath.section) else { return cell }
+    guard let transaction = dataProvider.transaction(index: indexPath.row, forDay: dateForSection) else { return cell }
     cell.backgroundColor = .clear
     cell.emojiLabel.text = "\(transaction.category.emoji)"
     cell.categoryLabel.text = "\(transaction.category.name)"
@@ -169,7 +178,10 @@ extension HistorySummaryViewController: UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     guard editingStyle == .delete else { return }
-    dataProvider.removeTransaction(inDay: indexPath.section, withIndex: indexPath.row)
+    // TODO: implement more convenient remove method in TransactionsController
+    guard let dateForSection = date(forSection: indexPath.section) else { return }
+    guard let transaction = dataProvider.transaction(index: indexPath.row, forDay: dateForSection) else { return }
+    dataProvider.remove(transaction: transaction)
   }
 }
 
@@ -192,17 +204,18 @@ extension HistorySummaryViewController: BladeScrollViewDelegate {
 }
 
 extension HistorySummaryViewController: SyncNameUpdateDelegate {
-  func nameUpdated(toName name: String) {
-    dataProvider.updateNameInTransactionsFromThisDevice(toNewName: name)
+  func nameUpdated(from oldName: String, to newName: String) {
+    dataProvider.changeOnwer(from: oldName, to: newName)
   }
 }
 
 extension HistorySummaryViewController: TransactionsPresentor {
   private func updateTotal() {
-    let todaySum = dataProvider.totalAmountForToday()
+    let today = Date()
+    let todaySum = dataProvider.totalAmount(forDay: today)
     dayAmountLabel.text = formatMoney(amount: todaySum, currency: .JPY)
     
-    let monthlyAmount = dataProvider.totalAmountForCurrentMonth()
+    let monthlyAmount = dataProvider.totalAmount(forMonth: today)
     monthAmountLabel.text = formatMoney(amount: monthlyAmount, currency: .JPY)
     
     let dateFormatter = DateFormatter()
@@ -210,19 +223,8 @@ extension HistorySummaryViewController: TransactionsPresentor {
     monthLabel.text = dateFormatter.string(from: Date()).replacingOccurrences(of: " ", with: "'")
   }
   
-  func didUpdate(days: [Int]) {
-    DispatchQueue.main.async { [unowned self] in
-      let sections = IndexSet(days)
-      self.tableView.reloadSections(sections, with: .automatic)
-      self.updateTotal()
-    }
-  }
-  
-  func didUpdateTransactions(atIndexPaths indexPaths: [IndexPath]) {
-    DispatchQueue.main.async { [unowned self] in
-      self.tableView.reloadRows(at: indexPaths, with: .automatic)
-      self.updateTotal()
-    }
+  func didUpdate(days: [Date]) {
+    didUpdateAll() // TODO: update when month switcher is implemented
   }
   
   func didUpdateAll() {

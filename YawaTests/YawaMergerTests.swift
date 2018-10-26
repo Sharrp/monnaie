@@ -8,20 +8,12 @@
 
 import XCTest
 
-func ==(lhs: [Transaction], rhs: [Transaction]) -> Bool {
-  guard lhs.count == rhs.count else { return false }
-  for i in 0..<lhs.count {
-    if lhs[i] != rhs[i] { return false }
-  }
-  return true
-}
-
 class YawaMergerTests: XCTestCase {
-  private let local = TransactionsController()
-  private let localAuthor = "Местный"
-  private let remote = TransactionsController()
-  private let remoteAuthor = "Дальний"
-  private let expected = TransactionsController() // used sometimes to load expected results from CSV
+  private var local: TransactionsController!
+  private let localAuthor = "Localler"
+  private var remote: TransactionsController!
+  private let remoteAuthor = "Remoter"
+  private var expected: TransactionsController! // used sometimes to load expected results from CSV
   private let merger = Merger()
   private var previousSync: [Int]!
   
@@ -38,19 +30,25 @@ class YawaMergerTests: XCTestCase {
   }
 
   override func setUp() {
+    local = TransactionsController(dbName: "local")
+    remote = TransactionsController(dbName: "remote")
+    expected = TransactionsController(dbName: "expected")
+    
     importCSV(fileName: "initial", intoControlller: local)
     importCSV(fileName: "initial", intoControlller: remote)
-    previousSync = local.transactions.map{ $0.hash }
+    previousSync = local.syncTransactions().map{ $0.hash }
   }
 
   override func tearDown() {
-      // Put teardown code here. This method is called after the invocation of each test method in the class.
+    local.removeDB()
+    remote.removeDB()
+    expected.removeDB()
   }
   
   // MARK: Trivial cases
 
   func testLocalInitiatedProperly() {
-    XCTAssert(local.transactions.count == 5, "Wrong number of transactions in local controller")
+    XCTAssert(local.syncTransactions().count == 5, "Wrong number of transactions in local controller")
   }
   
   func testBothAreEmpty() {
@@ -59,18 +57,18 @@ class YawaMergerTests: XCTestCase {
   }
   
   func testRemoteIsEmpty() {
-    let merged = Merger().merge(local: local.transactions, remote: [], previousSyncTransactions: [])
-    XCTAssert(merged == local.transactions)
+    let merged = Merger().merge(local: local.syncTransactions(), remote: [], previousSyncTransactions: [])
+    XCTAssert(merged == local.syncTransactions())
   }
   
   func testLocalIsEmpty() {
-    let merged = Merger().merge(local: [], remote: remote.transactions, previousSyncTransactions: [])
-    XCTAssert(merged == remote.transactions)
+    let merged = Merger().merge(local: [], remote: remote.syncTransactions(), previousSyncTransactions: [])
+    XCTAssert(merged == remote.syncTransactions())
   }
   
   func testNoChangesSinceLastSync() {
-    let merged = Merger().merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == local.transactions)
+    let merged = Merger().merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == local.syncTransactions())
   }
   
   // MARK: Atomic changes
@@ -78,96 +76,119 @@ class YawaMergerTests: XCTestCase {
   func testCreatedLocal() {
     let newTransaction = Transaction(amount: 12, category: .cafe, authorName: localAuthor, transactionDate: Date())
     local.add(transaction: newTransaction)
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == local.transactions)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == local.syncTransactions())
   }
   
   func testCreatedRemote() {
     let newTransaction = Transaction(amount: 12, category: .cafe, authorName: remoteAuthor, transactionDate: Date())
     remote.add(transaction: newTransaction)
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == remote.transactions)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == remote.syncTransactions())
   }
   
   func testCreatedBoth() {
-    let newLocalTransaction = Transaction(amount: 12, category: .cafe, authorName: localAuthor, transactionDate: Date(), creationDate: Date(timeIntervalSinceNow: -1200))
-    let newRemoteTransaction = Transaction(amount: 23, category: .entertainment, authorName: remoteAuthor, transactionDate: Date(), creationDate: Date())
+    let newLocalDate = Date(timeIntervalSinceNow: -1200)
+    let newLocalTransaction = Transaction(amount: 12, category: .cafe, authorName: localAuthor, transactionDate: newLocalDate, creationDate: newLocalDate)
+    let newRemoteDate = Date()
+    let newRemoteTransaction = Transaction(amount: 23, category: .entertainment, authorName: remoteAuthor, transactionDate: newRemoteDate, creationDate: newRemoteDate)
     local.add(transaction: newLocalTransaction)
     remote.add(transaction: newRemoteTransaction)
     
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    var expectedTransactions = local.transactions
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    var expectedTransactions = local.syncTransactions()
     expectedTransactions.append(newRemoteTransaction)
+    
+//    print()
+//    print(local.syncTransactions())
+//    print()
+//    print(remote.syncTransactions())
+//    print()
+//    print(merged)
+//    print()
+//    print(expectedTransactions)
+//    print()
     XCTAssert(merged == expectedTransactions)
+    
+//    XCTAssert(merged.count == expectedTransactions.count)
+//    for i in 0..<merged.count {
+//      XCTAssert(merged[i] == expectedTransactions[i], "Non equal transactions:\n\(merged[i])\n\(expectedTransactions[i])")
+//    }
+//    XCTAssert(merged == expectedTransactions)
   }
   
   func testUpdatedLocal() {
     Thread.sleep(forTimeInterval: 0.01) // so we will have different modifiedDate
     let index = 2
-    let transaction = local.transactions[index]
+    let transaction = local.syncTransactions()[index]
     transaction.amount += 200
     let expectedAmount = transaction.amount
     local.update(transaction: transaction)
     
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == local.transactions)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == local.syncTransactions())
     XCTAssert(merged[index].amount == expectedAmount)
   }
   
   func testUpdatedRemote() {
     Thread.sleep(forTimeInterval: 0.01)
     let index = 3
-    let transaction = remote.transactions[index]
+    let transaction = remote.syncTransactions()[index]
     let newCategory = TransactionCategory.bills
     XCTAssert(transaction.category != newCategory)
     transaction.category = newCategory
     remote.update(transaction: transaction)
     
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == remote.transactions)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == remote.syncTransactions())
     XCTAssert(merged[index].category == newCategory)
   }
   
   // Remote and location devices change different transactions
   func testUpdatedBoth() {
     Thread.sleep(forTimeInterval: 0.01)
-    let localTransaction = local.transactions[4]
+    let localTransaction = local.syncTransactions()[4]
     localTransaction.date = localTransaction.date.addingTimeInterval(-3600)
     local.update(transaction: localTransaction)
     
-    let remoteTransaction = remote.transactions[1]
+    let remoteTransaction = remote.syncTransactions()[1]
     remoteTransaction.date = remoteTransaction.date.addingTimeInterval(2 * 86400)
     remote.update(transaction: remoteTransaction)
     
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
     
     importCSV(fileName: "updated-both", intoControlller: expected)
-    XCTAssert(merged == expected.transactions)
+    XCTAssert(merged == expected.syncTransactions())
   }
   
   func testDeletedLocal() {
-    local.removeTransaction(inDay: 0, withIndex: 0)
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == local.transactions)
-    XCTAssert(local.transactions != remote.transactions)
+    guard let transaction = local.transaction(withIndex: 0, forDayIndex: 0) else { XCTFail(); return }
+    local.remove(transaction: transaction)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == local.syncTransactions())
+    XCTAssert(local.syncTransactions() != remote.syncTransactions())
   }
   
   func testDeletedRemote() {
-    remote.removeTransaction(inDay: 1, withIndex: 0)
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == remote.transactions)
-    XCTAssert(local.transactions != remote.transactions)
+    let secondDay = remote.allDates()[1]
+    guard let transaction = remote.transaction(index: 0, forDay: secondDay) else { XCTFail(); return }
+    remote.remove(transaction: transaction)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == remote.syncTransactions())
+    XCTAssert(local.syncTransactions() != remote.syncTransactions())
   }
   
-  // Remote and location devices delete different transactions
+  // Remote and location devices deleted different transactions
   func testeDeletedBoth() {
-    local.removeTransaction(inDay: 0, withIndex: 1)
-    remote.removeTransaction(inDay: 1, withIndex: 0)
-    XCTAssert(local.transactions != remote.transactions)
+    guard let localTranscation = local.transaction(withIndex: 1, forDayIndex: 0) else { XCTFail(); return }
+    guard let remoteTranscation = remote.transaction(withIndex: 0, forDayIndex: 1) else { XCTFail(); return }
+    local.remove(transaction: localTranscation)
+    remote.remove(transaction: remoteTranscation)
+    XCTAssert(local.syncTransactions() != remote.syncTransactions())
     
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
     importCSV(fileName: "deleted-both", intoControlller: expected)
-    XCTAssert(merged == expected.transactions)
+    XCTAssert(merged == expected.syncTransactions())
   }
   
   // MARK: Conflicts
@@ -176,49 +197,51 @@ class YawaMergerTests: XCTestCase {
   func testConflictUpdatedBoth() {
     let index = 0
     Thread.sleep(forTimeInterval: 0.01)
-    let localTransaction = local.transactions[index]
+    let localTransaction = local.syncTransactions()[index]
     localTransaction.date = localTransaction.date.addingTimeInterval(-1200)
     local.update(transaction: localTransaction)
     
     Thread.sleep(forTimeInterval: 0.01) // so the remote version is newer and we expect it in merged list
-    let remoteTransaction = remote.transactions[index]
+    let remoteTransaction = remote.syncTransactions()[index]
     let expectedDate = remoteTransaction.date.addingTimeInterval(-5000)
     remoteTransaction.date = expectedDate
     remote.update(transaction: remoteTransaction)
-    XCTAssert(local.transactions[index].date != remote.transactions[index].date)
+    XCTAssert(local.syncTransactions()[index].date != remote.syncTransactions()[index].date)
     
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == remote.transactions)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == remote.syncTransactions())
     XCTAssert(merged[index].date == expectedDate)
   }
   
   func testeConflictDeletedBoth() {
-    local.removeTransaction(inDay: 0, withIndex: 1)
-    remote.removeTransaction(inDay: 0, withIndex: 1)
-    XCTAssert(local.transactions == remote.transactions)
+    guard let localTranscation = local.transaction(withIndex: 1, forDayIndex: 0) else { XCTFail(); return }
+    guard let remoteTranscation = remote.transaction(withIndex: 1, forDayIndex: 0) else { XCTFail(); return }
+    local.remove(transaction: localTranscation)
+    remote.remove(transaction: remoteTranscation)
+    XCTAssert(local.syncTransactions() == remote.syncTransactions())
     
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == local.transactions)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == local.syncTransactions())
   }
   
   func testConflictLocalUpdateRemoteDelete() {
-    let transaction = local.transaction(forDay: 0, withIndex: 1)
+    guard let transaction = local.transaction(withIndex: 1, forDayIndex: 0) else { XCTFail(); return }
     transaction.amount += 200
     local.update(transaction: transaction)
-    remote.removeTransaction(inDay: 0, withIndex: 1)
+    remote.remove(transaction: transaction)
     
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == remote.transactions)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == remote.syncTransactions())
   }
   
   func testConflictLocalDeleteRemoteUpdate() {
-    local.removeTransaction(inDay: 1, withIndex: 0)
-    let transaction = remote.transaction(forDay: 1, withIndex: 0)
+    guard let transaction = local.transaction(withIndex: 0, forDayIndex: 1) else { XCTFail(); return }
+    local.remove(transaction: transaction)
     transaction.amount += 200
     remote.update(transaction: transaction)
     
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == local.transactions)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == local.syncTransactions())
   }
   
   // MARK: Real-life cases
@@ -226,45 +249,54 @@ class YawaMergerTests: XCTestCase {
   func testInitialNoCollision() {
     importCSV(fileName: "real-life-initial-remote", intoControlller: remote)
     importCSV(fileName: "real-life-no-collision", intoControlller: expected)
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: [])
-    XCTAssert(merged == expected.transactions)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: [])
+    XCTAssert(merged == expected.syncTransactions())
   }
   
   func testRealLifeComplex() {
     // Add
-    let newLocalDate = local.transactions[1].date.addingTimeInterval(86400 - 2 * 3600)
+    let newLocalDate = local.syncTransactions()[1].date.addingTimeInterval(86400 - 2 * 3600)
     let newLocalTransaction = Transaction(amount: 10, category: .grocery, authorName: localAuthor, transactionDate: newLocalDate, creationDate: newLocalDate)
     local.add(transaction: newLocalTransaction)
     
-    let newRemoteDate = remote.transactions[3].date.addingTimeInterval(3 * 3600)
+    let newRemoteDate = remote.syncTransactions()[3].date.addingTimeInterval(3 * 3600)
     let newRemoteTransaction = Transaction(amount: 200, category: .other, authorName: remoteAuthor, transactionDate: newRemoteDate, creationDate: newRemoteDate)
     remote.add(transaction: newRemoteTransaction)
     
     // Update
     Thread.sleep(forTimeInterval: 0.01)
-    var localTransaction = local.transactions[0]
+    var localTransaction = local.syncTransactions()[0]
     localTransaction.amount = 30
     local.update(transaction: localTransaction)
     
-    localTransaction = local.transactions[1]
+    localTransaction = local.syncTransactions()[1]
     localTransaction.category = .grocery
     local.update(transaction: localTransaction)
     
     Thread.sleep(forTimeInterval: 0.01)
-    var remoteTransaction = remote.transactions[1]
+    var remoteTransaction = remote.syncTransactions()[1]
     remoteTransaction.amount = 45
     remote.update(transaction: remoteTransaction)
     
-    remoteTransaction = remote.transactions[3]
+    remoteTransaction = remote.syncTransactions()[3]
     remoteTransaction.category = .entertainment
     remote.update(transaction: remoteTransaction)
     
     // Delete
-    local.removeTransaction(inDay: 2, withIndex: 1)
-    remote.removeTransaction(inDay: 0, withIndex: 2)
+    guard let localTransactionToDelete = local.transaction(withIndex: 1, forDayIndex: 2) else { XCTFail(); return }
+    guard let remoteTransactionToDelete = remote.transaction(withIndex: 2, forDayIndex: 0) else { XCTFail(); return }
+    local.remove(transaction: localTransactionToDelete)
+    remote.remove(transaction: remoteTransactionToDelete)
     
     importCSV(fileName: "real-life-complex", intoControlller: expected)
-    let merged = merger.merge(local: local.transactions, remote: remote.transactions, previousSyncTransactions: previousSync)
-    XCTAssert(merged == expected.transactions)
+    let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
+    XCTAssert(merged == expected.syncTransactions())
+  }
+}
+
+extension TransactionsController {
+  func transaction(withIndex index: Int, forDayIndex dayIndex: Int) -> Transaction? {
+    let day = allDates()[dayIndex]
+    return transaction(index: index, forDay: day)
   }
 }
