@@ -36,24 +36,19 @@ extension UIButton {
   }
 }
 
-protocol DigitKeyboardDelegate: class {
-  func keyboardHeightChanged(to keyboardHeight: CGFloat)
-}
-
 class DigitKeyboardView: UIView {
   @IBOutlet weak var contentView: UIView!
   @IBOutlet var buttons: [UIButton]!
   @IBOutlet weak var deleteButton: UIButton!
   
-  weak var delegate: DigitKeyboardDelegate?
   private var deleteTimer: Timer?
   
   weak var heightContraint: NSLayoutConstraint! {
     didSet {
       let margin: CGFloat = 6
-      let height = (buttons[0].frame.height + margin) * 4 + margin
+      let height = (buttons[0].frame.height + margin) * 4 - margin
       heightContraint.constant = height
-      delegate?.keyboardHeightChanged(to: height)
+      setNeedsUpdateConstraints()
     }
   }
   

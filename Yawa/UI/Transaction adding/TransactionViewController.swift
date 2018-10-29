@@ -14,30 +14,15 @@ protocol TransactionUpdateDelegate: AnyObject {
 }
 
 class TransactionViewController: UIViewController {
-  @IBOutlet weak var amountInput: UITextField!
-  
-  private var inputFocused: Bool {
-    return amountInput.isFirstResponder
-  }
-  private var inputHasValidContent: Bool {
-    let value = (amountInput.text as NSString?)?.floatValue
-    return value != nil && value! > 0
-  }
+  @IBOutlet weak var composer: TransactionComponserView!
   
   @IBOutlet weak var addButton: UIButton!
-  @IBOutlet weak var dateButton: UIButton!
-  @IBOutlet weak var inputFlowButton: UIButton!
   
   @IBOutlet weak var keyboardHeightConstraint: NSLayoutConstraint!
   @IBOutlet weak var keyboardView: DigitKeyboardView!
   
-  @IBOutlet weak var dateButtonBottomConstraint: NSLayoutConstraint!
-  @IBOutlet weak var inputFlowBottomConstraint: NSLayoutConstraint!
-  @IBOutlet weak var addButtonBottomConstraint: NSLayoutConstraint!
-  
   @IBOutlet weak var categoryCollectionView: UICollectionView!
   private let categoriesProvider = CategoriesProvider()
-  private var userSetCategoryManually = false
   
   @IBOutlet weak var dateTimePicker: UIDatePicker!
   
@@ -46,65 +31,26 @@ class TransactionViewController: UIViewController {
   var transaction: Transaction?
   private var guillotineInfoProvider: GuillotineInfoProvider?
   
-  private enum EditingMode {
-    case amount
-    case date
-    case category
-  }
-  
-  private var editingMode = EditingMode.amount {
-    didSet {
-      dateTimePicker.isHidden = editingMode != .date
-      categoryCollectionView.isHidden = editingMode != .category
-      if editingMode == .amount {
-        setFocusOnAmount()
-      } else {
-        removeFocusFromAmount()
-      }
-      updateCategoryButtonTitle()
-    }
-  }
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     
     NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(syncDidDismiss), name: .syncDidDismiss, object: nil)
     
-    if let transaction = transaction {
-      amountInput.text = formatMoney(amount: transaction.amount, currency: .JPY, symbolEnabled: false)
-      selectCategory(atIndex: transaction.category.rawValue)
-      dateTimePicker.date = transaction.date
-      addButton.isEnabled = true
-    }
-    
-    let coloredPlaceholder = NSAttributedString(string: "¥0", attributes: [.foregroundColor: UIColor(white: 1.0, alpha: 0.3)])
-    amountInput.attributedPlaceholder = coloredPlaceholder
-    
-    for button in [dateButton, inputFlowButton, addButton] {
-      button!.layer.cornerRadius = 8
-      button!.clipsToBounds = true
-      button!.setBackgroundColor(color: UIColor(white: 1, alpha: 0.1), forState: .normal)
-      button!.setBackgroundColor(color: UIColor(white: 1, alpha: 0.3), forState: .highlighted)
-    }
-    dateButton.titleLabel?.numberOfLines = 2
-    dateButton.titleLabel?.textAlignment = .center
-    
-    keyboardView.delegate = self
-    keyboardView.textField = amountInput
+    keyboardView.textField = composer.amountInput
     keyboardView.heightContraint = keyboardHeightConstraint
     
     categoryCollectionView.dataSource = categoriesProvider
     categoryCollectionView.delegate = categoriesProvider
     categoriesProvider.delegate = self
+    clearCategory()
     
     dateTimePicker.setValue(UIColor.white, forKey: "textColor")
 
-    updateDateButton(forDate: Date())
-    clearCategory()
-    setFocusOnAmount()
-    
-    updateAppIconToSelectedOrLocaleCurrency()
+    composer.delegate = self
+    composer.set(mode: .waitingForInput, animated: false)
+    composer.set(date: Date())
+    composer.set(category: .defaultCategory)
   }
   
   @objc func appDidBecomeActive() {
@@ -112,46 +58,19 @@ class TransactionViewController: UIViewController {
   }
   
   private func resetStateAfterBackground() {
-    guard amountInput.text?.count == 0 else { return }
+    guard composer.amountInput.text?.count == 0 else { return }
     resetDate()
     clearCategory()
-    userSetCategoryManually = false
     
     if guillotineInfoProvider?.bladeState == .collapsed {
-      setFocusOnAmount()
+      composer.reset()
     }
   }
   
   @objc func syncDidDismiss() {
-    if editingMode == .amount {
-      setFocusOnAmount()
+    if composer.mode == .amount || composer.mode == .waitingForInput {
+      composer.set(mode: composer.mode)
     }
-  }
-  
-  // MARK: Amount
-  
-  private func clearAmount() {
-    amountInput.text = ""
-    addButton.isEnabled = false
-  }
-  
-  @IBAction func amountTextChanged() {
-    addButton.isEnabled = inputHasValidContent
-    updateCategoryButtonTitle()
-  }
-  
-  @IBAction func editingDidBegin() {
-    editingMode = .amount
-  }
-  
-  private func setFocusOnAmount() {
-    amountInput.becomeFirstResponder()
-    keyboardView.isHidden = false
-  }
-  
-  private func removeFocusFromAmount() {
-    amountInput.resignFirstResponder()
-    keyboardView.isHidden = true
   }
   
   // MARK: Category
@@ -170,64 +89,24 @@ class TransactionViewController: UIViewController {
   
   private func clearCategory() {
     deselectCategory()
-    inputFlowButton.setTitle("Category", for: .normal)
-  }
-  
-  private func updateCategoryButtonTitle() {
-    let title: String
-    if !inputFocused && !inputHasValidContent {
-      title = "Back to amount"
-    } else if userSetCategoryManually {
-      let category = categoriesProvider.selectedCategory
-      title = "\(category.emoji) \(category.name)"
-    } else if inputHasValidContent { // set default category
-      let category = TransactionCategory.defaultCategory
-      selectCategory(atIndex: category.rawValue)
-      title = "\(category.emoji) \(category.name)"
-    } else {
-      title = "Category"
-    }
-    inputFlowButton.setTitle(title, for: .normal)
-  }
-  
-  @IBAction func categoryTapped() {
-    let mode: EditingMode = !inputFocused && !inputHasValidContent ? .amount : .category
-    editingMode = mode
   }
   
   // MARK: Date & time
   
-  private func updateDateButton(forDate date: Date) {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "MMM"
-    let month = dateFormatter.string(from: date).uppercased()
-    let dayOfMonth = Calendar.current.component(.day, from: date)
-    
-    let formattedTitle = NSMutableAttributedString(string: "\(dayOfMonth)\n\(month)")
-    let font = UIFont.systemFont(ofSize: 11, weight: .regular)
-    let range = NSRange(location: formattedTitle.length - 3, length: 3)
-    formattedTitle.addAttribute(.font, value: font, range: range)
-    dateButton.setAttributedTitle(formattedTitle, for: .normal)
-  }
-  
   private func resetDate() {
     let today = Date()
     dateTimePicker.date = today
-    updateDateButton(forDate: today)
+    composer.set(date: today)
   }
   
   @IBAction func dateChanged(sender: UIDatePicker) {
-    updateDateButton(forDate: sender.date)
-  }
-  
-  @IBAction func dateTapped() {
-    editingMode = .date
+    composer.set(date: sender.date)
   }
   
   // MARK: Add transaction
   
   @IBAction func addTapped() {
-    let amount = Double(amountInput.text ?? "0")!
+    guard let amount = composer.amount else { return }
     let category = categoriesProvider.selectedCategory
     
     if let transaction = transaction { // editing mode
@@ -240,8 +119,7 @@ class TransactionViewController: UIViewController {
       delegate?.add(transaction: transaction)
     }
     
-    clearAmount()
-    setFocusOnAmount()
+    composer.reset()
   }
 }
 
@@ -253,61 +131,9 @@ extension TransactionViewController: GuillotineBladeUpdateDelegate {
   }
 }
 
-extension TransactionViewController: DigitKeyboardDelegate {
-  func keyboardHeightChanged(to keyboardHeight: CGFloat) {
-    // Say hello to iPhone X
-    var bottomInset: CGFloat = 0
-    if let safeAreBottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom {
-      bottomInset = safeAreBottomInset
-    }
-    
-    let bottomConstraint = keyboardHeight - bottomInset
-    dateButtonBottomConstraint.constant = bottomConstraint
-    inputFlowBottomConstraint.constant = bottomConstraint
-    addButtonBottomConstraint.constant = bottomConstraint
-  }
-}
-
-extension TransactionViewController {
-  func updateAppIconToSelectedOrLocaleCurrency() {
-    guard UIApplication.shared.supportsAlternateIcons else { return }
-    guard !Settings.main.didChangeDefaultIcon else { return }
-    guard let currencyCode = Locale.current.currencyCode else { return }
-    
-    var currenciesWithCustomIcons = [String]()
-    if let bundleIcons = Bundle.main.object(forInfoDictionaryKey: "CFBundleIcons") as? [String: Any],
-      let alternateIcons = bundleIcons["CFBundleAlternateIcons"] as? [String: Any] {
-      currenciesWithCustomIcons = [String](alternateIcons.keys)
-    }
-    guard currenciesWithCustomIcons.contains(currencyCode) else { return }
-    
-    // Doesn't work in viewDidLoad without a small delay
-    DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [unowned self] in
-      UIApplication.shared.setAlternateIconName(currencyCode) { (error) in
-        if let error = error {
-          print("\nICON ERROR: \(error)\n")
-          Settings.main.didChangeDefaultIcon = false // sorry, but callback isn't called in case of success
-          return
-        }
-      }
-      Settings.main.didChangeDefaultIcon = true
-      
-      // Ugly hack to not show "You changed app icon" alert
-      // We make a subtle change
-      let tempViewController = UIViewController()
-      self.present(tempViewController, animated: false, completion: {
-        tempViewController.dismiss(animated: false) {
-          self.amountInput.becomeFirstResponder() // show/dismissing controller removes focus from text field
-        }
-      })
-    }
-  }
-}
-
 extension TransactionViewController: CategorySelectionDelegate {
   func didSelect(category: TransactionCategory) {
-    userSetCategoryManually = true
-    updateCategoryButtonTitle()
+    composer.set(category: category)
   }
 }
 
@@ -315,11 +141,10 @@ extension TransactionViewController: GuilliotineSlideProgressDelegate {
   func didUpdateProgress(to progress: CGFloat) {
     let restrictedProgress = min(1, max(0, progress))
     let targetTransform = CGAffineTransform(translationX: 0, y: keyboardView.frame.height * restrictedProgress)
-    for control in [keyboardView, inputFlowButton, dateButton, addButton, categoryCollectionView, dateTimePicker] {
+    for control in [keyboardView, addButton, categoryCollectionView, dateTimePicker, composer] {
       control?.transform = targetTransform
       control?.alpha = 1 - restrictedProgress
     }
-    amountInput.alpha = 1 - 4*restrictedProgress
   }
   
   func willSwitch(toState bladeState: BladeState, withDuration duration: Double, andTimingProvider timing: UITimingCurveProvider) {
@@ -330,19 +155,32 @@ extension TransactionViewController: GuilliotineSlideProgressDelegate {
       targetTransform = .identity
       targetAlpha = 1
     case .expanded:
-      targetTransform = CGAffineTransform(translationX: 0, y: view.frame.height - inputFlowButton.frame.origin.y)
+      targetTransform = CGAffineTransform(translationX: 0, y: view.frame.height - composer.frame.minY)
       targetAlpha = 0
     }
     
     controlsAnimator = UIViewPropertyAnimator(duration: duration, timingParameters: timing)
     controlsAnimator.addAnimations { [unowned self] in
-      let controlsToUpdateTransform: [UIView] = [self.keyboardView, self.inputFlowButton, self.dateButton, self.addButton, self.categoryCollectionView, self.dateTimePicker]
+      let controlsToUpdateTransform: [UIView] = [self.keyboardView, self.addButton, self.categoryCollectionView, self.dateTimePicker, self.composer]
       for control in controlsToUpdateTransform {
         control.transform = targetTransform
         control.alpha = targetAlpha
       }
-      self.amountInput.alpha = targetAlpha
+      self.composer.alpha = targetAlpha
     }
     controlsAnimator.startAnimation()
+  }
+}
+
+extension TransactionViewController: TransactionComposerDelegate {
+  func didSwitch(toMode mode: TransactionComposerMode) {
+    keyboardView.isHidden = mode != .amount && mode != .waitingForInput
+    dateTimePicker.isHidden = mode != .date
+    categoryCollectionView.isHidden = mode != .category
+    addButton.isHidden = mode == .waitingForInput
+  }
+  
+  func amountChangedValidity(isValid amountIsValid: Bool) {
+    addButton.isEnabled = amountIsValid
   }
 }
