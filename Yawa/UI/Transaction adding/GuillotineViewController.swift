@@ -73,6 +73,8 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
     (baseVC as? GuillotineBladeUpdateDelegate)?.didUpdate(bladeVC: bladeVC, infoProvider: self)
     (bladeVC as? GuillotineBaseUpdateDelegate)?.didUpdate(baseVC: baseVC, infoProvider: self)
     bladeVC.view.layer.cornerRadius = 14
+    bladeVC.view.layer.borderWidth = 1
+    bladeVC.view.layer.borderColor = UIColor(white: 0.8, alpha: 0.8).cgColor
     
     view.addGestureRecognizer(panGesture)
   }

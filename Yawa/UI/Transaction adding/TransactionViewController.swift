@@ -45,7 +45,7 @@ class TransactionViewController: UIViewController {
     categoriesProvider.delegate = self
     clearCategory()
     
-    dateTimePicker.setValue(UIColor.white, forKey: "textColor")
+    dateTimePicker.setValue(UIColor(white: 0.6, alpha: 1), forKey: "textColor")
 
     composer.delegate = self
     composer.set(mode: .waitingForInput, animated: false)

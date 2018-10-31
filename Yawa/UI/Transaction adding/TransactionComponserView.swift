@@ -90,7 +90,7 @@ class TransactionComponserView: UIView {
     categoryLabel.frame = CGRect(x: 55, y: 14, width: 123, height: 28)
     categoryButton.clipsToBounds = true
     
-    let coloredPlaceholder = NSAttributedString(string: "¥0", attributes: [.foregroundColor: UIColor(white: 1.0, alpha: 0.3)])
+    let coloredPlaceholder = NSAttributedString(string: "¥0", attributes: [.foregroundColor: UIColor(white: 0.75, alpha: 1)])
     amountInput.attributedPlaceholder = coloredPlaceholder
     amountInput.layer.anchorPoint = CGPoint(x: 1, y: 0.5)
     amountLabel.layer.anchorPoint = CGPoint(x: 1, y: 0.5)
@@ -99,6 +99,10 @@ class TransactionComponserView: UIView {
     dateButton.layer.borderColor = selectedBorderColor
     dateButton.titleLabel?.numberOfLines = 2
     dateButton.titleLabel?.textAlignment = .center
+    
+    // TEMP
+    self.amountButton.layer.borderColor = UIColor(hex: 0xe6e6e6).cgColor
+    self.amountButton.layer.borderWidth = 1
   }
   
   override func layoutSubviews() {
@@ -199,7 +203,8 @@ class TransactionComponserView: UIView {
     }
     
     return { [unowned self] in
-      self.categoryButton.layer.borderWidth = mode == .category ? 1 : 0
+      self.categoryButton.layer.borderWidth = 1
+//      self.categoryButton.layer.borderWidth = mode == .category ? 1 : 0
       self.categoryButton.backgroundColor = mode == .category ? .clear : .white
       
       self.categoryButton.alpha = mode == .waitingForInput ? 0 : 1
@@ -232,7 +237,8 @@ class TransactionComponserView: UIView {
   
   private func dateButtonAnimation(forMode mode: TransactionComposerMode) -> ModeSwitchAnimation {
     return { [unowned self] in
-      self.dateButton.layer.borderWidth = mode == .date ? 1 : 0
+      self.dateButton.layer.borderWidth = 1
+//      self.dateButton.layer.borderWidth = mode == .date ? 1 : 0
       self.dateButton.backgroundColor = mode == .date ? .clear : .white
       
       self.dateButton.alpha = mode == .waitingForInput ? 0 : 1

@@ -36,7 +36,7 @@ class HistorySummaryViewController: UIViewController {
     dateFormatter.dateStyle = .medium
     dateFormatter.timeStyle = .none
     summaryProvider.transactionsController = dataProvider
-    tableView.separatorColor = UIColor(white: 1, alpha: 0.2)
+    tableView.separatorColor = UIColor(white: 0.2, alpha: 0.2)
     
     navigationBar.setBackgroundImage(UIImage(), for: .default)
     navigationBar.shadowImage = UIImage()
@@ -189,7 +189,7 @@ extension HistorySummaryViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
     view.tintColor = .clear
     guard let header = view as? UITableViewHeaderFooterView else { return }
-    header.textLabel?.textColor = UIColor(white: 1, alpha: 0.8)
+    header.textLabel?.textColor = UIColor(white: 0.2, alpha: 0.8)
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
