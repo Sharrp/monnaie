@@ -117,9 +117,18 @@ class TransactionViewController: UIViewController {
     } else { // adding new transaction
       let transaction = Transaction(amount: amount, category: category, authorName: Settings.main.syncName, transactionDate: dateTimePicker.date)
       delegate?.add(transaction: transaction)
+      
+      composer.set(mode: .table)
+      let yShiftFlyAway = -(composer.frame.maxY + 30)
+      let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [unowned self] in
+        self.composer.transform = CGAffineTransform(translationX: 0, y: yShiftFlyAway).scaledBy(x: 0.1, y: 0.1)
+      }
+      animator.addCompletion { [unowned self] _ in
+        self.composer.reset(animated: false)
+        self.composer.transform = .identity
+      }
+      animator.startAnimation(afterDelay: 0.3)
     }
-    
-    composer.reset()
   }
 }
 
@@ -173,11 +182,21 @@ extension TransactionViewController: GuilliotineSlideProgressDelegate {
 }
 
 extension TransactionViewController: TransactionComposerDelegate {
-  func didSwitch(toMode mode: TransactionComposerMode) {
+  func didSwitch(toMode mode: TransactionComposerMode, animated: Bool = false) {
     keyboardView.isHidden = mode != .amount && mode != .waitingForInput
     dateTimePicker.isHidden = mode != .date
     categoryCollectionView.isHidden = mode != .category
-    addButton.isHidden = mode == .waitingForInput
+    
+    let animation = { [unowned self] in
+      let isHidden = mode == .waitingForInput
+      self.addButton.alpha = isHidden ? 0 : 1
+      self.addButton.transform = isHidden ? CGAffineTransform(translationX: 0, y: Animation.appearceWithShfit) : .identity
+    }
+    if animated {
+      UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut, animations: animation).startAnimation()
+    } else {
+      animation()
+    }
   }
   
   func amountChangedValidity(isValid amountIsValid: Bool) {

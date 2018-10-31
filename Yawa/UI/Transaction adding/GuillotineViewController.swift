@@ -131,8 +131,7 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
       if panIsNotVertical { break }
       
       let timingProvider = UISpringTimingParameters(dampingRatio: dampingRatio)
-      let finishingDuration = 0.8*duration
-      let animator = UIViewPropertyAnimator(duration: finishingDuration, timingParameters: timingProvider)
+      let animator = UIViewPropertyAnimator(duration: Animation.durationFast, timingParameters: timingProvider)
       
       // Determine the next state
       let velocity = pan.velocity(in: view)
@@ -152,7 +151,7 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
         self.view.layoutIfNeeded()
       }
       animator.startAnimation()
-      (baseViewController as? GuilliotineSlideProgressDelegate)?.willSwitch(toState: bladeState, withDuration: finishingDuration, andTimingProvider: timingProvider)
+      (baseViewController as? GuilliotineSlideProgressDelegate)?.willSwitch(toState: bladeState, withDuration: Animation.duration, andTimingProvider: timingProvider)
     case .possible:
       break
     }

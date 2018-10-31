@@ -17,7 +17,7 @@ enum TransactionComposerMode: Int {
 }
 
 protocol TransactionComposerDelegate {
-  func didSwitch(toMode: TransactionComposerMode)
+  func didSwitch(toMode: TransactionComposerMode, animated: Bool)
   func amountChangedValidity(isValid: Bool)
 }
 
@@ -25,7 +25,6 @@ typealias ModeSwitchAnimation = () -> ()
 
 class TransactionComponserView: UIView {
   var delegate: TransactionComposerDelegate?
-  private var animator = UIViewPropertyAnimator()
   
   private let margin: CGFloat = 6
   private let baseSize: CGFloat = 56
@@ -42,6 +41,7 @@ class TransactionComponserView: UIView {
   @IBOutlet weak var categoryButton: UIButton!
   @IBOutlet weak var categoryButtonLeftMargin: NSLayoutConstraint!
   @IBOutlet weak var categoryButtonWidth: NSLayoutConstraint!
+  private let categoryLabel = UILabel()
   
   @IBOutlet weak var dateButton: UIButton!
   
@@ -57,7 +57,7 @@ class TransactionComponserView: UIView {
     animations.append(amountElementsAnimation(forMode: mode))
     
     if animated {
-      let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeInOut, animations: nil)
+      let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeIn, animations: nil)
       animator.addAnimations { [weak self] in
         animations.forEach{ $0() }
         self?.layoutIfNeeded()
@@ -67,7 +67,7 @@ class TransactionComponserView: UIView {
       animations.forEach{ $0() }
       layoutIfNeeded()
     }
-    delegate?.didSwitch(toMode: mode)
+    delegate?.didSwitch(toMode: mode, animated: animated)
   }
   
   var amount: Double? {
@@ -84,6 +84,11 @@ class TransactionComponserView: UIView {
     
     let selectedBorderColor = UIColor(hex: 0xe6e6e6).cgColor
     categoryButton.layer.borderColor = selectedBorderColor
+    categoryLabel.text = TransactionCategory.defaultCategory.name
+    categoryLabel.font = UIFont.systemFont(ofSize: 17)
+    categoryButton.addSubview(categoryLabel)
+    categoryLabel.frame = CGRect(x: 55, y: 14, width: 123, height: 28)
+    categoryButton.clipsToBounds = true
     
     let coloredPlaceholder = NSAttributedString(string: "¥0", attributes: [.foregroundColor: UIColor(white: 1.0, alpha: 0.3)])
     amountInput.attributedPlaceholder = coloredPlaceholder
@@ -123,9 +128,9 @@ class TransactionComponserView: UIView {
     set(mode: .amount)
   }
   
-  func reset() {
+  func reset(animated: Bool = true) {
     amountInput.text = ""
-    set(mode: .waitingForInput)
+    set(mode: .waitingForInput, animated: animated)
   }
   
   func set(date: Date) {
@@ -143,6 +148,7 @@ class TransactionComponserView: UIView {
   
   func set(category: TransactionCategory) {
     categoryButton.setTitle(category.emoji, for: .normal)
+    categoryLabel.text = category.name
   }
 
   private func amountElementsAnimation(forMode mode: TransactionComposerMode) -> ModeSwitchAnimation {
@@ -167,7 +173,13 @@ class TransactionComponserView: UIView {
         self.amountButton.transform = .identity
         self.amountButton.alpha = 1
       case .table:
-        break
+        self.amountInput.resignFirstResponder()
+        self.amountInput.transform = downscale
+        self.amountInput.alpha = 0
+        self.amountLabel.transform = .identity
+        self.amountLabel.alpha = 1
+        self.amountButton.transform = downscale
+        self.amountButton.alpha = 0
       }
     }
   }
@@ -182,48 +194,58 @@ class TransactionComponserView: UIView {
     case .date, .category:
       self.categoryButtonWidth.constant = UIScreen.main.bounds.width - 4 * margin - categoryButton.bounds.height - amountButtonWidth
     case .table:
+      self.categoryButtonWidth.constant = UIScreen.main.bounds.width - 2 * 8 // fucking new margin
       break
     }
     
-    let xShiftWhenHidden = -2 * (baseSize + margin) - margin
     return { [unowned self] in
       self.categoryButton.layer.borderWidth = mode == .category ? 1 : 0
       self.categoryButton.backgroundColor = mode == .category ? .clear : .white
       
+      self.categoryButton.alpha = mode == .waitingForInput ? 0 : 1
+      
+      let defaultCategoryTitleInset = UIEdgeInsets(top: 0, left: 13, bottom: 0, right: 0)
       switch mode {
       case .waitingForInput:
-        self.categoryButton.transform = CGAffineTransform(translationX: xShiftWhenHidden, y: 0)
-        self.categoryButtonWidth.constant = self.baseSize
+        self.categoryButton.transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
+        self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        self.categoryLabel.transform = .identity
       case .amount:
         self.categoryButton.transform = .identity
-        self.categoryButtonWidth.constant = self.baseSize
+        self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        self.categoryLabel.transform = .identity
       case .date:
         self.categoryButton.transform = .identity
-        self.categoryButtonWidth.constant = UIScreen.main.bounds.width - 4 * self.margin - self.categoryButton.bounds.height - self.amountButtonWidth
+        self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        self.categoryLabel.transform = .identity
       case .category:
         self.categoryButton.transform = .identity
-        self.categoryButtonWidth.constant = UIScreen.main.bounds.width - 4 * self.margin - self.categoryButton.bounds.height - self.amountButtonWidth
+        self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        self.categoryLabel.transform = .identity
       case .table:
-        break
+        self.categoryButton.transform = CGAffineTransform(translationX: -self.baseSize-self.margin+2, y: 0)
+        self.categoryButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 0)
+        self.categoryLabel.transform = CGAffineTransform(translationX: 29, y: 0)
       }
     }
   }
   
   private func dateButtonAnimation(forMode mode: TransactionComposerMode) -> ModeSwitchAnimation {
-    let xShiftWhenHidden = -2 * (baseSize + margin) - margin
-    return { [weak self] in
-      self?.dateButton.layer.borderWidth = mode == .date ? 1 : 0
-      self?.dateButton.backgroundColor = mode == .date ? .clear : .white
+    return { [unowned self] in
+      self.dateButton.layer.borderWidth = mode == .date ? 1 : 0
+      self.dateButton.backgroundColor = mode == .date ? .clear : .white
+      
+      self.dateButton.alpha = mode == .waitingForInput ? 0 : 1
       
       switch mode {
       case .waitingForInput:
-        self?.dateButton.transform = CGAffineTransform(translationX: xShiftWhenHidden, y: 0)
+        self.dateButton.transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
       case .amount, .category:
-        self?.dateButton.transform = .identity
+        self.dateButton.transform = .identity
       case .date:
-        self?.dateButton.transform = .identity
+        self.dateButton.transform = .identity
       case .table:
-        break
+        self.dateButton.transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
       }
     }
   }

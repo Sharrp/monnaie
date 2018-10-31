@@ -88,3 +88,9 @@ extension Date {
     return Calendar.current.compare(self, to: date, toGranularity: .day) == .orderedSame
   }
 }
+
+struct Animation {
+  static let duration = 0.3
+  static let durationFast = 0.2
+  static let appearceWithShfit: CGFloat = 10
+}
