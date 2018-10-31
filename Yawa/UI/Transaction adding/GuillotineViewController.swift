@@ -41,10 +41,11 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
   @IBOutlet weak var bladeHeightConstraint: NSLayoutConstraint!
   
   private var panGesture: UIPanGestureRecognizer!
-  private var directionDetectionDistance: CGFloat = 10
+  private var directionDetectionDistance: CGFloat = 20
   private var verticalPanDetectionAngle = CGFloat.pi / 6
   private var panIsNotVertical = false
   private var isPanning = false
+  private var panDetectionLocation = CGPoint()
   
   private let dampingRatio: CGFloat = 0.7
   private let duration = 0.35
@@ -126,6 +127,7 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
         break
       }
       isPanning = true
+      panDetectionLocation = pan.location(in: view)
       moveBlade(withPan: pan)
     case .cancelled, .failed, .ended:
       if panIsNotVertical { break }
@@ -168,10 +170,11 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
   }
   
   private func moveBlade(withPan pan: UIPanGestureRecognizer) {
-    let shift = pan.translation(in: view)
+    let currentTouchLocation = pan.location(ofTouch: 0, in: view)
+    let yShift = currentTouchLocation.y - panDetectionLocation.y
     
     let initialInset = bottomInset(forState: bladeState)
-    let fingerWantsInset = initialInset - shift.y
+    let fingerWantsInset = initialInset - yShift
     let displayedInset: CGFloat
     let distance = collapsedBottomInset - expandedBottomInset
     if fingerWantsInset > collapsedBottomInset {
