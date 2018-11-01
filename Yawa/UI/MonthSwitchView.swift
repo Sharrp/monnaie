@@ -24,7 +24,12 @@ class MonthSwitchProvider: NSObject {
       collectionView.reloadData()
     }
   }
-  var todayAmount = 0.0
+  var todayAmount = 0.0 {
+    didSet {
+      let todayIndexPath = IndexPath(row: reports.count, section: 0)
+      collectionView.reloadItems(at: [todayIndexPath])
+    }
+  }
   
   @IBOutlet weak var collectionView: UICollectionView!
   
@@ -44,23 +49,29 @@ class MonthSwitchProvider: NSObject {
     // We need to wait until reload data is finished, scrollToItem won't work
     let indexPath = IndexPath(item: reports.count - 1, section: 0)
     collectionView.performBatchUpdates(nil, completion: { [unowned self] _ in
-      self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .right)
+      self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .left)
     })
   }
 }
 
 extension MonthSwitchProvider: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return reports.count
+    return reports.count + 1
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let reuseID = "monthSwitchCell"
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseID, for: indexPath) as! MonthSwitchCell
     cell.layer.cornerRadius = 8
-    let report = reports[indexPath.row]
-    cell.amountLabel.text = formatMoney(amount: report.amount, currency: .JPY)
-    cell.monthLabel.text = string(forMonth: report.monthDate)
+    
+    if indexPath.row < reports.count {
+      let report = reports[indexPath.row]
+      cell.amountLabel.text = formatMoney(amount: report.amount, currency: .JPY)
+      cell.monthLabel.text = string(forMonth: report.monthDate)
+    } else {
+      cell.amountLabel.text = formatMoney(amount: todayAmount, currency: .JPY)
+      cell.monthLabel.text = "Today"
+    }
     return cell
   }
 }
