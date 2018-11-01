@@ -75,7 +75,7 @@ extension MonthSwitchProvider: UICollectionViewDelegate {
 
 extension MonthSwitchProvider: UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    return CGSize(width: 116, height: 56)
+    return CGSize(width: 110, height: 56)
   }
   
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

@@ -212,21 +212,21 @@
                                     <constraint firstAttribute="height" constant="83" id="hRB-dX-dZ0"/>
                                 </constraints>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="4" id="xgC-Kg-KlV">
-                                    <size key="itemSize" width="118" height="56"/>
+                                    <size key="itemSize" width="110" height="56"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="monthSwitchCell" id="I9f-AC-TZK" customClass="MonthSwitchCell" customModule="Yawa" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="13.5" width="118" height="56"/>
+                                        <rect key="frame" x="0.0" y="13.5" width="110" height="56"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                            <rect key="frame" x="0.0" y="0.0" width="118" height="56"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="110" height="56"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Amount" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rU8-2W-Fjd">
-                                                    <rect key="frame" x="8" y="5" width="102" height="24"/>
+                                                    <rect key="frame" x="4" y="5" width="102" height="24"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="24" id="q8T-nx-JjM"/>
                                                     </constraints>
@@ -235,7 +235,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="78o-nz-V4I">
-                                                    <rect key="frame" x="10" y="29" width="98" height="24"/>
+                                                    <rect key="frame" x="6" y="29" width="98" height="24"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="24" id="DAl-hS-lhF"/>
                                                     </constraints>
@@ -248,13 +248,13 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="bottom" secondItem="78o-nz-V4I" secondAttribute="bottom" constant="3" id="7m8-Wt-Oo3"/>
-                                            <constraint firstItem="78o-nz-V4I" firstAttribute="leading" secondItem="I9f-AC-TZK" secondAttribute="leading" constant="10" id="X76-nD-fVB"/>
+                                            <constraint firstItem="78o-nz-V4I" firstAttribute="leading" secondItem="I9f-AC-TZK" secondAttribute="leading" constant="6" id="X76-nD-fVB"/>
                                             <constraint firstItem="rU8-2W-Fjd" firstAttribute="top" secondItem="I9f-AC-TZK" secondAttribute="top" constant="5" id="Ywx-pl-x7j"/>
-                                            <constraint firstItem="rU8-2W-Fjd" firstAttribute="leading" secondItem="I9f-AC-TZK" secondAttribute="leading" constant="8" id="dgu-pe-HQp"/>
-                                            <constraint firstAttribute="trailing" secondItem="78o-nz-V4I" secondAttribute="trailing" constant="10" id="gvp-Z0-e7A"/>
-                                            <constraint firstAttribute="trailing" secondItem="rU8-2W-Fjd" secondAttribute="trailing" constant="8" id="u0Q-ij-mny"/>
+                                            <constraint firstItem="rU8-2W-Fjd" firstAttribute="leading" secondItem="I9f-AC-TZK" secondAttribute="leading" constant="4" id="dgu-pe-HQp"/>
+                                            <constraint firstAttribute="trailing" secondItem="78o-nz-V4I" secondAttribute="trailing" constant="6" id="gvp-Z0-e7A"/>
+                                            <constraint firstAttribute="trailing" secondItem="rU8-2W-Fjd" secondAttribute="trailing" constant="4" id="u0Q-ij-mny"/>
                                         </constraints>
-                                        <size key="customSize" width="118" height="56"/>
+                                        <size key="customSize" width="110" height="56"/>
                                         <connections>
                                             <outlet property="amountLabel" destination="rU8-2W-Fjd" id="VrA-kx-lbN"/>
                                             <outlet property="monthLabel" destination="78o-nz-V4I" id="JJd-tL-lcm"/>
