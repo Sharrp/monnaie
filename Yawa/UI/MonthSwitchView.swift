@@ -29,11 +29,15 @@ class MonthSwitchProvider: NSObject {
   @IBOutlet weak var collectionView: UICollectionView!
   
   private var selectedIndex = 0
-  private let monthFormat = "MMMM yyyy"
-  private let dateFormatter = DateFormatter()
   
-  override init() {
-    dateFormatter.setLocalizedDateFormatFromTemplate(monthFormat)
+  private func string(forMonth monthDate: Date) -> String {
+    let format: String
+    if Calendar.current.isDate(monthDate, equalTo: Date(), toGranularity: .year) {
+      format = "MMMM"
+    } else {
+      format = "MMM yyyy"
+    }
+    return DateFormatter(dateFormat: format).string(from: monthDate)
   }
   
   func selectLastMonth() {
@@ -56,7 +60,7 @@ extension MonthSwitchProvider: UICollectionViewDataSource {
     cell.layer.cornerRadius = 8
     let report = reports[indexPath.row]
     cell.amountLabel.text = formatMoney(amount: report.amount, currency: .JPY)
-    cell.monthLabel.text = dateFormatter.string(from: report.monthDate)
+    cell.monthLabel.text = string(forMonth: report.monthDate)
     return cell
   }
 }
