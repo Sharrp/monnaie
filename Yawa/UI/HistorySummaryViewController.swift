@@ -45,13 +45,13 @@ class HistorySummaryViewController: UIViewController {
     updateTotal()
     scrollToBottom()
     
-    let N = 12
-    let reports = (0..<N).map {
-      MonthReport(monthDate: Date(timeIntervalSinceNow: Double(-30 * (N - 1 - $0) * 86400)),
-                  amount: Double(100 + arc4random() % 50000 + 100000 * (arc4random() % 2)))
-    }
+//    let N = 12
+//    let reports = (0..<N).map {
+//      MonthReport(monthDate: Date(timeIntervalSinceNow: Double(-30 * (N - 1 - $0) * 86400)),
+//                  amount: Double(100 + arc4random() % 50000 + 100000 * (arc4random() % 2)))
+//    }
     monthSwitcherCollectionView.contentInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 8)
-    monthSwitchProvider.reports = reports
+    monthSwitchProvider.reports = dataProvider.monthlyAmounts()
     monthSwitchProvider.todayAmount = 3420
     monthSwitchProvider.selectLastMonth()
   }

@@ -164,17 +164,30 @@ class TransactionsController: TransactionUpdateDelegate {
     return sqlDoubleValue(sql: sql) ?? 0
   }
   
+  func monthlyAmounts() -> [MonthReport] {
+    let sql = "SELECT date, sum(amount) FROM \(transactionsTableName) GROUP BY strftime('%Y%m', dateString) ORDER BY date ASC"
+    guard let statement = prepareStatement(sql: sql) else { return [] }
+    var reports = [MonthReport]()
+    while sqlite3_step(statement) == SQLITE_ROW {
+      let monthDate = Date(timeIntervalSince1970: sqlite3_column_double(statement, 0))
+      let amount = sqlite3_column_double(statement, 1)
+      reports.append(MonthReport(monthDate: monthDate, amount: amount))
+    }
+    sqlite3_finalize(statement)
+    return reports
+  }
+  
   func categoriesSummary(forMonth monthDate: Date) -> CategoriesSummary {
     let (year, month, _) = components(ofDate: monthDate)
     let monthName = String(format: "%d%02d", year, month)
     let sql = """
-    SELECT category, sum(amount)
-    FROM Transactions
-    WHERE strftime('%Y%m', dateString)='\(monthName)'
-    GROUP BY category ORDER BY sum(amount) DESC
+      SELECT category, sum(amount)
+      FROM \(transactionsTableName)
+      WHERE strftime('%Y%m', dateString)='\(monthName)'
+      GROUP BY category ORDER BY sum(amount) DESC
     """
+    guard let statement = prepareStatement(sql: sql) else { return [] }
     var summary = CategoriesSummary()
-    guard let statement = prepareStatement(sql: sql) else { return summary }
     while sqlite3_step(statement) == SQLITE_ROW {
       let categoryName = String(cString: sqlite3_column_text(statement, 0))
       guard let category = TransactionCategory(exportName: categoryName) else { continue }

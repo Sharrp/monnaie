@@ -72,46 +72,46 @@ class YawaTransactionsControllerTests: XCTestCase {
   
   func testOldestTransactionDate() {
     guard let oldestDate = dataProvider.oldestTransactionDate() else { XCTFail(); return }
-    XCTAssert(yearOfPreviousMonth == Calendar.current.component(.year, from: oldestDate))
-    XCTAssert(previousMonth == Calendar.current.component(.month, from: oldestDate))
-    XCTAssert(previousMonthDay == Calendar.current.component(.day, from: oldestDate))
+    XCTAssertEqual(yearOfPreviousMonth, Calendar.current.component(.year, from: oldestDate))
+    XCTAssertEqual(previousMonth, Calendar.current.component(.month, from: oldestDate))
+    XCTAssertEqual(previousMonthDay, Calendar.current.component(.day, from: oldestDate))
   }
   
   func testNumberOfTransactions() {
     let expectedCounts = [2, 4, 3, 1]
     for (i, date) in testingDays.enumerated() {
-      XCTAssert(expectedCounts[i] == dataProvider.numberOfTransactions(onDay: date))
+      XCTAssertEqual(expectedCounts[i], dataProvider.numberOfTransactions(onDay: date))
     }
-    XCTAssert(0 == dataProvider.numberOfTransactions(onDay: Date(calendar: calendar, year: currentYear, month: currentMonth, day: 2)!))
+    XCTAssertEqual(0, dataProvider.numberOfTransactions(onDay: Date(calendar: calendar, year: currentYear, month: currentMonth, day: 2)!))
   }
 
   func testTotalMonthAmount() {
-    XCTAssert(3056 == dataProvider.totalAmount(forMonth: testingDays.first!))
-    XCTAssert(8954 == dataProvider.totalAmount(forMonth: testingDays.last!))
-    XCTAssert(0 == dataProvider.totalAmount(forMonth: Date.distantPast))
+    XCTAssertEqual(3056, dataProvider.totalAmount(forMonth: testingDays.first!))
+    XCTAssertEqual(8954, dataProvider.totalAmount(forMonth: testingDays.last!))
+    XCTAssertEqual(0, dataProvider.totalAmount(forMonth: Date.distantPast))
   }
   
   func testTotalDayAmount() {
     let expectedAmounts: [Double] = [3056, 3558, 4226, 1170]
     for (i, date) in testingDays.enumerated() {
-      XCTAssert(expectedAmounts[i] == dataProvider.totalAmount(forDay: date))
+      XCTAssertEqual(expectedAmounts[i], dataProvider.totalAmount(forDay: date))
     }
-    XCTAssert(0 == dataProvider.totalAmount(forDay: Date.distantPast))
+    XCTAssertEqual(0, dataProvider.totalAmount(forDay: Date.distantPast))
   }
   
   func testGetTransaction() {
     guard let t1 = dataProvider.transaction(index: 0, forDay: testingDays[1]) else { XCTFail(); return }
-    XCTAssert(t1.category == .grocery)
-    XCTAssert(t1.authorName == "Jimmy")
-    XCTAssert(t1.amount == 430.0)
+    XCTAssertEqual(t1.category, .grocery)
+    XCTAssertEqual(t1.authorName, "Jimmy")
+    XCTAssertEqual(t1.amount, 430.0)
     
     guard let t2 = dataProvider.transaction(index: 2, forDay: testingDays[2]) else { XCTFail(); return }
-    XCTAssert(t2.category == .cafe)
-    XCTAssert(t2.authorName == "Leya")
-    XCTAssert(t2.amount == 2400.0)
+    XCTAssertEqual(t2.category, .cafe)
+    XCTAssertEqual(t2.authorName, "Leya")
+    XCTAssertEqual(t2.amount, 2400.0)
     
-    guard nil == dataProvider.transaction(index: 12402, forDay: testingDays[0]) else { XCTFail(); return }
-    guard nil == dataProvider.transaction(index: 0, forDay: Date.distantPast) else { XCTFail(); return }
+    XCTAssertNil(dataProvider.transaction(index: 12402, forDay: testingDays[0]))
+    XCTAssertNil(dataProvider.transaction(index: 0, forDay: Date.distantPast))
   }
   
   func testUpdateTransaction() {
@@ -127,21 +127,21 @@ class YawaTransactionsControllerTests: XCTestCase {
     dataProvider.update(transaction: t1)
     
     guard let t2 = testingTransaction() else { XCTFail(); return }
-    XCTAssert(t2.category == newCategory)
-    XCTAssert(t2.amount == newAmount)
+    XCTAssertEqual(t2.category, newCategory)
+    XCTAssertEqual(t2.amount, newAmount)
     
     let newAuthor = "Jackie Chan"
     t1.authorName = newAuthor
     dataProvider.update(transaction: t1)
     guard let t3 = testingTransaction() else { XCTFail(); return }
-    XCTAssert(t3.authorName == newAuthor)
+    XCTAssertEqual(t3.authorName, newAuthor)
     
     let day0Transaction0 = dataProvider.transaction(index: 0, forDay: testingDays[0])!
     t1.date = Date(timeInterval: 3600, since: day0Transaction0.date)
     dataProvider.update(transaction: t1)
-    XCTAssert(3 == dataProvider.numberOfTransactions(onDay: day0Transaction0.date))
+    XCTAssertEqual(3, dataProvider.numberOfTransactions(onDay: day0Transaction0.date))
     let t1MovedToNewDay = dataProvider.transaction(index: 2, forDay: testingDays[0])
-    XCTAssert(t1 == t1MovedToNewDay)
+    XCTAssertEqual(t1, t1MovedToNewDay)
   }
   
   func testRemoveTransaction() {
@@ -152,8 +152,23 @@ class YawaTransactionsControllerTests: XCTestCase {
       let initialTransactionsCount = dataProvider.numberOfTransactions(onDay: date)
       let initialDayAmount = dataProvider.totalAmount(forDay: date)
       dataProvider.remove(transaction: transaction)
-      XCTAssert(initialTransactionsCount - 1 == dataProvider.numberOfTransactions(onDay: date))
-      XCTAssert(initialDayAmount - transaction.amount == dataProvider.totalAmount(forDay: date))
+      XCTAssertEqual(initialTransactionsCount - 1, dataProvider.numberOfTransactions(onDay: date))
+      XCTAssertEqual(initialDayAmount - transaction.amount, dataProvider.totalAmount(forDay: date))
+    }
+  }
+  
+  func testMonthlyReport() {
+    let expectedAmounts: [Double] = [3056, 8954]
+    let expectedYears = [yearOfPreviousMonth, currentYear]
+    let expectedMonths = [previousMonth, currentMonth]
+    let reports = dataProvider.monthlyAmounts()
+    XCTAssertEqual(reports.count, expectedAmounts.count)
+    for (i, report) in reports.enumerated() {
+      XCTAssertEqual(report.amount, expectedAmounts[i])
+      let givenYear = Calendar.current.component(.year, from: report.monthDate)
+      XCTAssertEqual(givenYear, expectedYears[i])
+      let givenMonth = Calendar.current.component(.month, from: report.monthDate)
+      XCTAssertEqual(givenMonth, expectedMonths[i])
     }
   }
   
@@ -161,10 +176,10 @@ class YawaTransactionsControllerTests: XCTestCase {
     let categories: [TransactionCategory] = [.grocery, .cafe, .bills]
     let totalAmount = [4270.0, 3426, 1258]
     let summary = dataProvider.categoriesSummary(forMonth: testingDays.last!)
-    XCTAssert(summary.count == categories.count)
+    XCTAssertEqual(summary.count, categories.count)
     for (i, category) in categories.enumerated() {
-      XCTAssert(category == summary[i].category)
-      XCTAssert(totalAmount[i] == summary[i].amount)
+      XCTAssertEqual(category, summary[i].category)
+      XCTAssertEqual(totalAmount[i], summary[i].amount)
     }
   }
 }

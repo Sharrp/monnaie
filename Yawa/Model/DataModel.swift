@@ -169,6 +169,11 @@ func ==(lhs: [Transaction], rhs: [Transaction]) -> Bool {
   return true
 }
 
+struct MonthReport {
+  let monthDate: Date
+  let amount: Double
+}
+
 enum SyncMode: Int, CustomStringConvertible {
   case merge
   case update

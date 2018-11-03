@@ -8,11 +8,6 @@
 
 import UIKit
 
-struct MonthReport {
-  let monthDate: Date
-  let amount: Double
-}
-
 protocol MonthSwitchDelegate {
   func didSelect(monthDate: Date)
 }
