@@ -44,15 +44,8 @@ class HistorySummaryViewController: UIViewController {
     
     updateTotal()
     scrollToBottom()
-    
-//    let N = 12
-//    let reports = (0..<N).map {
-//      MonthReport(monthDate: Date(timeIntervalSinceNow: Double(-30 * (N - 1 - $0) * 86400)),
-//                  amount: Double(100 + arc4random() % 50000 + 100000 * (arc4random() % 2)))
-//    }
+
     monthSwitcherCollectionView.contentInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 8)
-    monthSwitchProvider.reports = dataProvider.monthlyAmounts()
-    monthSwitchProvider.todayAmount = 3420
     monthSwitchProvider.selectLastMonth()
   }
   
@@ -219,20 +212,12 @@ extension HistorySummaryViewController: SyncNameUpdateDelegate {
 
 extension HistorySummaryViewController: TransactionsPresentor {
   private func updateTotal() {
-//    let today = Date()
-//    let todaySum = dataProvider.totalAmount(forDay: today)
-//    dayAmountLabel.text = formatMoney(amount: todaySum, currency: .JPY)
-//
-//    let monthlyAmount = dataProvider.totalAmount(forMonth: today)
-//    monthAmountLabel.text = formatMoney(amount: monthlyAmount, currency: .JPY)
-//
-//    let dateFormatter = DateFormatter()
-//    dateFormatter.setLocalizedDateFormatFromTemplate("MMMM yy")
-//    monthLabel.text = dateFormatter.string(from: Date()).replacingOccurrences(of: " ", with: "'")
+    monthSwitchProvider.reports = dataProvider.monthlyAmounts()
+    monthSwitchProvider.todayAmount = dataProvider.totalAmount(forDay: Date())
   }
   
   func didUpdate(days: [Date]) {
-    didUpdateAll() // TODO: update when month switcher is implemented
+    didUpdateAll()
   }
   
   func didUpdateAll() {
