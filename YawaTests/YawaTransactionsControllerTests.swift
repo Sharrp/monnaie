@@ -52,7 +52,7 @@ class YawaTransactionsControllerTests: XCTestCase {
       let date = Date(calendar: calendar, year: dateValues[0], month: dateValues[1], day: dateValues[2], nanoseconds: nanoseconds)!
       
       let dayDate = Date(calendar: calendar, year: dateValues[0], month: dateValues[1], day: dateValues[2])!
-      if !testingDays.contains(where: { dayDate.isSameDay(date: $0) }) {
+      if !testingDays.contains(where: { dayDate.isSame(granularity: .day, asDate: $0) }) {
         testingDays.append(date)
       }
       

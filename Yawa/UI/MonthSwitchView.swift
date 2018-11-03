@@ -13,6 +13,9 @@ protocol MonthSwitchDelegate {
 }
 
 class MonthSwitchProvider: NSObject {
+  @IBOutlet weak var collectionView: UICollectionView!
+  
+  private var selectedIndex = 0
   var delegate: MonthSwitchDelegate?
   var reports = [MonthReport]() {
     didSet {
@@ -25,10 +28,6 @@ class MonthSwitchProvider: NSObject {
       collectionView.reloadItems(at: [todayIndexPath])
     }
   }
-  
-  @IBOutlet weak var collectionView: UICollectionView!
-  
-  private var selectedIndex = 0
   
   private func string(forMonth monthDate: Date) -> String {
     let format: String

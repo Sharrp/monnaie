@@ -11,13 +11,18 @@ import UIKit
 class SummaryProvider: NSObject {
   weak var transactionsController: TransactionsController?
   private var summary: CategoriesSummary? // cached data
+  var monthDate = Date() {
+    didSet {
+      updateData()
+    }
+  }
   
   let minChartBarWidth: CGFloat = 8
 }
 
 extension SummaryProvider: UITableViewDataSource {
-  func updateData() {
-    guard let updatedSummary = transactionsController?.categoriesSummary(forMonth: Date()) else { return }
+  private func updateData() {
+    guard let updatedSummary = transactionsController?.categoriesSummary(forMonth: monthDate) else { return }
     summary = updatedSummary
   }
   

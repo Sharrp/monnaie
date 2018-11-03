@@ -20,6 +20,7 @@ class HistorySummaryViewController: UIViewController {
   
   @IBOutlet weak var monthSwitcherCollectionView: UICollectionView!
   @IBOutlet weak var monthSwitchProvider: MonthSwitchProvider!
+  private var selectedMonthDate = Date()
   
   private let dateFormatter = DateFormatter()
   let dataProvider = TransactionsController()
@@ -47,6 +48,7 @@ class HistorySummaryViewController: UIViewController {
 
     monthSwitcherCollectionView.allowsMultipleSelection = true
     monthSwitcherCollectionView.contentInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 8)
+    monthSwitchProvider.delegate = self
     monthSwitchProvider.selectLastMonth()
   }
   
@@ -100,7 +102,7 @@ class HistorySummaryViewController: UIViewController {
       contentOffset = historyLastContentOffset
     case .summary:
       historyLastContentOffset = tableView.contentOffset.y
-      summaryProvider.updateData()
+      summaryProvider.monthDate = selectedMonthDate
       tableView.dataSource = summaryProvider
       tableView.delegate = summaryProvider
       contentOffset = 0
@@ -114,17 +116,20 @@ class HistorySummaryViewController: UIViewController {
 
 extension HistorySummaryViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
-//    let range = Calendar.current.range(of: .day, in: .month, for: Date())!
-//    let numberOfDays = range.count
-    return Calendar.current.component(.day, from: Date())
+    if selectedMonthDate.isSame(granularity: .month, asDate: Date()) {
+      return Calendar.current.component(.day, from: Date())
+    } else {
+      guard let daysCount = Calendar.current.range(of: .day, in: .month, for: selectedMonthDate)?.count else { return 0 }
+      return daysCount
+    }
+    
   }
   
   private func date(forSection section: Int) -> Date? {
-    let today = Date()
     var components = DateComponents()
     components.day = section + 1
-    components.month = Calendar.current.component(.month, from: today)
-    components.year = Calendar.current.component(.year, from: today)
+    components.month = Calendar.current.component(.month, from: selectedMonthDate)
+    components.year = Calendar.current.component(.year, from: selectedMonthDate)
     return Calendar.current.date(from: components)
   }
   
@@ -226,5 +231,13 @@ extension HistorySummaryViewController: TransactionsPresentor {
       self.tableView.reloadData()
       self.updateTotal()
     }
+  }
+}
+
+extension HistorySummaryViewController: MonthSwitchDelegate {
+  func didSelect(monthDate: Date) {
+    selectedMonthDate = monthDate
+    summaryProvider.monthDate = monthDate
+    tableView.reloadData()
   }
 }

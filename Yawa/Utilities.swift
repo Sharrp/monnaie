@@ -84,8 +84,8 @@ extension Date {
     self = date
   }
   
-  func isSameDay(date: Date) -> Bool {
-    return Calendar.current.compare(self, to: date, toGranularity: .day) == .orderedSame
+  func isSame(granularity: Calendar.Component, asDate dateToCompare: Date) -> Bool {
+    return Calendar.current.compare(self, to: dateToCompare, toGranularity: granularity) == .orderedSame
   }
 }
 

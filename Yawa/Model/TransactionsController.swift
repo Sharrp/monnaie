@@ -64,7 +64,7 @@ class TransactionsController: TransactionUpdateDelegate {
     while sqlite3_step(statement) == SQLITE_ROW {
       let dateTimestamp = sqlite3_column_double(statement, 0)
       let dateCandidate = Date(timeIntervalSince1970: dateTimestamp)
-      if !dates.contains(where: { dateCandidate.isSameDay(date: $0) }) {
+      if !dates.contains(where: { dateCandidate.isSame(granularity: .day, asDate: $0) }) {
         dates.append(dateCandidate)
       }
     }
