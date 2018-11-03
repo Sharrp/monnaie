@@ -45,6 +45,7 @@ class HistorySummaryViewController: UIViewController {
     updateTotal()
     scrollToBottom()
 
+    monthSwitcherCollectionView.allowsMultipleSelection = true
     monthSwitcherCollectionView.contentInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 8)
     monthSwitchProvider.selectLastMonth()
   }
