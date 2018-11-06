@@ -53,8 +53,8 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
   private(set) var bladeState = BladeState.collapsed
   private var collapsedBottomInset: CGFloat = 0
   private let expandedBottomInset: CGFloat = 32
-  private var didntCaclulateInsetsYet = true
-  private let alwaysVisibleHeight: CGFloat = 74
+  private var didCaclulateInsets = false
+  private let alwaysVisibleHeight: CGFloat = 100
   private let additionalHeightToCoverOnSprings: CGFloat = 50
   
   required init?(coder aDecoder: NSCoder) {
@@ -72,9 +72,6 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
     bladeViewController = bladeVC
     (baseVC as? GuillotineBladeUpdateDelegate)?.didUpdate(bladeVC: bladeVC, infoProvider: self)
     (bladeVC as? GuillotineBaseUpdateDelegate)?.didUpdate(baseVC: baseVC, infoProvider: self)
-    bladeVC.view.layer.cornerRadius = 14
-    bladeVC.view.layer.borderWidth = 1
-    bladeVC.view.layer.borderColor = UIColor(white: 0.8, alpha: 0.8).cgColor
     
     view.addGestureRecognizer(panGesture)
   }
@@ -82,12 +79,12 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     
-    if didntCaclulateInsetsYet {
+    if !didCaclulateInsets {
       let insets = view.safeAreaInsets
       collapsedBottomInset = view.frame.height - insets.top - insets.bottom - alwaysVisibleHeight
       bladeHeightConstraint.constant = view.frame.height - insets.bottom - bladeBottomInsetConstraint.constant // FIXME //+ additionalHeightToCoverOnSprings
       bladeBottomInsetConstraint.constant = bottomInset(forState: bladeState)
-      didntCaclulateInsetsYet = false
+      didCaclulateInsets = true
       
       // To compensate existence of additionalHeightToCoverOnSprings
       // FIXME
@@ -156,6 +153,7 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
       }
       animator.startAnimation()
       (baseViewController as? GuilliotineSlideProgressDelegate)?.willSwitch(toState: bladeState, withDuration: Animation.duration, andTimingProvider: timingProvider)
+      (bladeViewController as? GuilliotineSlideProgressDelegate)?.willSwitch(toState: bladeState, withDuration: Animation.duration, andTimingProvider: timingProvider)
     case .possible:
       break
     }
@@ -194,6 +192,7 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
     
     let progress = (collapsedBottomInset - displayedInset) / distance
     (baseViewController as? GuilliotineSlideProgressDelegate)?.didUpdateProgress(to: progress)
+    (bladeViewController as? GuilliotineSlideProgressDelegate)?.didUpdateProgress(to: progress)
   }
   
   private func elasticTranslation(forExcess excess: CGFloat, onDistance distance: CGFloat) -> CGFloat {

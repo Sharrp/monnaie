@@ -164,6 +164,7 @@
 		7524B990209B2A2C006027C8 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				7529F9582157F2C900FD8884 /* GuillotineViewController.swift */,
 				7529F965215FB1FA00FD8884 /* Transaction adding */,
 				75C046E02098892600E8B09E /* HistorySummaryViewController.swift */,
 				758C6878218A777B00F2F7BE /* MonthSwitchView.swift */,
@@ -181,7 +182,6 @@
 				7527EF172183D57800E232AE /* TransactionComponserView.swift */,
 				7529F95E215E7A9900FD8884 /* CategorySelection.swift */,
 				7529F962215FB19900FD8884 /* ColorfulView.swift */,
-				7529F9582157F2C900FD8884 /* GuillotineViewController.swift */,
 			);
 			path = "Transaction adding";
 			sourceTree = "<group>";

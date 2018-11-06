@@ -66,6 +66,17 @@ extension UIColor {
   }
 }
 
+extension UIView {
+  func set(radius: CGFloat, forCormers corners: UIRectCorner) {
+    let path = UIBezierPath(roundedRect: bounds,
+                            byRoundingCorners: corners,
+                            cornerRadii: CGSize(width: radius, height: radius))
+    let maskLayer = CAShapeLayer()
+    maskLayer.path = path.cgPath
+    layer.mask = maskLayer
+  }
+}
+
 extension DateFormatter {
   convenience init(dateFormat: String) {
     self.init()

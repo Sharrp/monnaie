@@ -17,6 +17,10 @@ class HistorySummaryViewController: UIViewController {
   @IBOutlet weak var navigationBar: UINavigationBar!
   private var navBarBorder = UIView()
   @IBOutlet weak var tableView: UITableView!
+  private let tableViewBottomOffsetWhenCollapsed: CGFloat = -60
+  
+  @IBOutlet weak var fakeCard: UIView!
+  private let fakeCardOffsetWhenExpanded: CGFloat = 10
   
   @IBOutlet weak var monthSwitcherCollectionView: UICollectionView!
   @IBOutlet weak var monthSwitchProvider: MonthSwitchProvider!
@@ -36,6 +40,7 @@ class HistorySummaryViewController: UIViewController {
     dateFormatter.timeStyle = .none
     summaryProvider.transactionsController = dataProvider
     tableView.separatorColor = UIColor(white: 0.2, alpha: 0.2)
+    tableView.transform = CGAffineTransform(translationX: 0, y: tableViewBottomOffsetWhenCollapsed)
     
     navigationBar.setBackgroundImage(UIImage(), for: .default)
     navigationBar.shadowImage = UIImage()
@@ -165,7 +170,6 @@ extension HistorySummaryViewController: UITableViewDataSource {
     
     guard let dateForSection = date(forSection: indexPath.section) else { return cell }
     guard let transaction = dataProvider.transaction(index: indexPath.row, forDay: dateForSection) else { return cell }
-    cell.backgroundColor = .clear
     cell.emojiLabel.text = "\(transaction.category.emoji)"
     cell.categoryLabel.text = "\(transaction.category.name)"
     cell.amountLabel.text = formatMoney(amount: transaction.amount, currency: .JPY)
@@ -175,6 +179,15 @@ extension HistorySummaryViewController: UITableViewDataSource {
     } else {
       cell.authorLabel.text = "\(transaction.authorName)"
       cell.topMarginConstraint.constant = 8
+    }
+    
+    let cellsInSection = self.tableView(tableView, numberOfRowsInSection: indexPath.section)
+    if indexPath.row == 0 {
+      cell.set(radius: 8, forCormers: [.topLeft, .topRight])
+    } else if indexPath.row == cellsInSection - 1 {
+      cell.set(radius: 8, forCormers: [.bottomLeft, .bottomRight])
+    } else {
+      cell.layer.cornerRadius = 0
     }
     return cell
   }
@@ -239,5 +252,27 @@ extension HistorySummaryViewController: MonthSwitchDelegate {
     selectedMonthDate = monthDate
     summaryProvider.monthDate = monthDate
     tableView.reloadData()
+  }
+}
+
+extension HistorySummaryViewController: GuilliotineSlideProgressDelegate {
+  func didUpdateProgress(to progress: CGFloat) {
+    let tableTransform: CGAffineTransform
+    if progress == 1 {
+      tableTransform = .identity
+    } else {
+      tableTransform = CGAffineTransform(translationX: 0, y: (1 - progress) * tableViewBottomOffsetWhenCollapsed)
+    }
+    tableView.transform = tableTransform
+    fakeCard.transform = CGAffineTransform(translationX: 0, y: fakeCardOffsetWhenExpanded * progress)
+  }
+  
+  func willSwitch(toState state: BladeState, withDuration duration: Double, andTimingProvider timing: UITimingCurveProvider) {
+    let progress: CGFloat = state == .expanded ? 1 : 0
+    let animator = UIViewPropertyAnimator(duration: duration, timingParameters: timing)
+    animator.addAnimations { [unowned self] in
+      self.didUpdateProgress(to: progress)
+    }
+    animator.startAnimation()
   }
 }
