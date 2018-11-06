@@ -145,6 +145,18 @@ class TransactionsController: TransactionUpdateDelegate {
     return Date(timeIntervalSince1970: timestamp)
   }
   
+  func daysWithTransactions(forMonth monthDate: Date) -> [Int] {
+    let monthName = name(ofMonth: monthDate)
+    let sql = "SELECT strftime('%d', dateString) FROM \(transactionsTableName) WHERE strftime('%Y%m', dateString)='\(monthName)' GROUP BY dateString ORDER BY date ASC"
+    guard let statement = prepareStatement(sql: sql) else { return [] }
+    var nonEmptyDays = [Int]()
+    while sqlite3_step(statement) == SQLITE_ROW {
+      nonEmptyDays.append(Int(sqlite3_column_int(statement, 0)))
+    }
+    sqlite3_finalize(statement)
+    return nonEmptyDays
+  }
+  
   func numberOfTransactions(onDay dayDate: Date) -> Int {
     let dateString = DateFormatter(dateFormat: sqlDateFarmatString).string(from: dayDate)
     let sql = "SELECT count(*) FROM \(transactionsTableName) WHERE dateString='\(dateString)'"
@@ -152,8 +164,7 @@ class TransactionsController: TransactionUpdateDelegate {
   }
   
   func totalAmount(forMonth monthDate: Date) -> Double {
-    let (year, month, _) = components(ofDate: monthDate)
-    let monthName = String(format: "%d%02d", year, month)
+    let monthName = name(ofMonth: monthDate)
     let sql = "SELECT sum(amount) FROM \(transactionsTableName) WHERE strftime('%Y%m', dateString)='\(monthName)'"
     return sqlDoubleValue(sql: sql) ?? 0
   }
@@ -248,6 +259,11 @@ class TransactionsController: TransactionUpdateDelegate {
   }
   
   // MARK: Generic helpers
+  
+  private func name(ofMonth monthDate: Date) -> String {
+    let (year, month, _) = components(ofDate: monthDate)
+    return String(format: "%d%02d", year, month)
+  }
   
   private func components(ofDate date: Date) -> (year: Int, month: Int, day: Int) {
     let day = Calendar.current.component(.day, from: date)

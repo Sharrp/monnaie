@@ -77,6 +77,19 @@ class YawaTransactionsControllerTests: XCTestCase {
     XCTAssertEqual(previousMonthDay, Calendar.current.component(.day, from: oldestDate))
   }
   
+  func testNonEmptyDays() {
+    let previousMonthNonEmptyDays = dataProvider.daysWithTransactions(forMonth: testingDays[0])
+    XCTAssertEqual(previousMonthNonEmptyDays.count, 1)
+    XCTAssertEqual(previousMonthNonEmptyDays[0], previousMonthDay)
+    
+    let currentMonthNonEmptyDays = dataProvider.daysWithTransactions(forMonth: testingDays[1])
+    XCTAssertEqual(currentMonthNonEmptyDays.count, 3)
+    let expectedDays = [1, 3, 4]
+    for (i, day) in expectedDays.enumerated() {
+      XCTAssertEqual(currentMonthNonEmptyDays[i], day)
+    }
+  }
+  
   func testNumberOfTransactions() {
     let expectedCounts = [2, 4, 3, 1]
     for (i, date) in testingDays.enumerated() {
