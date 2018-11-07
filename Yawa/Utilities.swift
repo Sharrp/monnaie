@@ -98,10 +98,20 @@ extension Date {
   func isSame(granularity: Calendar.Component, asDate dateToCompare: Date) -> Bool {
     return Calendar.current.compare(self, to: dateToCompare, toGranularity: granularity) == .orderedSame
   }
+  
+  func date(bySettingDayTo value: Int) -> Date? {
+    var components = Calendar.current.dateComponents([.day, .month, .year], from: self)
+    components.day = value
+    return Calendar.current.date(from: components)
+  }
 }
 
 struct Animation {
   static let duration = 0.3
   static let durationFast = 0.2
   static let appearceWithShfit: CGFloat = 10
+}
+
+struct Color {
+  static let inactiveText = UIColor(hex: 0xAAAAAA)
 }

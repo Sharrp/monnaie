@@ -14,10 +14,18 @@ class HistorySummaryViewController: UIViewController {
     case summary
   }
   
+  private struct SectionHeaderData {
+    let firstDay: Date
+    let isEmpty: Bool
+    let numberOfDays: Int
+  }
+  
   @IBOutlet weak var navigationBar: UINavigationBar!
   private var navBarBorder = UIView()
   @IBOutlet weak var tableView: UITableView!
   private let tableViewBottomOffsetWhenCollapsed: CGFloat = -60
+  private var sectionsHeadersData = [SectionHeaderData]()
+  @IBOutlet weak var controlPanel: UIView!
   
   @IBOutlet weak var fakeCard: UIView!
   private let fakeCardOffsetWhenExpanded: CGFloat = 10
@@ -26,8 +34,8 @@ class HistorySummaryViewController: UIViewController {
   @IBOutlet weak var monthSwitchProvider: MonthSwitchProvider!
   private var selectedMonthDate = Date()
   
-  private let dateFormatter = DateFormatter()
-  let dataProvider = TransactionsController()
+  private let defaultDateFormatter = DateFormatter(dateFormat: "EEEE d")
+  let dataProvider = TransactionsController(dbName: "production")
   private let summaryProvider = SummaryProvider()
   
   private var historyLastContentOffset: CGFloat = 0
@@ -36,11 +44,10 @@ class HistorySummaryViewController: UIViewController {
     super.viewDidLoad()
     
     dataProvider.presentor = self
-    dateFormatter.dateStyle = .medium
-    dateFormatter.timeStyle = .none
     summaryProvider.transactionsController = dataProvider
     tableView.separatorColor = UIColor(white: 0.2, alpha: 0.2)
     tableView.transform = CGAffineTransform(translationX: 0, y: tableViewBottomOffsetWhenCollapsed)
+    tableView.showsVerticalScrollIndicator = false
     
     navigationBar.setBackgroundImage(UIImage(), for: .default)
     navigationBar.shadowImage = UIImage()
@@ -120,14 +127,50 @@ class HistorySummaryViewController: UIViewController {
 }
 
 extension HistorySummaryViewController: UITableViewDataSource {
+  // Merges all consequemtial empty days into one section
+  private func recalculateHeaders(forNumberOfFirstDays numOfDays: Int, inMonth monthDate: Date) {
+    sectionsHeadersData = [SectionHeaderData]()
+    let nonEmptyDays = dataProvider.daysWithTransactions(forMonth: monthDate)
+    var firstDayOfCurrentSection = 0
+    var currentNumberOfSequentialEmptyDays = 0
+    for i in 0..<numOfDays {
+      let day = i + 1
+      if nonEmptyDays.contains(day) {
+        if currentNumberOfSequentialEmptyDays > 0,
+          let firstEmptyDayDate = monthDate.date(bySettingDayTo: firstDayOfCurrentSection) {
+          let sectionData = SectionHeaderData(firstDay: firstEmptyDayDate, isEmpty: true,
+                                              numberOfDays: currentNumberOfSequentialEmptyDays)
+          sectionsHeadersData.append(sectionData)
+          currentNumberOfSequentialEmptyDays = 0
+        }
+        guard let currentDayDate = monthDate.date(bySettingDayTo: day) else { continue }
+        let sectionData = SectionHeaderData(firstDay: currentDayDate, isEmpty: false, numberOfDays: 1)
+        sectionsHeadersData.append(sectionData)
+      } else {
+        if currentNumberOfSequentialEmptyDays == 0 {
+          firstDayOfCurrentSection = day
+        }
+        currentNumberOfSequentialEmptyDays += 1
+      }
+    }
+    if currentNumberOfSequentialEmptyDays > 0,
+      let firstEmptyDayDate = monthDate.date(bySettingDayTo: firstDayOfCurrentSection) {
+      let sectionData = SectionHeaderData(firstDay: firstEmptyDayDate, isEmpty: true,
+                                          numberOfDays: currentNumberOfSequentialEmptyDays)
+      sectionsHeadersData.append(sectionData)
+    }
+  }
+  
   func numberOfSections(in tableView: UITableView) -> Int {
+    let daysToShow: Int
     if selectedMonthDate.isSame(granularity: .month, asDate: Date()) {
-      return Calendar.current.component(.day, from: Date())
+      daysToShow = Calendar.current.component(.day, from: selectedMonthDate)
     } else {
       guard let daysCount = Calendar.current.range(of: .day, in: .month, for: selectedMonthDate)?.count else { return 0 }
-      return daysCount
+      daysToShow = daysCount
     }
-    
+    recalculateHeaders(forNumberOfFirstDays: daysToShow, inMonth: selectedMonthDate)
+    return sectionsHeadersData.count
   }
   
   private func date(forSection section: Int) -> Date? {
@@ -139,24 +182,13 @@ extension HistorySummaryViewController: UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    guard let dateForSection = date(forSection: section) else { return 0 }
-    return dataProvider.numberOfTransactions(onDay: dateForSection)
-  }
-  
-  func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    guard let dateForSection = date(forSection: section) else { return nil }
-    var title: String
-    if Calendar.current.isDate(dateForSection, inSameDayAs: Date()) {
-      title = "Today"
-    } else if Calendar.current.isDate(dateForSection, inSameDayAs: Date(timeIntervalSinceNow: -86400)) {
-      title = "Yesterday"
+    let sectionData = sectionsHeadersData[section]
+    if sectionData.isEmpty {
+      return 0
     } else {
-      title = dateFormatter.string(from: dateForSection)
+      let count = dataProvider.numberOfTransactions(onDay: sectionData.firstDay)
+      return count
     }
-    
-    let daySum = dataProvider.totalAmount(forDay: dateForSection)
-    title += " — " + formatMoney(amount: daySum, currency: .JPY)
-    return title
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -181,14 +213,14 @@ extension HistorySummaryViewController: UITableViewDataSource {
       cell.topMarginConstraint.constant = 8
     }
     
-    let cellsInSection = self.tableView(tableView, numberOfRowsInSection: indexPath.section)
-    if indexPath.row == 0 {
-      cell.set(radius: 8, forCormers: [.topLeft, .topRight])
-    } else if indexPath.row == cellsInSection - 1 {
-      cell.set(radius: 8, forCormers: [.bottomLeft, .bottomRight])
-    } else {
-      cell.layer.cornerRadius = 0
-    }
+//    let cellsInSection = self.tableView(tableView, numberOfRowsInSection: indexPath.section)
+//    if indexPath.row == 0 {
+//      cell.set(radius: 8, forCormers: [.topLeft, .topRight])
+//    } else if indexPath.row == cellsInSection - 1 {
+//      cell.set(radius: 8, forCormers: [.bottomLeft, .bottomRight])
+//    } else {
+//      cell.layer.mask = nil
+//    }
     return cell
   }
   
@@ -206,14 +238,71 @@ extension HistorySummaryViewController: UITableViewDataSource {
 }
 
 extension HistorySummaryViewController: UITableViewDelegate {
-  func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-    view.tintColor = .clear
-    guard let header = view as? UITableViewHeaderFooterView else { return }
-    header.textLabel?.textColor = UIColor(white: 0.2, alpha: 0.8)
+  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    return 56
   }
   
-  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return 60
+  private func displayString(forDate date: Date, formatter: DateFormatter) -> String {
+    if Calendar.current.isDate(date, inSameDayAs: Date()) {
+      return "Today"
+    } else if Calendar.current.isDate(date, inSameDayAs: Date(timeIntervalSinceNow: -86400)) {
+      return "Yesterday"
+    } else {
+      return formatter.string(from: date)
+    }
+  }
+  
+  private func title(forSectionHeader sectionData: SectionHeaderData) -> String {
+    if sectionData.numberOfDays == 1 {
+      return displayString(forDate: sectionData.firstDay, formatter: defaultDateFormatter)
+    } else {
+      let weekdayFormatter = DateFormatter(dateFormat: "E d")
+      let firstDayString = displayString(forDate: sectionData.firstDay, formatter: weekdayFormatter)
+      let lastDay = sectionData.firstDay.addingTimeInterval(Double(86400 * (sectionData.numberOfDays - 1)))
+      let lastDayString = displayString(forDate: lastDay, formatter: weekdayFormatter)
+      return "\(firstDayString) - \(lastDayString)"
+    }
+  }
+  
+  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    let headerView = UIView()
+    let sectionData = sectionsHeadersData[section]
+    
+    let amountLabel = UILabel()
+    amountLabel.font = .systemFont(ofSize: 17, weight: .medium)
+    amountLabel.textColor = .darkGray
+    amountLabel.textAlignment = .right
+    let amount = sectionData.isEmpty ? 0 : dataProvider.totalAmount(forDay: sectionData.firstDay)
+    amountLabel.text = formatMoney(amount: amount, currency: .JPY)
+    
+    amountLabel.translatesAutoresizingMaskIntoConstraints = false
+    headerView.addSubview(amountLabel)
+    amountLabel.addConstraints([
+      NSLayoutConstraint(item: amountLabel, attribute: .width , relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 108),
+      NSLayoutConstraint(item: amountLabel, attribute: .height , relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 26)
+    ])
+    headerView.addConstraints([
+      NSLayoutConstraint(item: amountLabel, attribute: .trailing , relatedBy: .equal, toItem: headerView, attribute: .trailingMargin, multiplier: 1, constant: 0),
+      NSLayoutConstraint(item: amountLabel, attribute: .centerY , relatedBy: .equal, toItem: headerView, attribute: .centerY, multiplier: 1, constant: 0)
+    ])
+    
+    let dateLabel = UILabel()
+    dateLabel.font = .systemFont(ofSize: 17, weight: .medium)
+    dateLabel.textColor = .darkGray
+    dateLabel.text = title(forSectionHeader: sectionData)
+    
+    dateLabel.translatesAutoresizingMaskIntoConstraints = false
+    headerView.addSubview(dateLabel)
+    dateLabel.addConstraint(
+      NSLayoutConstraint(item: dateLabel, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 26)
+    )
+    headerView.addConstraints([
+      NSLayoutConstraint(item: dateLabel, attribute: .centerY, relatedBy: .equal, toItem: headerView, attribute: .centerY, multiplier: 1, constant: 0),
+      NSLayoutConstraint(item: dateLabel, attribute: .leading, relatedBy: .equal, toItem: headerView, attribute: .leading, multiplier: 1, constant: 16),
+      NSLayoutConstraint(item: dateLabel, attribute: .trailing, relatedBy: .equal, toItem: amountLabel, attribute: .leading, multiplier: 1, constant: 8)
+    ])
+    
+    return headerView
   }
 }
 

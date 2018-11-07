@@ -33,6 +33,7 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="60" estimatedRowHeight="60" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="fGI-zP-s8Q">
                                 <rect key="frame" x="8" y="64" width="359" height="533"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="scrollIndicatorInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
                                 <inset key="separatorInset" minX="68" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="transactionCell" rowHeight="60" id="eWj-ZD-y37" customClass="TransactionCell" customModule="Yawa" customModuleProvider="target">
@@ -192,11 +193,11 @@
                                         </constraints>
                                     </view>
                                     <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="WcN-ek-jOK">
-                                        <rect key="frame" x="8" y="12" width="56" height="56"/>
+                                        <rect key="frame" x="8" y="16" width="48" height="48"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="56" id="MdR-WR-MYh"/>
-                                            <constraint firstAttribute="height" constant="56" id="Qxi-nr-xST"/>
+                                            <constraint firstAttribute="width" constant="48" id="MdR-WR-MYh"/>
+                                            <constraint firstAttribute="height" constant="48" id="Qxi-nr-xST"/>
                                         </constraints>
                                         <state key="normal" image="sync-icon">
                                             <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -328,6 +329,7 @@
                     <toolbarItems/>
                     <size key="freeformSize" width="375" height="667"/>
                     <connections>
+                        <outlet property="controlPanel" destination="yfF-yw-6if" id="gNE-ey-6uP"/>
                         <outlet property="fakeCard" destination="sZb-W2-qke" id="xu2-NW-a4M"/>
                         <outlet property="monthSwitchProvider" destination="yEh-Ym-d3e" id="hgm-u2-jEh"/>
                         <outlet property="monthSwitcherCollectionView" destination="e5v-CO-i9X" id="3WV-vz-nuy"/>
