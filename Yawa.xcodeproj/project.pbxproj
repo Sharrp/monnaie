@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7518DC622197B0A1001ECA26 /* ShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7518DC612197B0A1001ECA26 /* ShadowRoundedView.swift */; };
 		751C8103218688F100BA7E6E /* TransactionComponserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7527EF172183D57800E232AE /* TransactionComponserView.swift */; };
 		7522C368218D2647006C6F1E /* MonthSwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758C6878218A777B00F2F7BE /* MonthSwitchView.swift */; };
 		7524B98B209AEF26006027C8 /* P2PSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98A209AEF26006027C8 /* P2PSyncManager.swift */; };
@@ -89,6 +90,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7518DC612197B0A1001ECA26 /* ShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowRoundedView.swift; sourceTree = "<group>"; };
 		7524B98A209AEF26006027C8 /* P2PSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PSyncManager.swift; sourceTree = "<group>"; };
 		7524B98C209B0F9F006027C8 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		7524B98E209B284F006027C8 /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 				7529F9582157F2C900FD8884 /* GuillotineViewController.swift */,
 				7529F965215FB1FA00FD8884 /* Transaction adding */,
 				75C046E02098892600E8B09E /* HistorySummaryViewController.swift */,
+				7518DC612197B0A1001ECA26 /* ShadowRoundedView.swift */,
 				758C6878218A777B00F2F7BE /* MonthSwitchView.swift */,
 				75D32C0220A3093000D13420 /* HistorySummaryCells.swift */,
 				75D32C0920AB1DA300D13420 /* Sync */,
@@ -396,6 +399,7 @@
 				75C046E12098892600E8B09E /* HistorySummaryViewController.swift in Sources */,
 				758C6879218A777B00F2F7BE /* MonthSwitchView.swift in Sources */,
 				7524B98F209B284F006027C8 /* TransactionViewController.swift in Sources */,
+				7518DC622197B0A1001ECA26 /* ShadowRoundedView.swift in Sources */,
 				7529F95C215BCD6900FD8884 /* SummaryProvider.swift in Sources */,
 				75D32C0320A3093000D13420 /* HistorySummaryCells.swift in Sources */,
 				7527EF182183D57800E232AE /* TransactionComponserView.swift in Sources */,

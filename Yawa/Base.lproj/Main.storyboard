@@ -18,9 +18,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sZb-W2-qke">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sZb-W2-qke" customClass="ShadowRoundedView" customModule="Yawa" customModuleProvider="target">
                                 <rect key="frame" x="16" y="579" width="343" height="20"/>
-                                <color key="backgroundColor" red="0.93333333333333335" green="0.93333333333333335" blue="0.93333333333333335" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="vbz-cV-2CA"/>
                                 </constraints>
@@ -182,7 +182,7 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="6xR-XO-rcy"/>
                                 </connections>
                             </tableView>
-                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yfF-yw-6if">
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yfF-yw-6if" customClass="ShadowRoundedView" customModule="Yawa" customModuleProvider="target">
                                 <rect key="frame" x="8" y="587" width="359" height="80"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Roi-lv-hht">
@@ -260,6 +260,11 @@
                                                 </connections>
                                             </collectionViewCell>
                                         </cells>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="8"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                         <connections>
                                             <outlet property="dataSource" destination="yEh-Ym-d3e" id="BfR-sC-icF"/>
                                             <outlet property="delegate" destination="yEh-Ym-d3e" id="FPs-hV-c5N"/>
@@ -279,11 +284,6 @@
                                     <constraint firstItem="e5v-CO-i9X" firstAttribute="top" secondItem="yfF-yw-6if" secondAttribute="top" id="uTd-t0-H6r"/>
                                     <constraint firstAttribute="bottom" secondItem="Roi-lv-hht" secondAttribute="bottom" constant="10" id="xma-DA-NtF"/>
                                 </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="8"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
                             </view>
                             <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NaU-ZR-wJp">
                                 <rect key="frame" x="0.0" y="20" width="375" height="44"/>
@@ -561,7 +561,7 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.97647058823529409" green="0.97647058823529409" blue="0.97647058823529409" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="n2G-7X-LBj" secondAttribute="trailing" constant="48" id="0Oj-Kf-dse"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="n2G-7X-LBj" secondAttribute="bottom" constant="16" id="1SB-Ui-RST"/>

@@ -27,8 +27,8 @@ class HistorySummaryViewController: UIViewController {
   private var sectionsHeadersData = [SectionHeaderData]()
   @IBOutlet weak var controlPanel: UIView!
   
-  @IBOutlet weak var fakeCard: UIView!
-  private let fakeCardOffsetWhenExpanded: CGFloat = 10
+  @IBOutlet weak var fakeCard: ShadowRoundedView!
+  private let fakeCardOffsetWhenExpanded: CGFloat = 16
   
   @IBOutlet weak var monthSwitcherCollectionView: UICollectionView!
   @IBOutlet weak var monthSwitchProvider: MonthSwitchProvider!
@@ -62,6 +62,8 @@ class HistorySummaryViewController: UIViewController {
     monthSwitcherCollectionView.contentInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 8)
     monthSwitchProvider.delegate = self
     monthSwitchProvider.selectLastMonth()
+    
+    fakeCard.shadowRadius = 12
   }
   
   override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
