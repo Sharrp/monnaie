@@ -24,9 +24,9 @@ class YawaTransactionsControllerTests: XCTestCase {
     
     dataProvider = TransactionsController(dbName: "testing")
     
-    currentMonth = calendar.component(.month, from: Date())
-    currentYear =  calendar.component(.year, from: Date())
-    let previousMonthDate = calendar.date(byAdding: .month, value: -1, to: Date())!
+    currentMonth = calendar.component(.month, from: Date.now)
+    currentYear =  calendar.component(.year, from: Date.now)
+    let previousMonthDate = calendar.date(byAdding: .month, value: -1, to: Date.now)!
     previousMonth = calendar.component(.month, from: previousMonthDate)
     yearOfPreviousMonth = calendar.component(.year, from: previousMonthDate)
     
@@ -48,7 +48,7 @@ class YawaTransactionsControllerTests: XCTestCase {
     
     data.forEach {
       let dateValues = $0[0] as! [Int]
-      let nanoseconds = Int((Date().timeIntervalSince1970.truncatingRemainder(dividingBy: 1)) * 1e9)
+      let nanoseconds = Int((Date.now.timeIntervalSince1970.truncatingRemainder(dividingBy: 1)) * 1e9)
       let date = Date(calendar: calendar, year: dateValues[0], month: dateValues[1], day: dateValues[2], nanoseconds: nanoseconds)!
       
       let dayDate = Date(calendar: calendar, year: dateValues[0], month: dateValues[1], day: dateValues[2])!

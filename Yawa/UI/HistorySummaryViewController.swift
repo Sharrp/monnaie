@@ -32,7 +32,7 @@ class HistorySummaryViewController: UIViewController {
   
   @IBOutlet weak var monthSwitcherCollectionView: UICollectionView!
   @IBOutlet weak var monthSwitchProvider: MonthSwitchProvider!
-  private var selectedMonthDate = Date()
+  private var selectedMonthDate = Date.now
   
   private let defaultDateFormatter = DateFormatter(dateFormat: "EEEE d")
   let dataProvider = TransactionsController(dbName: "production")
@@ -71,7 +71,7 @@ class HistorySummaryViewController: UIViewController {
   }
   
   private func shareCsv() {
-    let filename = NSTemporaryDirectory() + "export-finances-\(Date()).csv".replacingOccurrences(of: " ", with: "_")
+    let filename = NSTemporaryDirectory() + "export-finances-\(Date.now).csv".replacingOccurrences(of: " ", with: "_")
     let csv = dataProvider.exportDataAsCSV()
     do {
       try csv.write(toFile: filename, atomically: true, encoding: String.Encoding.utf8)
@@ -165,8 +165,8 @@ extension HistorySummaryViewController: UITableViewDataSource {
   
   func numberOfSections(in tableView: UITableView) -> Int {
     let daysToShow: Int
-    if selectedMonthDate.isSame(granularity: .month, asDate: Date()) {
-      daysToShow = Calendar.current.component(.day, from: Date())
+    if selectedMonthDate.isSame(granularity: .month, asDate: Date.now) {
+      daysToShow = Calendar.current.component(.day, from: Date.now)
     } else {
       guard let daysCount = Calendar.current.range(of: .day, in: .month, for: selectedMonthDate)?.count else { return 0 }
       daysToShow = daysCount
@@ -246,9 +246,9 @@ extension HistorySummaryViewController: UITableViewDelegate {
   }
   
   private func displayString(forDate date: Date, formatter: DateFormatter) -> String {
-    if Calendar.current.isDate(date, inSameDayAs: Date()) {
+    if Calendar.current.isDate(date, inSameDayAs: Date.now) {
       return "Today"
-    } else if Calendar.current.isDate(date, inSameDayAs: Date(timeIntervalSinceNow: -86400)) {
+    } else if Calendar.current.isDate(date, inSameDayAs: Date(timeIntervalSinceNow: -Date.secondsPerDay)) {
       return "Yesterday"
     } else {
       return formatter.string(from: date)
@@ -261,7 +261,7 @@ extension HistorySummaryViewController: UITableViewDelegate {
     } else {
       let weekdayFormatter = DateFormatter(dateFormat: "E d")
       let firstDayString = displayString(forDate: sectionData.firstDay, formatter: weekdayFormatter)
-      let lastDay = sectionData.firstDay.addingTimeInterval(Double(86400 * (sectionData.numberOfDays - 1)))
+      let lastDay = sectionData.firstDay.addingTimeInterval(Double(Date.secondsPerDay * Double(sectionData.numberOfDays - 1)))
       let lastDayString = displayString(forDate: lastDay, formatter: weekdayFormatter)
       return "\(firstDayString) - \(lastDayString)"
     }
@@ -324,7 +324,7 @@ extension HistorySummaryViewController: SyncNameUpdateDelegate {
 extension HistorySummaryViewController: TransactionsPresentor {
   private func updateTotal() {
     monthSwitchProvider.reports = dataProvider.monthlyAmounts()
-    monthSwitchProvider.todayAmount = dataProvider.totalAmount(forDay: Date())
+    monthSwitchProvider.todayAmount = dataProvider.totalAmount(forDay: Date.now)
   }
   
   func didUpdate(days: [Date]) {

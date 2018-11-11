@@ -98,7 +98,7 @@ class TransactionsController: TransactionUpdateDelegate {
         author='\(transaction.authorName)',
         category='\(transaction.category.name)',
         date='\(transaction.date.timeIntervalSince1970)',
-        modifiedDate='\(Date().timeIntervalSince1970)'
+        modifiedDate='\(Date.now.timeIntervalSince1970)'
       WHERE createdDate='\(transaction.createdDate.timeIntervalSince1970)'
     """
     let statement = prepareStatement(sql: sql)

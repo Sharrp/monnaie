@@ -11,7 +11,7 @@ import UIKit
 class SummaryProvider: NSObject {
   weak var transactionsController: TransactionsController?
   private var summary: CategoriesSummary? // cached data
-  var monthDate = Date() {
+  var monthDate = Date.now {
     didSet {
       updateData()
     }

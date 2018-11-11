@@ -31,7 +31,7 @@ class MonthSwitchProvider: NSObject {
   
   private func string(forMonth monthDate: Date) -> String {
     let format: String
-    if Calendar.current.isDate(monthDate, equalTo: Date(), toGranularity: .year) {
+    if Calendar.current.isDate(monthDate, equalTo: Date.now, toGranularity: .year) {
       format = "MMMM"
     } else {
       format = "MMM yyyy"

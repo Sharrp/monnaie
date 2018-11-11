@@ -66,14 +66,14 @@ class YawaMergerTests: XCTestCase {
   // MARK: Atomic changes
   
   func testCreatedLocal() {
-    let newTransaction = Transaction(amount: 12, category: .cafe, authorName: localAuthor, transactionDate: Date())
+    let newTransaction = Transaction(amount: 12, category: .cafe, authorName: localAuthor, transactionDate: Date.now)
     local.add(transaction: newTransaction)
     let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
     XCTAssert(merged == local.syncTransactions())
   }
   
   func testCreatedRemote() {
-    let newTransaction = Transaction(amount: 12, category: .cafe, authorName: remoteAuthor, transactionDate: Date())
+    let newTransaction = Transaction(amount: 12, category: .cafe, authorName: remoteAuthor, transactionDate: Date.now)
     remote.add(transaction: newTransaction)
     let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
     XCTAssert(merged == remote.syncTransactions())
@@ -82,7 +82,7 @@ class YawaMergerTests: XCTestCase {
   func testCreatedBoth() {
     let newLocalDate = Date(timeIntervalSinceNow: -1200)
     let newLocalTransaction = Transaction(amount: 12, category: .cafe, authorName: localAuthor, transactionDate: newLocalDate, creationDate: newLocalDate)
-    let newRemoteDate = Date()
+    let newRemoteDate = Date.now
     let newRemoteTransaction = Transaction(amount: 23, category: .entertainment, authorName: remoteAuthor, transactionDate: newRemoteDate, creationDate: newRemoteDate)
     local.add(transaction: newLocalTransaction)
     remote.add(transaction: newRemoteTransaction)
@@ -144,7 +144,7 @@ class YawaMergerTests: XCTestCase {
     local.update(transaction: localTransaction)
     
     let remoteTransaction = remote.syncTransactions()[1]
-    remoteTransaction.date = remoteTransaction.date.addingTimeInterval(2 * 86400)
+    remoteTransaction.date = remoteTransaction.date.addingTimeInterval(2 * Date.secondsPerDay)
     remote.update(transaction: remoteTransaction)
     
     let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
@@ -247,7 +247,7 @@ class YawaMergerTests: XCTestCase {
   
   func testRealLifeComplex() {
     // Add
-    let newLocalDate = local.syncTransactions()[1].date.addingTimeInterval(86400 - 2 * 3600)
+    let newLocalDate = local.syncTransactions()[1].date.addingTimeInterval(Date.secondsPerDay - 2 * 3600)
     let newLocalTransaction = Transaction(amount: 10, category: .grocery, authorName: localAuthor, transactionDate: newLocalDate, creationDate: newLocalDate)
     local.add(transaction: newLocalTransaction)
     

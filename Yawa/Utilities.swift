@@ -87,8 +87,12 @@ extension DateFormatter {
 typealias TimestampRange = (start: TimeInterval, end: TimeInterval)
 
 extension Date {
-  var secondsPerDay: TimeInterval {
+  static var secondsPerDay: TimeInterval {
     return 86400
+  }
+  
+  static var now: Date {
+    return Date()
   }
   
   init?(calendar: Calendar, year: Int, month: Int, day: Int = 1, nanoseconds: Int = 0) {
@@ -120,14 +124,14 @@ extension Date {
     
     let maxDayOfCurrentMonth = Calendar.current.range(of: .day, in: .month, for: self)!.count
     components.day = maxDayOfCurrentMonth
-    let end = Calendar.current.date(from: components)!.timeIntervalSince1970 + secondsPerDay // first second of the next month
+    let end = Calendar.current.date(from: components)!.timeIntervalSince1970 + Date.secondsPerDay // first second of the next month
     
     return (start: start, end: end)
   }
   
   func timestampRangeForDay() -> TimestampRange {
     let start = Calendar.current.startOfDay(for: self).timeIntervalSince1970
-    return (start: start, end: start + secondsPerDay)
+    return (start: start, end: start + Date.secondsPerDay)
   }
 }
 

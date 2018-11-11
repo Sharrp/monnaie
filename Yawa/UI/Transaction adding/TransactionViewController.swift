@@ -48,7 +48,7 @@ class TransactionViewController: UIViewController {
 
     composer.delegate = self
     composer.set(mode: .waitingForInput, animated: false)
-    composer.set(date: Date())
+    composer.set(date: Date.now)
     composer.set(category: .defaultCategory)
   }
   
@@ -93,7 +93,7 @@ class TransactionViewController: UIViewController {
   // MARK: Date & time
   
   private func resetDate() {
-    let today = Date()
+    let today = Date.now
     dateTimePicker.date = today
     composer.set(date: today)
   }

@@ -85,29 +85,29 @@ enum TransactionCategory: Int, CustomStringConvertible {
 class Transaction: NSObject, NSCoding {
   var amount: Double {
     didSet {
-      modifiedDate = Date()
+      modifiedDate = Date.now
     }
   }
   var category: TransactionCategory {
     didSet {
-      modifiedDate = Date()
+      modifiedDate = Date.now
     }
   }
   var authorName: String {
     didSet {
-      modifiedDate = Date()
+      modifiedDate = Date.now
     }
   }
   
   var date: Date { // date of transaction in real world (set by user)
     didSet {
-      modifiedDate = Date()
+      modifiedDate = Date.now
     }
   }
   let createdDate: Date // date when user created the transaction
   private(set) var modifiedDate: Date // last modification date
   
-  init(amount: Double, category: TransactionCategory, authorName: String, transactionDate: Date, creationDate: Date = Date(), modifiedDate: Date = Date()) {
+  init(amount: Double, category: TransactionCategory, authorName: String, transactionDate: Date, creationDate: Date = Date.now, modifiedDate: Date = Date.now) {
     self.amount = amount
     self.category = category
     self.authorName = authorName
