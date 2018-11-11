@@ -26,8 +26,7 @@ class TransactionsController: TransactionUpdateDelegate {
   private var dbPath: URL {
     return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(dbFileName + ".sqlite")
   }
-  private var dateFormatString = "yyyy-MM-dd_HH:mm:ss.SSS"
-  private var sqlDateFarmatString = "yyyy-MM-dd"
+  private var dateFormatString = "yyyy-MM-dd_HH:mm:ss.SSSZ"
   
   init(dbName dbFileName: String = "testing") {
     self.dbFileName = dbFileName
@@ -35,7 +34,7 @@ class TransactionsController: TransactionUpdateDelegate {
     
     let createTableRequest = """
       CREATE TABLE IF NOT EXISTS \(transactionsTableName)
-      (createdDate REAL PRIMARY KEY, date REAL, dateString, modifiedDate REAL, amount REAL, author TEXT, category TEXT)
+      (createdDate REAL PRIMARY KEY, date REAL, modifiedDate REAL, amount REAL, author TEXT, category TEXT)
     """
     if sqlite3_exec(db, createTableRequest, nil, nil, nil) != SQLITE_OK {
       printError(on: "table creation", db)
@@ -57,14 +56,14 @@ class TransactionsController: TransactionUpdateDelegate {
     }
   }
   
-  func allDates() -> [Date] {
+  func allDates(ofGranularity granularity: Calendar.Component) -> [Date] {
     let sql = "SELECT date FROM Transactions ORDER BY date ASC"
     var dates = [Date]()
     guard let statement = prepareStatement(sql: sql) else { return dates }
     while sqlite3_step(statement) == SQLITE_ROW {
       let dateTimestamp = sqlite3_column_double(statement, 0)
       let dateCandidate = Date(timeIntervalSince1970: dateTimestamp)
-      if !dates.contains(where: { dateCandidate.isSame(granularity: .day, asDate: $0) }) {
+      if !dates.contains(where: { dateCandidate.isSame(granularity: granularity, asDate: $0) }) {
         dates.append(dateCandidate)
       }
     }
@@ -75,17 +74,14 @@ class TransactionsController: TransactionUpdateDelegate {
   /// MARK: Public
   
   func add(transaction: Transaction) {
-    let sql = "INSERT INTO \(transactionsTableName) (createdDate, date, dateString, modifiedDate, amount, author, category) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    let sql = "INSERT INTO \(transactionsTableName) (createdDate, date, modifiedDate, amount, author, category) VALUES (?, ?, ?, ?, ?, ?)"
     let statement = prepareStatement(sql: sql)
     guard sqlite3_bind_double(statement, 1, transaction.createdDate.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
     guard sqlite3_bind_double(statement, 2, transaction.date.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
-    
-    let dateString = DateFormatter(dateFormat: sqlDateFarmatString).string(from: transaction.date)
-    guard sqlite3_bind_text(statement, 3, dateString, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
-    guard sqlite3_bind_double(statement, 4, transaction.modifiedDate.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
-    guard sqlite3_bind_double(statement, 5, Double(transaction.amount)) == SQLITE_OK else { printError(on: "binding", db); return }
-    guard sqlite3_bind_text(statement, 6, transaction.authorName, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
-    guard sqlite3_bind_text(statement, 7, transaction.category.name, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_double(statement, 3, transaction.modifiedDate.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_double(statement, 4, Double(transaction.amount)) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_text(statement, 5, transaction.authorName, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_text(statement, 6, transaction.category.name, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
     
     if sqlite3_step(statement) != SQLITE_DONE {
       printError(on: "binding", db)
@@ -95,15 +91,15 @@ class TransactionsController: TransactionUpdateDelegate {
   }
   
   func update(transaction: Transaction) {
-    let dateString = DateFormatter(dateFormat: sqlDateFarmatString).string(from: transaction.date)
     let sql = """
-    UPDATE \(transactionsTableName)
-    SET amount='\(transaction.amount)',
-    author='\(transaction.authorName)',
-    category='\(transaction.category.name)',
-    date='\(transaction.date.timeIntervalSince1970)', dateString='\(dateString)',
-    modifiedDate='\(Date().timeIntervalSince1970)'
-    WHERE createdDate='\(transaction.createdDate.timeIntervalSince1970)'
+      UPDATE \(transactionsTableName)
+      SET
+        amount='\(transaction.amount)',
+        author='\(transaction.authorName)',
+        category='\(transaction.category.name)',
+        date='\(transaction.date.timeIntervalSince1970)',
+        modifiedDate='\(Date().timeIntervalSince1970)'
+      WHERE createdDate='\(transaction.createdDate.timeIntervalSince1970)'
     """
     let statement = prepareStatement(sql: sql)
     if sqlite3_step(statement) != SQLITE_DONE {
@@ -130,10 +126,13 @@ class TransactionsController: TransactionUpdateDelegate {
   }
   
   func transaction(index: Int, forDay dayDate: Date) -> Transaction? {
-    let dateString = DateFormatter(dateFormat: sqlDateFarmatString).string(from: dayDate)
-    let sql = "SELECT * FROM \(transactionsTableName) WHERE dateString='\(dateString)' ORDER BY date ASC LIMIT 1 OFFSET \(index)"
+    let condition = conditionForDate(inRange: dayDate.timestampRangeForDay())
+    let sql = "SELECT * FROM \(transactionsTableName) WHERE \(condition) ORDER BY date ASC LIMIT 1 OFFSET \(index)"
     let statement = prepareStatement(sql: sql)
-    guard sqlite3_step(statement) == SQLITE_ROW else { return nil }
+    guard sqlite3_step(statement) == SQLITE_ROW else {
+      print("\n\(dayDate): \(index) is NIL\n")
+      return nil
+    }
     let transaction = getTransaction(withStatement: statement)
     sqlite3_finalize(statement)
     return transaction
@@ -146,55 +145,58 @@ class TransactionsController: TransactionUpdateDelegate {
   }
   
   func daysWithTransactions(forMonth monthDate: Date) -> [Int] {
-    let monthName = name(ofMonth: monthDate)
-    let sql = "SELECT strftime('%d', dateString) FROM \(transactionsTableName) WHERE strftime('%Y%m', dateString)='\(monthName)' GROUP BY dateString ORDER BY date ASC"
+    let condition = conditionForDate(inRange: monthDate.timestampRangeForMonth())
+    let sql = "SELECT date FROM \(transactionsTableName) WHERE \(condition) ORDER BY date ASC"
     guard let statement = prepareStatement(sql: sql) else { return [] }
-    var nonEmptyDays = [Int]()
+    var timestampsForMonth = [TimeInterval]()
     while sqlite3_step(statement) == SQLITE_ROW {
-      nonEmptyDays.append(Int(sqlite3_column_int(statement, 0)))
+      timestampsForMonth.append(sqlite3_column_double(statement, 0))
     }
     sqlite3_finalize(statement)
+    
+    var nonEmptyDays = [Int]()
+    for timestamp in timestampsForMonth {
+      let day = Calendar.current.component(.day, from: Date(timeIntervalSince1970: timestamp))
+      if !nonEmptyDays.contains(day) {
+        nonEmptyDays.append(day)
+      }
+    }
     return nonEmptyDays
   }
   
   func numberOfTransactions(onDay dayDate: Date) -> Int {
-    let dateString = DateFormatter(dateFormat: sqlDateFarmatString).string(from: dayDate)
-    let sql = "SELECT count(*) FROM \(transactionsTableName) WHERE dateString='\(dateString)'"
+    let condition = conditionForDate(inRange: dayDate.timestampRangeForDay())
+    let sql = "SELECT count(*) FROM \(transactionsTableName) WHERE \(condition)"
     return sqlIntValue(sql: sql) ?? 0
   }
   
   func totalAmount(forMonth monthDate: Date) -> Double {
-    let monthName = name(ofMonth: monthDate)
-    let sql = "SELECT sum(amount) FROM \(transactionsTableName) WHERE strftime('%Y%m', dateString)='\(monthName)'"
+    let condition = conditionForDate(inRange: monthDate.timestampRangeForMonth())
+    let sql = "SELECT sum(amount) FROM \(transactionsTableName) WHERE \(condition)"
     return sqlDoubleValue(sql: sql) ?? 0
   }
   
   func totalAmount(forDay dayDate: Date) -> Double {
-    let dateString = DateFormatter(dateFormat: sqlDateFarmatString).string(from: dayDate)
-    let sql = "SELECT sum(amount) FROM \(transactionsTableName) WHERE dateString='\(dateString)'"
+    let condition = conditionForDate(inRange: dayDate.timestampRangeForDay())
+    let sql = "SELECT sum(amount) FROM \(transactionsTableName) WHERE \(condition)"
     return sqlDoubleValue(sql: sql) ?? 0
   }
   
   func monthlyAmounts() -> [MonthReport] {
-    let sql = "SELECT date, sum(amount) FROM \(transactionsTableName) GROUP BY strftime('%Y%m', dateString) ORDER BY date ASC"
-    guard let statement = prepareStatement(sql: sql) else { return [] }
     var reports = [MonthReport]()
-    while sqlite3_step(statement) == SQLITE_ROW {
-      let monthDate = Date(timeIntervalSince1970: sqlite3_column_double(statement, 0))
-      let amount = sqlite3_column_double(statement, 1)
+    for monthDate in allDates(ofGranularity: .month) {
+      let amount = totalAmount(forMonth: monthDate)
       reports.append(MonthReport(monthDate: monthDate, amount: amount))
     }
-    sqlite3_finalize(statement)
     return reports
   }
   
   func categoriesSummary(forMonth monthDate: Date) -> CategoriesSummary {
-    let (year, month, _) = components(ofDate: monthDate)
-    let monthName = String(format: "%d%02d", year, month)
+    let condition = conditionForDate(inRange: monthDate.timestampRangeForMonth())
     let sql = """
       SELECT category, sum(amount)
       FROM \(transactionsTableName)
-      WHERE strftime('%Y%m', dateString)='\(monthName)'
+      WHERE \(condition)
       GROUP BY category ORDER BY sum(amount) DESC
     """
     guard let statement = prepareStatement(sql: sql) else { return [] }
@@ -258,12 +260,11 @@ class TransactionsController: TransactionUpdateDelegate {
     sqlite3_finalize(statement)
   }
   
-  // MARK: Generic helpers
-  
-  private func name(ofMonth monthDate: Date) -> String {
-    let (year, month, _) = components(ofDate: monthDate)
-    return String(format: "%d%02d", year, month)
+  private func conditionForDate(inRange timestamps: TimestampRange) -> String {
+    return "date>=\(timestamps.start) AND date<\(timestamps.end)"
   }
+  
+  // MARK: Generic helpers
   
   private func components(ofDate date: Date) -> (year: Int, month: Int, day: Int) {
     let day = Calendar.current.component(.day, from: date)
@@ -273,18 +274,18 @@ class TransactionsController: TransactionUpdateDelegate {
   }
   
   private func getTransaction(withStatement statement: OpaquePointer?) -> Transaction? {
-    let categoryName = String(cString: sqlite3_column_text(statement, 6))
+    let categoryName = String(cString: sqlite3_column_text(statement, 5))
     guard let category = TransactionCategory(exportName: categoryName) else { return nil }
     
     let createdDateTimestamp = sqlite3_column_double(statement, 0)
     let createdDate = Date(timeIntervalSince1970: createdDateTimestamp)
     let dateTimestamp = sqlite3_column_double(statement, 1)
     let date = Date(timeIntervalSince1970: dateTimestamp)
-    let modifiedDateTimestamp = sqlite3_column_double(statement, 3)
+    let modifiedDateTimestamp = sqlite3_column_double(statement, 2)
     let modifiedDate = Date(timeIntervalSince1970: modifiedDateTimestamp)
     
-    let amount = sqlite3_column_double(statement, 4)
-    let author = String(cString: sqlite3_column_text(statement, 5))
+    let amount = sqlite3_column_double(statement, 3)
+    let author = String(cString: sqlite3_column_text(statement, 4))
     return Transaction(amount: amount, category: category, authorName: author,
                        transactionDate: date, creationDate: createdDate, modifiedDate: modifiedDate)
   }

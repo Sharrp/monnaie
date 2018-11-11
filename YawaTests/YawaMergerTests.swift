@@ -17,16 +17,8 @@ class YawaMergerTests: XCTestCase {
   private let merger = Merger()
   private var previousSync: [Int]!
   
-  private func importCSV(fileName: String, intoControlller controller: TransactionsController) {
-    guard let path = Bundle(for: type(of: self)).path(forResource: fileName, ofType: "csv") else { XCTFail(); return }
-    guard let csv = try? String(contentsOfFile: path) else { XCTFail(); return }
-    let result = controller.importDataFromCSV(csv: csv, mode: .replace)
-    switch result {
-    case .success:
-      break
-    case .failure(let message):
-      XCTFail("Unsuccessful import of \(fileName).csv: \(message)")
-    }
+  func importCSV(fileName: String, intoControlller controller: TransactionsController) {
+    YawaTests.importCSV(bundle: Bundle(for: type(of: self)), fileName: fileName, intoControlller: controller)
   }
 
   override func setUp() {
@@ -170,7 +162,7 @@ class YawaMergerTests: XCTestCase {
   }
   
   func testDeletedRemote() {
-    let secondDay = remote.allDates()[1]
+    let secondDay = remote.allDates(ofGranularity: .day)[1]
     guard let transaction = remote.transaction(index: 0, forDay: secondDay) else { XCTFail(); return }
     remote.remove(transaction: transaction)
     let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
@@ -296,7 +288,7 @@ class YawaMergerTests: XCTestCase {
 
 extension TransactionsController {
   func transaction(withIndex index: Int, forDayIndex dayIndex: Int) -> Transaction? {
-    let day = allDates()[dayIndex]
+    let day = allDates(ofGranularity: .day)[dayIndex]
     return transaction(index: index, forDay: day)
   }
 }
