@@ -144,4 +144,5 @@ struct Animation {
 struct Color {
   static let inactiveText = UIColor(hex: 0xAAAAAA)
   static let shadowColor = UIColor(white: 0.84, alpha: 1)
+  static let background = UIColor(hex: 0xF9F9F9)
 }

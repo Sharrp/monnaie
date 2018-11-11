@@ -18,8 +18,8 @@ class TransactionCell: UITableViewCell {
   var isFirst = false
   var isLast = false
   
-  private let sideInset: CGFloat = 20
-  private let cornerRadius: CGFloat = 12
+  private let sideInset: CGFloat = 8
+  private let cornerRadius: CGFloat = 8
   private static let shadowRadius: CGFloat = 8
   private let shapeLayer = CALayer()
   
@@ -30,7 +30,7 @@ class TransactionCell: UITableViewCell {
   private func setupCell() {
     layer.masksToBounds = false
     layer.shadowOffset = CGSize()
-    layer.shadowColor = UIColor.black.cgColor
+    layer.shadowColor = Color.shadowColor.cgColor
     layer.shadowRadius = TransactionCell.shadowRadius
     layer.shadowOpacity = 1
     

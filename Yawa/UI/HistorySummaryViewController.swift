@@ -212,6 +212,7 @@ extension HistorySummaryViewController: UITableViewDataSource {
     cell.isFirst = indexPath.row == 0
     let cellsInSection = self.tableView(tableView, numberOfRowsInSection: indexPath.section)
     cell.isLast = indexPath.row == cellsInSection - 1
+    
     return cell
   }
   
@@ -269,6 +270,7 @@ extension HistorySummaryViewController: UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let headerView = UIView()
+//    headerView.backgroundColor = .clear
     let sectionData = sectionsHeadersData[section]
     
     let amountLabel = UILabel()
