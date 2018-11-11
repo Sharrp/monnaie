@@ -112,7 +112,7 @@ class HistorySummaryViewController: UIViewController {
     switch viewMode {
     case .history:
       tableView.dataSource = self
-      tableView.delegate = nil
+      tableView.delegate = self
       contentOffset = historyLastContentOffset
     case .summary:
       historyLastContentOffset = tableView.contentOffset.y
@@ -166,7 +166,7 @@ extension HistorySummaryViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
     let daysToShow: Int
     if selectedMonthDate.isSame(granularity: .month, asDate: Date()) {
-      daysToShow = Calendar.current.component(.day, from: selectedMonthDate)
+      daysToShow = Calendar.current.component(.day, from: Date())
     } else {
       guard let daysCount = Calendar.current.range(of: .day, in: .month, for: selectedMonthDate)?.count else { return 0 }
       daysToShow = daysCount
@@ -195,15 +195,9 @@ extension HistorySummaryViewController: UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cellID = "transactionCell"
-    let cell: TransactionCell
-    if let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: cellID) as? TransactionCell {
-      cell = dequeuedCell
-    } else {
-      cell = TransactionCell(style: .subtitle, reuseIdentifier: cellID)
-    }
-    
-    guard let dateForSection = date(forSection: indexPath.section) else { return cell }
-    guard let transaction = dataProvider.transaction(index: indexPath.row, forDay: dateForSection) else { return cell }
+    let cell = tableView.dequeueReusableCell(withIdentifier: cellID) as! TransactionCell
+    let sectionDate = sectionsHeadersData[indexPath.section].firstDay
+    let transaction = dataProvider.transaction(index: indexPath.row, forDay: sectionDate)!
     cell.emojiLabel.text = "\(transaction.category.emoji)"
     cell.categoryLabel.text = "\(transaction.category.name)"
     cell.amountLabel.text = formatMoney(amount: transaction.amount, currency: .JPY)
@@ -215,14 +209,9 @@ extension HistorySummaryViewController: UITableViewDataSource {
       cell.topMarginConstraint.constant = 8
     }
     
-//    let cellsInSection = self.tableView(tableView, numberOfRowsInSection: indexPath.section)
-//    if indexPath.row == 0 {
-//      cell.set(radius: 8, forCormers: [.topLeft, .topRight])
-//    } else if indexPath.row == cellsInSection - 1 {
-//      cell.set(radius: 8, forCormers: [.bottomLeft, .bottomRight])
-//    } else {
-//      cell.layer.mask = nil
-//    }
+    cell.isFirst = indexPath.row == 0
+    let cellsInSection = self.tableView(tableView, numberOfRowsInSection: indexPath.section)
+    cell.isLast = indexPath.row == cellsInSection - 1
     return cell
   }
   
@@ -240,6 +229,18 @@ extension HistorySummaryViewController: UITableViewDataSource {
 }
 
 extension HistorySummaryViewController: UITableViewDelegate {
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    var height: CGFloat = 56
+    if indexPath.row == 0 {
+      height += TransactionCell.shadowInset
+    }
+    let cellsInSection = self.tableView(tableView, numberOfRowsInSection: indexPath.section)
+    if indexPath.row == cellsInSection - 1 { // it's the last cell in section
+      height += TransactionCell.shadowInset
+    }
+    return height
+  }
+  
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
     return 56
   }
