@@ -87,7 +87,7 @@ class TransactionCell: UITableViewCell {
     // For the non-first row we extend shadow to the top so we won't see shadow's top rounded corners (they will be masked)
     let topShadowInset = !isFirst ? -cornerRadius : 0
     let bottomShadowInset = !isLast ? -cornerRadius : 0
-    let shadowRect = UIEdgeInsetsInsetRect(bounds, UIEdgeInsets(top: topShadowInset, left: 0, bottom: bottomShadowInset, right: 0))
+    let shadowRect = bounds.inset(by: UIEdgeInsets(top: topShadowInset, left: 0, bottom: bottomShadowInset, right: 0))
     let shadowPath = UIBezierPath(roundedRect: shadowRect, byRoundingCorners: corners,
                                   cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)).cgPath
     layer.shadowPath = shadowPath

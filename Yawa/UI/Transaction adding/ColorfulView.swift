@@ -38,16 +38,16 @@ class ColorfulView: UIView {
     darkCover.backgroundColor = .black
     darkCover.alpha = isOledScreen() ? 0.3 : 0.45
     addSubview(blurView)
-    sendSubview(toBack: blurView)
+    sendSubviewToBack(blurView)
     addSubview(darkCover)
-    sendSubview(toBack: darkCover)
+    sendSubviewToBack(darkCover)
     
     for info in circlesInfo {
       let circle = UIView()
       circle.backgroundColor = UIColor(hex: info.hex)
       addSubview(circle)
       circles.append(circle)
-      sendSubview(toBack: circle)
+      sendSubviewToBack(circle)
     }
   }
   

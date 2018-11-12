@@ -66,8 +66,8 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    guard let baseVC = childViewControllers.first else { return }
-    guard let bladeVC = childViewControllers.last else { return }
+    guard let baseVC = children.first else { return }
+    guard let bladeVC = children.last else { return }
     baseViewController = baseVC
     bladeViewController = bladeVC
     (baseVC as? GuillotineBladeUpdateDelegate)?.didUpdate(bladeVC: bladeVC, infoProvider: self)

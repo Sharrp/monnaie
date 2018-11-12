@@ -13,13 +13,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
   private var csvImportURL: URL?
 
-  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
-    csvImportURL = launchOptions?[UIApplicationLaunchOptionsKey.url] as? URL // to handle it later in didBecomeActive
+    csvImportURL = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL // to handle it later in didBecomeActive
     return true
   }
   
-  func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+  func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
     handleImportCSV(fileURL: url)
     return true
   }

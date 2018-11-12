@@ -220,7 +220,7 @@ extension HistorySummaryViewController: UITableViewDataSource {
     return true
   }
   
-  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     guard editingStyle == .delete else { return }
     // TODO: implement more convenient remove method in TransactionsController
     guard let dateForSection = date(forSection: indexPath.section) else { return }
