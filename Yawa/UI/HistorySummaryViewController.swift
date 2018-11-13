@@ -175,14 +175,6 @@ extension HistorySummaryViewController: UITableViewDataSource {
     return sectionsHeadersData.count
   }
   
-  private func date(forSection section: Int) -> Date? {
-    var components = DateComponents()
-    components.day = section + 1
-    components.month = Calendar.current.component(.month, from: selectedMonthDate)
-    components.year = Calendar.current.component(.year, from: selectedMonthDate)
-    return Calendar.current.date(from: components)
-  }
-  
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     let sectionData = sectionsHeadersData[section]
     if sectionData.isEmpty {
@@ -223,8 +215,8 @@ extension HistorySummaryViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     guard editingStyle == .delete else { return }
     // TODO: implement more convenient remove method in TransactionsController
-    guard let dateForSection = date(forSection: indexPath.section) else { return }
-    guard let transaction = dataProvider.transaction(index: indexPath.row, forDay: dateForSection) else { return }
+    let day = sectionsHeadersData[indexPath.section].firstDay
+    guard let transaction = dataProvider.transaction(index: indexPath.row, forDay: day) else { return }
     dataProvider.remove(transaction: transaction)
   }
 }
@@ -311,7 +303,7 @@ extension HistorySummaryViewController: UITableViewDelegate {
   }
 }
 
-extension HistorySummaryViewController: BladeScrollViewDelegate {
+extension HistorySummaryViewController: BladeViewScrollable {
   var scrollView: UIScrollView? {
     return tableView
   }
@@ -349,7 +341,7 @@ extension HistorySummaryViewController: MonthSwitchDelegate {
   }
 }
 
-extension HistorySummaryViewController: GuilliotineSlideProgressDelegate {
+extension HistorySummaryViewController: GuilliotineStateDelegate {
   func didUpdateProgress(to progress: CGFloat) {
     let tableTransform: CGAffineTransform
     if progress == 1 {

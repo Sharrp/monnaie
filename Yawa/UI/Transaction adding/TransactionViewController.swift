@@ -11,6 +11,7 @@ import UIKit
 protocol TransactionUpdateDelegate: AnyObject {
   func add(transaction: Transaction)
   func update(transaction: Transaction)
+  func isEmpty() -> Bool
 }
 
 class TransactionViewController: UIViewController {
@@ -28,12 +29,11 @@ class TransactionViewController: UIViewController {
   
   weak var delegate: TransactionUpdateDelegate?
   var transaction: Transaction?
-  private var guillotineInfoProvider: GuillotineInfoProvider?
+  private var guillotine: GuillotineInfo?
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(syncDidDismiss), name: .syncDidDismiss, object: nil)
     
     keyboardView.textField = composer.amountInput
@@ -46,24 +46,10 @@ class TransactionViewController: UIViewController {
     
     dateTimePicker.setValue(UIColor(white: 0.6, alpha: 1), forKey: "textColor")
 
-    composer.delegate = self
-    composer.set(mode: .waitingForInput, animated: false)
     composer.set(date: Date.now)
     composer.set(category: .defaultCategory)
-  }
-  
-  @objc func appDidBecomeActive() {
-    resetStateAfterBackground()
-  }
-  
-  private func resetStateAfterBackground() {
-    guard composer.amountInput.text?.count == 0 else { return }
-    resetDate()
-    clearCategory()
-    
-    if guillotineInfoProvider?.bladeState == .collapsed {
-      composer.reset()
-    }
+    composer.set(mode: .waitingForInput, animated: false) // should be before delegate is set so callback is not called on launch
+    composer.delegate = self
   }
   
   @objc func syncDidDismiss() {
@@ -129,13 +115,37 @@ class TransactionViewController: UIViewController {
       animator.startAnimation(afterDelay: 0.3)
     }
   }
+  
+  private func adjustControls(toMode mode: TransactionComposerMode, animated: Bool) {
+    keyboardView.isHidden = mode != .amount && mode != .waitingForInput
+    dateTimePicker.isHidden = mode != .date
+    categoryCollectionView.isHidden = mode != .category
+    
+    let hasNoTransactions = delegate?.isEmpty() ?? true
+    let bladeHidden = hasNoTransactions || mode != .waitingForInput
+    let addHidden = mode == .waitingForInput
+    
+    let animation = { [unowned self] in
+      self.addButton.alpha = addHidden ? 0 : 1
+      self.addButton.transform = addHidden ? CGAffineTransform(translationX: 0, y: Animation.appearceWithShfit) : .identity
+      self.guillotine?.setBlade(hidden: bladeHidden, animated: animated)
+    }
+    if animated {
+      UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut, animations: animation).startAnimation()
+    } else {
+      animation()
+    }
+  }
 }
 
-extension TransactionViewController: GuillotineBladeUpdateDelegate {
-  func didUpdate(bladeVC: UIViewController, infoProvider: GuillotineInfoProvider) {
-    guard let transactionsListVC = bladeVC as? HistorySummaryViewController else { return }
+extension TransactionViewController: GuillotineDelegate {
+  func finishedSetup(ofGuillotine guillotineInfo: GuillotineInfo) {
+    guillotine = guillotineInfo
+    guard let transactionsListVC = guillotine?.bladeViewController as? HistorySummaryViewController else { return }
     delegate = transactionsListVC.dataProvider
-    guillotineInfoProvider = infoProvider
+    
+    // Now we have
+    adjustControls(toMode: .waitingForInput, animated: false)
   }
 }
 
@@ -145,7 +155,7 @@ extension TransactionViewController: CategorySelectionDelegate {
   }
 }
 
-extension TransactionViewController: GuilliotineSlideProgressDelegate {
+extension TransactionViewController: GuilliotineStateDelegate {
   func didUpdateProgress(to progress: CGFloat) {
     let restrictedProgress = min(1, max(0, progress))
     let targetTransform = CGAffineTransform(translationX: 0, y: keyboardView.frame.height * restrictedProgress)
@@ -171,20 +181,7 @@ extension TransactionViewController: GuilliotineSlideProgressDelegate {
 
 extension TransactionViewController: TransactionComposerDelegate {
   func didSwitch(toMode mode: TransactionComposerMode, animated: Bool = false) {
-    keyboardView.isHidden = mode != .amount && mode != .waitingForInput
-    dateTimePicker.isHidden = mode != .date
-    categoryCollectionView.isHidden = mode != .category
-    
-    let animation = { [unowned self] in
-      let isHidden = mode == .waitingForInput
-      self.addButton.alpha = isHidden ? 0 : 1
-      self.addButton.transform = isHidden ? CGAffineTransform(translationX: 0, y: Animation.appearceWithShfit) : .identity
-    }
-    if animated {
-      UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut, animations: animation).startAnimation()
-    } else {
-      animation()
-    }
+    adjustControls(toMode: mode, animated: true)
   }
   
   func amountChangedValidity(isValid amountIsValid: Bool) {

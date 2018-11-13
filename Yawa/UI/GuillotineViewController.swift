@@ -8,23 +8,23 @@
 
 import UIKit
 
-protocol GuillotineBaseUpdateDelegate {
-  func didUpdate(baseVC: UIViewController, infoProvider: GuillotineInfoProvider)
+protocol GuillotineDelegate {
+  func finishedSetup(ofGuillotine: GuillotineInfo)
 }
 
-protocol GuillotineBladeUpdateDelegate {
-  func didUpdate(bladeVC: UIViewController, infoProvider: GuillotineInfoProvider)
+protocol GuillotineInfo {
+  var bladeViewController: UIViewController! { get }
+  var baseViewController: UIViewController! { get }
+  var bladeState: BladeState { get }
+  
+  func setBlade(hidden: Bool, animated: Bool)
 }
 
-protocol BladeScrollViewDelegate {
+protocol BladeViewScrollable {
   var scrollView: UIScrollView? { get }
 }
 
-protocol GuillotineInfoProvider {
-  var bladeState: BladeState { get }
-}
-
-protocol GuilliotineSlideProgressDelegate {
+protocol GuilliotineStateDelegate {
   func didUpdateProgress(to progress: CGFloat)
   func willSwitch(toState: BladeState, withDuration: Double, andTimingProvider: UITimingCurveProvider)
 }
@@ -34,9 +34,9 @@ enum BladeState {
   case expanded
 }
 
-class GuillotineViewController: UIViewController, GuillotineInfoProvider {
-  private var baseViewController: UIViewController!
-  var bladeViewController: UIViewController!
+class GuillotineViewController: UIViewController {
+  private(set) var baseViewController: UIViewController!
+  private(set) var bladeViewController: UIViewController!
   @IBOutlet weak var bladeBottomInsetConstraint: NSLayoutConstraint!
   @IBOutlet weak var bladeHeightConstraint: NSLayoutConstraint!
   
@@ -70,8 +70,8 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
     guard let bladeVC = children.last else { return }
     baseViewController = baseVC
     bladeViewController = bladeVC
-    (baseVC as? GuillotineBladeUpdateDelegate)?.didUpdate(bladeVC: bladeVC, infoProvider: self)
-    (bladeVC as? GuillotineBaseUpdateDelegate)?.didUpdate(baseVC: baseVC, infoProvider: self)
+    (baseVC as? GuillotineDelegate)?.finishedSetup(ofGuillotine: self)
+    (bladeVC as? GuillotineDelegate)?.finishedSetup(ofGuillotine: self)
     
     view.addGestureRecognizer(panGesture)
   }
@@ -152,8 +152,8 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
         self.view.layoutIfNeeded()
       }
       animator.startAnimation()
-      (baseViewController as? GuilliotineSlideProgressDelegate)?.willSwitch(toState: bladeState, withDuration: Animation.duration, andTimingProvider: timingProvider)
-      (bladeViewController as? GuilliotineSlideProgressDelegate)?.willSwitch(toState: bladeState, withDuration: Animation.duration, andTimingProvider: timingProvider)
+      (baseViewController as? GuilliotineStateDelegate)?.willSwitch(toState: bladeState, withDuration: Animation.duration, andTimingProvider: timingProvider)
+      (bladeViewController as? GuilliotineStateDelegate)?.willSwitch(toState: bladeState, withDuration: Animation.duration, andTimingProvider: timingProvider)
     case .possible:
       break
     }
@@ -191,8 +191,8 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
     view.setNeedsLayout()
     
     let progress = (collapsedBottomInset - displayedInset) / distance
-    (baseViewController as? GuilliotineSlideProgressDelegate)?.didUpdateProgress(to: progress)
-    (bladeViewController as? GuilliotineSlideProgressDelegate)?.didUpdateProgress(to: progress)
+    (baseViewController as? GuilliotineStateDelegate)?.didUpdateProgress(to: progress)
+    (bladeViewController as? GuilliotineStateDelegate)?.didUpdateProgress(to: progress)
   }
   
   private func elasticTranslation(forExcess excess: CGFloat, onDistance distance: CGFloat) -> CGFloat {
@@ -200,10 +200,32 @@ class GuillotineViewController: UIViewController, GuillotineInfoProvider {
   }
 }
 
+extension GuillotineViewController: GuillotineInfo {
+  func setBlade(hidden: Bool, animated: Bool) {
+    let transform: CGAffineTransform
+    if hidden {
+       // FIX: replace view.safeAreaInsets.top with 44 but ensure layout is done when the method is called after launch
+      transform = CGAffineTransform(translationX: 0, y: -alwaysVisibleHeight - 44)
+    } else {
+      transform = .identity
+    }
+    panGesture.isEnabled = !hidden
+    
+    if animated {
+      let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [unowned self] in
+        self.bladeViewController.view.transform = transform
+      }
+      animator.startAnimation()
+    } else {
+      bladeViewController.view.transform = transform
+    }
+  }
+}
+
 extension GuillotineViewController: UIGestureRecognizerDelegate {
   // To avoid conflicts of the gesture with gestures in tableView
   func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-    guard let scrollView = (bladeViewController as? BladeScrollViewDelegate)?.scrollView else { return true }
+    guard let scrollView = (bladeViewController as? BladeViewScrollable)?.scrollView else { return true }
     let touchLocation = gestureRecognizer.location(ofTouch: 0, in: scrollView)
     let touchesScrollView = scrollView.bounds.contains(touchLocation)
     return !touchesScrollView
