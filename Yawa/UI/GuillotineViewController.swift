@@ -37,6 +37,7 @@ enum BladeState {
 class GuillotineViewController: UIViewController {
   private(set) var baseViewController: UIViewController!
   private(set) var bladeViewController: UIViewController!
+  @IBOutlet weak var bladeContainerView: UIView!
   @IBOutlet weak var bladeBottomInsetConstraint: NSLayoutConstraint!
   @IBOutlet weak var bladeHeightConstraint: NSLayoutConstraint!
   
@@ -202,14 +203,17 @@ class GuillotineViewController: UIViewController {
 
 extension GuillotineViewController: GuillotineInfo {
   func setBlade(hidden: Bool, animated: Bool) {
+    panGesture.isEnabled = !hidden
+    
     let transform: CGAffineTransform
     if hidden {
-       // FIX: replace view.safeAreaInsets.top with 44 but ensure layout is done when the method is called after launch
+       // FIX: replace 44 with view.safeAreaInsets.top but ensure layout is done when the method is called after launch
       transform = CGAffineTransform(translationX: 0, y: -alwaysVisibleHeight - 44)
+      view.sendSubviewToBack(bladeContainerView)
     } else {
       transform = .identity
+      view.bringSubviewToFront(bladeContainerView)
     }
-    panGesture.isEnabled = !hidden
     
     if animated {
       let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [unowned self] in

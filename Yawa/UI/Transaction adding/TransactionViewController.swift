@@ -16,8 +16,13 @@ protocol TransactionUpdateDelegate: AnyObject {
 
 class TransactionViewController: UIViewController {
   @IBOutlet weak var composer: TransactionComponserView!
-  
   @IBOutlet weak var addButton: UIButton!
+  
+  @IBOutlet weak var navBarContainer: UIView!
+  private var isNavigationBarVisible: Bool {
+    // FIX: should reflect real visibility through frame intersection
+    return navBarContainer.transform == .identity
+  }
   
   @IBOutlet weak var keyboardHeightConstraint: NSLayoutConstraint!
   @IBOutlet weak var keyboardView: DigitKeyboardView!
@@ -116,6 +121,22 @@ class TransactionViewController: UIViewController {
     }
   }
   
+  @IBAction func cancelAdding() {
+    composer.reset()
+  }
+  
+  private func setNavigationBar(visible: Bool) {
+    if isNavigationBarVisible == visible {
+      return
+    }
+    
+    if isNavigationBarVisible {
+      navBarContainer.transform = CGAffineTransform(translationX: 0, y: -navBarContainer.frame.height)
+    } else {
+      navBarContainer.transform = .identity
+    }
+  }
+  
   private func adjustControls(toMode mode: TransactionComposerMode, animated: Bool) {
     keyboardView.isHidden = mode != .amount && mode != .waitingForInput
     dateTimePicker.isHidden = mode != .date
@@ -129,6 +150,7 @@ class TransactionViewController: UIViewController {
       self.addButton.alpha = addHidden ? 0 : 1
       self.addButton.transform = addHidden ? CGAffineTransform(translationX: 0, y: Animation.appearceWithShfit) : .identity
       self.guillotine?.setBlade(hidden: bladeHidden, animated: animated)
+      self.setNavigationBar(visible: !addHidden)
     }
     if animated {
       UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut, animations: animation).startAnimation()
