@@ -139,6 +139,7 @@ struct Animation {
   static let duration = 0.3
   static let durationFast = 0.2
   static let appearceWithShfit: CGFloat = 10
+  static let dampingRatio: CGFloat = 0.7
 }
 
 struct Color {

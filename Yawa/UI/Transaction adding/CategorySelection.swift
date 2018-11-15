@@ -15,7 +15,7 @@ protocol CategorySelectionDelegate {
 class CategoriesProvider: NSObject, UICollectionViewDataSource {
   private let categories = TransactionCategory.allCases()
   var delegate: CategorySelectionDelegate?
-  private(set) var selectedCategory = TransactionCategory.defaultCategory
+  var selectedCategory = TransactionCategory.defaultCategory
   private let margin: CGFloat = 6
   private let cellHeight: CGFloat = 107
   

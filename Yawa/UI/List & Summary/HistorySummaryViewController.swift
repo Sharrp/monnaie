@@ -40,6 +40,8 @@ class HistorySummaryViewController: UIViewController {
   
   private var historyLastContentOffset: CGFloat = 0
   
+  var editor: ManagedTransactionEditor?
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -300,6 +302,13 @@ extension HistorySummaryViewController: UITableViewDelegate {
     ])
     
     return headerView
+  }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    guard let cell = tableView.cellForRow(at: indexPath) as? TransactionCell else { return }
+    let sectionDate = sectionsHeadersData[indexPath.section].firstDay
+    let transaction = dataProvider.transaction(index: indexPath.row, forDay: sectionDate)!
+    editor?.startEditing(transaction: transaction, byReplacingView: cell)
   }
 }
 

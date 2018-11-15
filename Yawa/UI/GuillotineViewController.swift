@@ -12,12 +12,14 @@ protocol GuillotineDelegate {
   func finishedSetup(ofGuillotine: GuillotineInfo)
 }
 
-protocol GuillotineInfo {
+protocol GuillotineInfo: class {
   var bladeViewController: UIViewController! { get }
   var baseViewController: UIViewController! { get }
   var bladeState: BladeState { get }
   
   func setBlade(hidden: Bool, animated: Bool)
+  func bringBaseToFront()
+  func sendBaseToBack()
 }
 
 protocol BladeViewScrollable {
@@ -47,9 +49,6 @@ class GuillotineViewController: UIViewController {
   private var panIsNotVertical = false
   private var isPanning = false
   private var panDetectionLocation = CGPoint()
-  
-  private let dampingRatio: CGFloat = 0.7
-  private let duration = 0.35
   
   private(set) var bladeState = BladeState.collapsed
   private var collapsedBottomInset: CGFloat = 0
@@ -132,7 +131,7 @@ class GuillotineViewController: UIViewController {
     case .cancelled, .failed, .ended:
       if panIsNotVertical { break }
       
-      let timingProvider = UISpringTimingParameters(dampingRatio: dampingRatio)
+      let timingProvider = UISpringTimingParameters(dampingRatio: Animation.dampingRatio)
       let animator = UIViewPropertyAnimator(duration: Animation.durationFast, timingParameters: timingProvider)
       
       // Determine the next state
@@ -223,6 +222,16 @@ extension GuillotineViewController: GuillotineInfo {
     } else {
       bladeViewController.view.transform = transform
     }
+  }
+  
+  func bringBaseToFront() {
+    guard let baseContaineView = baseViewController.view.superview else { return }
+    view.bringSubviewToFront(baseContaineView)
+  }
+  
+  func sendBaseToBack() {
+    guard let baseContaineView = baseViewController.view.superview else { return }
+    view.sendSubviewToBack(baseContaineView)
   }
 }
 

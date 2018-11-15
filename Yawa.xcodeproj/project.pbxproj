@@ -13,7 +13,6 @@
 		7518DC6721984501001ECA26 /* ShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7518DC612197B0A1001ECA26 /* ShadowRoundedView.swift */; };
 		751C8103218688F100BA7E6E /* TransactionComponserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7527EF172183D57800E232AE /* TransactionComponserView.swift */; };
 		7522C368218D2647006C6F1E /* MonthSwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758C6878218A777B00F2F7BE /* MonthSwitchView.swift */; };
-		7523C93F219CD7400077C288 /* CellEditOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7523C93E219CD7400077C288 /* CellEditOrchestrator.swift */; };
 		7524B98B209AEF26006027C8 /* P2PSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98A209AEF26006027C8 /* P2PSyncManager.swift */; };
 		7524B98D209B0F9F006027C8 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98C209B0F9F006027C8 /* DataModel.swift */; };
 		7524B98F209B284F006027C8 /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98E209B284F006027C8 /* TransactionViewController.swift */; };
@@ -97,7 +96,6 @@
 		7518DC612197B0A1001ECA26 /* ShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowRoundedView.swift; sourceTree = "<group>"; };
 		7518DC63219842EA001ECA26 /* csvImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = csvImportTests.swift; sourceTree = "<group>"; };
 		7518DC652198430A001ECA26 /* csv-import.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "csv-import.csv"; sourceTree = "<group>"; };
-		7523C93E219CD7400077C288 /* CellEditOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellEditOrchestrator.swift; sourceTree = "<group>"; };
 		7524B98A209AEF26006027C8 /* P2PSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PSyncManager.swift; sourceTree = "<group>"; };
 		7524B98C209B0F9F006027C8 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		7524B98E209B284F006027C8 /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
@@ -163,7 +161,6 @@
 				75C046E02098892600E8B09E /* HistorySummaryViewController.swift */,
 				758C6878218A777B00F2F7BE /* MonthSwitchView.swift */,
 				75D32C0220A3093000D13420 /* HistorySummaryCells.swift */,
-				7523C93E219CD7400077C288 /* CellEditOrchestrator.swift */,
 			);
 			path = "List & Summary";
 			sourceTree = "<group>";
@@ -426,7 +423,6 @@
 				7527EF182183D57800E232AE /* TransactionComponserView.swift in Sources */,
 				7524B98D209B0F9F006027C8 /* DataModel.swift in Sources */,
 				75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */,
-				7523C93F219CD7400077C288 /* CellEditOrchestrator.swift in Sources */,
 				75D32C0D20AB202E00D13420 /* Settings.swift in Sources */,
 				DF0B60AC20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */,
 				7524B996209B4451006027C8 /* SyncViewController.swift in Sources */,

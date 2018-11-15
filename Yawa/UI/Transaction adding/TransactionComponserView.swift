@@ -47,7 +47,7 @@ class TransactionComponserView: UIView {
   
   private(set) var mode: TransactionComposerMode = .waitingForInput
   
-  func set(mode: TransactionComposerMode, animated: Bool = true) {
+  func set(mode: TransactionComposerMode, animated: Bool = true, disableDelegation: Bool = false) {
     self.mode = mode
     layoutIfNeeded()
     
@@ -67,7 +67,10 @@ class TransactionComponserView: UIView {
       animations.forEach{ $0() }
       layoutIfNeeded()
     }
-    delegate?.didSwitch(toMode: mode, animated: animated)
+    
+    if !disableDelegation {
+      delegate?.didSwitch(toMode: mode, animated: animated)
+    }
   }
   
   var amount: Double? {
@@ -118,6 +121,14 @@ class TransactionComponserView: UIView {
       amountButtonRightMargin.constant -= amountButton.frame.width / 2
       didAnchorPointCorrection = true
     }
+  }
+  
+  func display(transaction: Transaction) {
+    set(date: transaction.date)
+    set(category: transaction.category)
+    let amountString = "\(Int(transaction.amount))" // FIX: proper formatting that depends on currency
+    amountLabel.text = amountString
+    amountInput.text = amountString
   }
   
   @IBAction func dateButtonTouched() {

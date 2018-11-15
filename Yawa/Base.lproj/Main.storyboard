@@ -354,6 +354,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K3H-rH-xga">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="5ea-uQ-mpi">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                                <blurEffect style="light"/>
+                            </visualEffectView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HNt-U5-1J3" customClass="TransactionComponserView" customModule="Yawa" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="295" width="375" height="86"/>
                                 <subviews>
@@ -584,22 +592,26 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.97647058823529409" green="0.97647058823529409" blue="0.97647058823529409" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="n2G-7X-LBj" secondAttribute="trailing" constant="48" id="0Oj-Kf-dse"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="top" secondItem="K3H-rH-xga" secondAttribute="top" constant="20" id="1Q8-jp-WN6"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="n2G-7X-LBj" secondAttribute="bottom" constant="16" id="1SB-Ui-RST"/>
                             <constraint firstItem="Z7a-xh-IZb" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="2OO-i4-FFB"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="ic6-Ub-Ojj" secondAttribute="trailing" id="2oo-N6-jP2"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="n81-7L-OMN" secondAttribute="trailing" id="3O0-dL-bEq"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="width" secondItem="TgH-T5-qXh" secondAttribute="width" id="FFJ-5f-RkY"/>
+                            <constraint firstItem="K3H-rH-xga" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="GtL-o6-NMB"/>
                             <constraint firstItem="n81-7L-OMN" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="N2s-7h-N6D"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="Z7a-xh-IZb" secondAttribute="bottom" constant="70" id="QoT-fS-0i6"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="TgH-T5-qXh" secondAttribute="bottom" constant="70" id="VHo-8j-LIR"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="K3H-rH-xga" secondAttribute="bottom" id="WkF-SK-M31"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="ic6-Ub-Ojj" secondAttribute="bottom" constant="70" id="ZTB-o4-Qxg"/>
                             <constraint firstItem="ic6-Ub-Ojj" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="fOf-AO-rf9"/>
                             <constraint firstItem="HNt-U5-1J3" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="gw1-3q-yYG"/>
                             <constraint firstItem="TgH-T5-qXh" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="h86-VY-C8l"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="HNt-U5-1J3" secondAttribute="trailing" id="kNZ-nv-cZl"/>
+                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="K3H-rH-xga" secondAttribute="trailing" id="lE8-gl-nSm"/>
                             <constraint firstItem="n2G-7X-LBj" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="48" id="sjr-j4-lc8"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="Z7a-xh-IZb" secondAttribute="trailing" id="xcU-e1-TVf"/>
                             <constraint firstItem="ic6-Ub-Ojj" firstAttribute="top" secondItem="HNt-U5-1J3" secondAttribute="bottom" id="xnV-3h-jmA"/>
@@ -612,13 +624,16 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <size key="freeformSize" width="375" height="667"/>
                     <connections>
-                        <outlet property="addButton" destination="n2G-7X-LBj" id="JNH-wZ-rUp"/>
+                        <outlet property="blurView" destination="K3H-rH-xga" id="uuw-1g-BVw"/>
                         <outlet property="categoryCollectionView" destination="Z7a-xh-IZb" id="Yz3-97-DE1"/>
+                        <outlet property="commitButton" destination="n2G-7X-LBj" id="JNH-wZ-rUp"/>
                         <outlet property="composer" destination="HNt-U5-1J3" id="gjp-4B-Pat"/>
                         <outlet property="dateTimePicker" destination="TgH-T5-qXh" id="8eu-Zr-bZX"/>
                         <outlet property="keyboardHeightConstraint" destination="Z5o-uH-ue3" id="UrV-DU-otY"/>
                         <outlet property="keyboardView" destination="ic6-Ub-Ojj" id="uaR-au-z8G"/>
+                        <outlet property="navBarCancel" destination="t2w-tZ-Vcl" id="HB7-Nc-Q5S"/>
                         <outlet property="navBarContainer" destination="n81-7L-OMN" id="Daw-2E-stG"/>
+                        <outlet property="navigationBar" destination="Lry-JM-e9m" id="K5A-ie-wd0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Thh-DZ-1Qz" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -781,7 +796,7 @@ Feel free to change your name here 👇</string>
                                 </connections>
                             </containerView>
                         </subviews>
-                        <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.97647058823529409" green="0.97647058823529409" blue="0.97647058823529409" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="juJ-eM-K12" firstAttribute="width" secondItem="8cJ-w3-3Z2" secondAttribute="width" id="4km-It-eBT"/>
                             <constraint firstItem="juJ-eM-K12" firstAttribute="top" secondItem="w4I-PQ-z8L" secondAttribute="top" id="EO7-Ej-7VJ"/>
