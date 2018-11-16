@@ -253,7 +253,7 @@ extension TransactionViewController: ManagedTransactionEditor {
     composerTransformBeforeEditing = composer.transform
     composer.transform = .identity // to properly calculate transform to match cell
     let currentPosition = view.convert(composer.frame.origin, to: nil)
-    composerTransformToMatchCell = CGAffineTransform(translationX: 0, y: newPosition.y - currentPosition.y)
+    composerTransformToMatchCell = CGAffineTransform(translationX: 0, y: newPosition.y - currentPosition.y - composer.padding)
     composer.transform = composerTransformToMatchCell
     
     composer.alpha = 1
@@ -273,12 +273,12 @@ extension TransactionViewController: ManagedTransactionEditor {
     }.startAnimation()
     
     let timingProvider = UISpringTimingParameters(dampingRatio: Animation.dampingRatio)
-    willSwitch(toState: .collapsed, withDuration: Animation.duration, andTimingProvider: timingProvider)
+    willSwitch(toState: .collapsed, withDuration: 2*Animation.duration, andTimingProvider: timingProvider)
     composer.set(mode: .amount, animated: true, disableDelegation: true)
   }
   
   private func finishEditingAndCommit(transaction: Transaction) {
-    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [unowned self] in
+    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeInOut) { [unowned self] in
       self.blurView.effect = nil
       self.setNavigationBar(visible: false)
       self.composer.transform = self.composerTransformToMatchCell

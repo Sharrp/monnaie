@@ -136,14 +136,15 @@ extension Date {
 }
 
 struct Animation {
-  static let duration = 0.3
-  static let durationFast = 0.2
+  static let duration = 0.35
+  static let durationFast = 0.3
   static let appearceWithShfit: CGFloat = 10
   static let dampingRatio: CGFloat = 0.7
 }
 
 struct Color {
   static let inactiveText = UIColor(hex: 0xAAAAAA)
+  static let accentText = UIColor(hex: 0x333333)
   static let shadowColor = UIColor(white: 0.84, alpha: 1)
   static let background = UIColor(hex: 0xF9F9F9)
 }

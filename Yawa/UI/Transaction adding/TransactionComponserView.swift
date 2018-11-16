@@ -29,6 +29,9 @@ class TransactionComponserView: UIView {
   private let margin: CGFloat = 6
   private let baseSize: CGFloat = 56
   private let amountButtonWidth: CGFloat = 89
+  var padding: CGFloat {
+    return dateButton.frame.origin.y
+  }
   
   @IBOutlet weak var amountInput: UITextField!
   @IBOutlet weak var amountInputRightMargin: NSLayoutConstraint!
@@ -88,10 +91,11 @@ class TransactionComponserView: UIView {
     let selectedBorderColor = UIColor(hex: 0xe6e6e6).cgColor
     categoryButton.layer.borderColor = selectedBorderColor
     categoryLabel.text = TransactionCategory.defaultCategory.name
-    categoryLabel.font = UIFont.systemFont(ofSize: 17)
-    categoryButton.addSubview(categoryLabel)
-    categoryLabel.frame = CGRect(x: 55, y: 14, width: 123, height: 28)
+    categoryLabel.textColor = Color.accentText
+    categoryLabel.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+    categoryLabel.frame = CGRect(x: 74, y: 14, width: 123, height: 28)
     categoryButton.clipsToBounds = true
+    categoryButton.addSubview(categoryLabel)
     
     let coloredPlaceholder = NSAttributedString(string: "¥0", attributes: [.foregroundColor: UIColor(white: 0.75, alpha: 1)])
     amountInput.attributedPlaceholder = coloredPlaceholder
@@ -126,9 +130,8 @@ class TransactionComponserView: UIView {
   func display(transaction: Transaction) {
     set(date: transaction.date)
     set(category: transaction.category)
-    let amountString = "\(Int(transaction.amount))" // FIX: proper formatting that depends on currency
-    amountLabel.text = amountString
-    amountInput.text = amountString
+    amountLabel.text = formatMoney(amount: transaction.amount, currency: .JPY)
+    amountInput.text = formatMoney(amount: transaction.amount, currency: .JPY, symbolEnabled: false)
   }
   
   @IBAction func dateButtonTouched() {
@@ -210,14 +213,12 @@ class TransactionComponserView: UIView {
       self.categoryButtonWidth.constant = UIScreen.main.bounds.width - 4 * margin - categoryButton.bounds.height - amountButtonWidth
     case .table:
       self.categoryButtonWidth.constant = UIScreen.main.bounds.width - 2 * 8 // fucking new margin
-      break
     }
     
     return { [unowned self] in
       self.categoryButton.layer.borderWidth = 1
 //      self.categoryButton.layer.borderWidth = mode == .category ? 1 : 0
       self.categoryButton.backgroundColor = mode == .category ? .clear : .white
-      
       self.categoryButton.alpha = mode == .waitingForInput ? 0 : 1
       
       let defaultCategoryTitleInset = UIEdgeInsets(top: 0, left: 13, bottom: 0, right: 0)
@@ -225,23 +226,18 @@ class TransactionComponserView: UIView {
       case .waitingForInput:
         self.categoryButton.transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
         self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
-        self.categoryLabel.transform = .identity
       case .amount:
         self.categoryButton.transform = .identity
         self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
-        self.categoryLabel.transform = .identity
       case .date:
         self.categoryButton.transform = .identity
         self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
-        self.categoryLabel.transform = .identity
       case .category:
         self.categoryButton.transform = .identity
         self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
-        self.categoryLabel.transform = .identity
       case .table:
         self.categoryButton.transform = CGAffineTransform(translationX: -self.baseSize-self.margin+2, y: 0)
-        self.categoryButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 0)
-        self.categoryLabel.transform = CGAffineTransform(translationX: 29, y: 0)
+        self.categoryButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
       }
     }
   }
@@ -251,8 +247,8 @@ class TransactionComponserView: UIView {
       self.dateButton.layer.borderWidth = 1
 //      self.dateButton.layer.borderWidth = mode == .date ? 1 : 0
       self.dateButton.backgroundColor = mode == .date ? .clear : .white
-      
-      self.dateButton.alpha = mode == .waitingForInput ? 0 : 1
+      let isVisible = mode == .category || mode == .date || mode == .amount
+      self.dateButton.alpha = isVisible ? 1 : 0
       
       switch mode {
       case .waitingForInput:
@@ -262,7 +258,7 @@ class TransactionComponserView: UIView {
       case .date:
         self.dateButton.transform = .identity
       case .table:
-        self.dateButton.transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
+        self.dateButton.transform = CGAffineTransform(translationX: -5*Animation.appearceWithShfit, y: 0)
       }
     }
   }
