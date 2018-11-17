@@ -8,15 +8,19 @@
 
 import UIKit
 
-protocol MonthSwitchDelegate {
-  func didSelect(monthDate: Date)
-}
+typealias MonthSwitchedCallback = (Date) -> Void
+typealias SelectedMonthGetter = () -> Date?
 
 class MonthSwitchProvider: NSObject {
   @IBOutlet weak var collectionView: UICollectionView!
   
   private var selectedIndex = 0
-  var delegate: MonthSwitchDelegate?
+  
+  private var callbacks = [MonthSwitchedCallback?]()
+  func subscribe(callback: MonthSwitchedCallback?) {
+    callbacks.append(callback)
+  }
+  
   var reports = [MonthReport]() {
     didSet {
       collectionView.reloadData()
@@ -27,6 +31,10 @@ class MonthSwitchProvider: NSObject {
       let todayIndexPath = IndexPath(row: reports.count, section: 0)
       collectionView.reloadItems(at: [todayIndexPath])
     }
+  }
+  var selectedMonth: Date? {
+    guard reports.count > selectedIndex else { return nil }
+    return reports[selectedIndex].monthDate
   }
   
   private func string(forMonth monthDate: Date) -> String {
@@ -91,7 +99,7 @@ extension MonthSwitchProvider: UICollectionViewDelegate {
     if let selectedRow = collectionView.cellForItem(at: indexPath) as? MonthSwitchCell {
       selectedRow.setState(selected: true)
     }
-    delegate?.didSelect(monthDate: report.monthDate)
+    callbacks.forEach{ $0?(report.monthDate) }
   }
   
   func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {

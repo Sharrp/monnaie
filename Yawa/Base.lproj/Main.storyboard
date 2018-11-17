@@ -177,10 +177,6 @@
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="iI6-v1-lBN"/>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="6xR-XO-rcy"/>
-                                </connections>
                             </tableView>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yfF-yw-6if" customClass="ShadowRoundedView" customModule="Yawa" customModuleProvider="target">
                                 <rect key="frame" x="8" y="587" width="359" height="80"/>

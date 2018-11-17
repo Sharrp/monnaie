@@ -12,7 +12,7 @@
 		7518DC662198430A001ECA26 /* csv-import.csv in Resources */ = {isa = PBXBuildFile; fileRef = 7518DC652198430A001ECA26 /* csv-import.csv */; };
 		7518DC6721984501001ECA26 /* ShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7518DC612197B0A1001ECA26 /* ShadowRoundedView.swift */; };
 		751C8103218688F100BA7E6E /* TransactionComponserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7527EF172183D57800E232AE /* TransactionComponserView.swift */; };
-		7522C368218D2647006C6F1E /* MonthSwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758C6878218A777B00F2F7BE /* MonthSwitchView.swift */; };
+		7522C368218D2647006C6F1E /* MonthSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758C6878218A777B00F2F7BE /* MonthSwitch.swift */; };
 		7524B98B209AEF26006027C8 /* P2PSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98A209AEF26006027C8 /* P2PSyncManager.swift */; };
 		7524B98D209B0F9F006027C8 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98C209B0F9F006027C8 /* DataModel.swift */; };
 		7524B98F209B284F006027C8 /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98E209B284F006027C8 /* TransactionViewController.swift */; };
@@ -28,7 +28,8 @@
 		7529F960215E7A9900FD8884 /* CategorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7529F95E215E7A9900FD8884 /* CategorySelection.swift */; };
 		7529F963215FB19900FD8884 /* ColorfulView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7529F962215FB19900FD8884 /* ColorfulView.swift */; };
 		7529F964215FB19900FD8884 /* ColorfulView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7529F962215FB19900FD8884 /* ColorfulView.swift */; };
-		758C6879218A777B00F2F7BE /* MonthSwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758C6878218A777B00F2F7BE /* MonthSwitchView.swift */; };
+		755EC21D219FB63F00CC0B09 /* HistoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755EC21C219FB63F00CC0B09 /* HistoryProvider.swift */; };
+		758C6879218A777B00F2F7BE /* MonthSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758C6878218A777B00F2F7BE /* MonthSwitch.swift */; };
 		75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046DE2098892500E8B09E /* AppDelegate.swift */; };
 		75C046E12098892600E8B09E /* HistorySummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046E02098892600E8B09E /* HistorySummaryViewController.swift */; };
 		75C046E42098892600E8B09E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C046E22098892600E8B09E /* Main.storyboard */; };
@@ -107,7 +108,8 @@
 		7529F95B215BCD6900FD8884 /* SummaryProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryProvider.swift; sourceTree = "<group>"; };
 		7529F95E215E7A9900FD8884 /* CategorySelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySelection.swift; sourceTree = "<group>"; };
 		7529F962215FB19900FD8884 /* ColorfulView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorfulView.swift; sourceTree = "<group>"; };
-		758C6878218A777B00F2F7BE /* MonthSwitchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthSwitchView.swift; sourceTree = "<group>"; };
+		755EC21C219FB63F00CC0B09 /* HistoryProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryProvider.swift; sourceTree = "<group>"; };
+		758C6878218A777B00F2F7BE /* MonthSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthSwitch.swift; sourceTree = "<group>"; };
 		75C046DB2098892500E8B09E /* Yawa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yawa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75C046DE2098892500E8B09E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75C046E02098892600E8B09E /* HistorySummaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySummaryViewController.swift; sourceTree = "<group>"; };
@@ -159,7 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				75C046E02098892600E8B09E /* HistorySummaryViewController.swift */,
-				758C6878218A777B00F2F7BE /* MonthSwitchView.swift */,
+				758C6878218A777B00F2F7BE /* MonthSwitch.swift */,
 				75D32C0220A3093000D13420 /* HistorySummaryCells.swift */,
 			);
 			path = "List & Summary";
@@ -174,6 +176,7 @@
 				75D32C0C20AB202E00D13420 /* Settings.swift */,
 				DF8C66C620B00C9A008A7488 /* TransactionsController.swift */,
 				7529F95B215BCD6900FD8884 /* SummaryProvider.swift */,
+				755EC21C219FB63F00CC0B09 /* HistoryProvider.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -415,8 +418,9 @@
 				75D32C0B20AB1DB300D13420 /* SyncNameViewController.swift in Sources */,
 				7524B98B209AEF26006027C8 /* P2PSyncManager.swift in Sources */,
 				75C046E12098892600E8B09E /* HistorySummaryViewController.swift in Sources */,
-				758C6879218A777B00F2F7BE /* MonthSwitchView.swift in Sources */,
+				758C6879218A777B00F2F7BE /* MonthSwitch.swift in Sources */,
 				7524B98F209B284F006027C8 /* TransactionViewController.swift in Sources */,
+				755EC21D219FB63F00CC0B09 /* HistoryProvider.swift in Sources */,
 				7518DC622197B0A1001ECA26 /* ShadowRoundedView.swift in Sources */,
 				7529F95C215BCD6900FD8884 /* SummaryProvider.swift in Sources */,
 				75D32C0320A3093000D13420 /* HistorySummaryCells.swift in Sources */,
@@ -444,7 +448,7 @@
 				7529F964215FB19900FD8884 /* ColorfulView.swift in Sources */,
 				DF80D80020DE851600ADC203 /* SyncController.swift in Sources */,
 				DF8C66DF20B06761008A7488 /* Utilities.swift in Sources */,
-				7522C368218D2647006C6F1E /* MonthSwitchView.swift in Sources */,
+				7522C368218D2647006C6F1E /* MonthSwitch.swift in Sources */,
 				DF8C66DD20B06747008A7488 /* SyncNameViewController.swift in Sources */,
 				DF8C66D620B063B4008A7488 /* TransactionsController.swift in Sources */,
 				DF8C66DE20B06753008A7488 /* Settings.swift in Sources */,

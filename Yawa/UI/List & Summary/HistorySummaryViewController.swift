@@ -14,17 +14,10 @@ class HistorySummaryViewController: UIViewController {
     case summary
   }
   
-  private struct SectionHeaderData {
-    let firstDay: Date
-    let isEmpty: Bool
-    let numberOfDays: Int
-  }
-  
   @IBOutlet weak var navigationBar: UINavigationBar!
   private var navBarBorder = UIView()
   @IBOutlet weak var tableView: UITableView!
   private let tableViewBottomOffsetWhenCollapsed: CGFloat = -60
-  private var sectionsHeadersData = [SectionHeaderData]()
   @IBOutlet weak var controlPanel: UIView!
   
   @IBOutlet weak var fakeCard: ShadowRoundedView!
@@ -32,21 +25,19 @@ class HistorySummaryViewController: UIViewController {
   
   @IBOutlet weak var monthSwitcherCollectionView: UICollectionView!
   @IBOutlet weak var monthSwitchProvider: MonthSwitchProvider!
-  private var selectedMonthDate = Date.now
   
-  private let defaultDateFormatter = DateFormatter(dateFormat: "EEEE d")
-  let dataProvider = TransactionsController(dbName: "production")
+  let historyProvider = HistoryProvider()
   private let summaryProvider = SummaryProvider()
   
   private var historyLastContentOffset: CGFloat = 0
   
-  var editor: ManagedTransactionEditor?
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    dataProvider.presentor = self
-    summaryProvider.transactionsController = dataProvider
+    historyProvider.dataProvider.presentor = self
+    historyProvider.getSelectedMonth = { [weak self] in self?.monthSwitchProvider.selectedMonth }
+    summaryProvider.getSelectedMonth = { [weak self] in self?.monthSwitchProvider.selectedMonth }
+    summaryProvider.transactionsController = historyProvider.dataProvider
     tableView.separatorColor = UIColor(white: 0.2, alpha: 0.2)
     tableView.transform = CGAffineTransform(translationX: 0, y: tableViewBottomOffsetWhenCollapsed)
     tableView.showsVerticalScrollIndicator = false
@@ -62,10 +53,11 @@ class HistorySummaryViewController: UIViewController {
 
     monthSwitcherCollectionView.allowsMultipleSelection = true
     monthSwitcherCollectionView.contentInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 8)
-    monthSwitchProvider.delegate = self
+    monthSwitchProvider.subscribe(callback: historyProvider.monthChangedCallback)
+    monthSwitchProvider.subscribe(callback: summaryProvider.monthChangedCallback)
     monthSwitchProvider.selectLastMonth()
     
-    fakeCard.shadowRadius = 12
+    switchTo(mode: .history)
   }
   
   override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -74,7 +66,7 @@ class HistorySummaryViewController: UIViewController {
   
   private func shareCsv() {
     let filename = NSTemporaryDirectory() + "export-finances-\(Date.now).csv".replacingOccurrences(of: " ", with: "_")
-    let csv = dataProvider.exportDataAsCSV()
+    let csv = historyProvider.dataProvider.exportDataAsCSV()
     do {
       try csv.write(toFile: filename, atomically: true, encoding: String.Encoding.utf8)
       let fileURL = URL(fileURLWithPath: filename)
@@ -99,8 +91,8 @@ class HistorySummaryViewController: UIViewController {
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if let syncVC = segue.destination as? SyncViewController {
       syncVC.nameDelegate = self
-      syncVC.transactionsDataSource = dataProvider
-      syncVC.mergeDelegate = dataProvider
+      syncVC.transactionsDataSource = historyProvider.dataProvider
+      syncVC.mergeDelegate = historyProvider.dataProvider
     }
   }
   
@@ -108,19 +100,17 @@ class HistorySummaryViewController: UIViewController {
     tableView.setContentOffset(CGPoint(x: 0, y: CGFloat.greatestFiniteMagnitude), animated: false)
   }
   
-  @IBAction func viewModeChanged(sender: UISegmentedControl) {
-    guard let viewMode = TransactionsViewMode(rawValue: sender.selectedSegmentIndex) else { return }
+  private func switchTo(mode: TransactionsViewMode) {
     let contentOffset: CGFloat
-    switch viewMode {
+    switch mode {
     case .history:
-      tableView.dataSource = self
-      tableView.delegate = self
+      historyProvider.tableView = tableView
+      summaryProvider.tableView = nil
       contentOffset = historyLastContentOffset
     case .summary:
       historyLastContentOffset = tableView.contentOffset.y
-      summaryProvider.monthDate = selectedMonthDate
-      tableView.dataSource = summaryProvider
-      tableView.delegate = summaryProvider
+      summaryProvider.tableView = tableView
+      historyProvider.tableView = nil
       contentOffset = 0
     }
     
@@ -128,187 +118,10 @@ class HistorySummaryViewController: UIViewController {
     tableView.layoutIfNeeded()
     tableView.contentOffset = CGPoint(x: 0, y: contentOffset)
   }
-}
-
-extension HistorySummaryViewController: UITableViewDataSource {
-  // Merges all consequemtial empty days into one section
-  private func recalculateHeaders(forNumberOfFirstDays numOfDays: Int, inMonth monthDate: Date) {
-    sectionsHeadersData = [SectionHeaderData]()
-    let nonEmptyDays = dataProvider.daysWithTransactions(forMonth: monthDate)
-    var firstDayOfCurrentSection = 0
-    var currentNumberOfSequentialEmptyDays = 0
-    for i in 0..<numOfDays {
-      let day = i + 1
-      if nonEmptyDays.contains(day) {
-        if currentNumberOfSequentialEmptyDays > 0,
-          let firstEmptyDayDate = monthDate.date(bySettingDayTo: firstDayOfCurrentSection) {
-          let sectionData = SectionHeaderData(firstDay: firstEmptyDayDate, isEmpty: true,
-                                              numberOfDays: currentNumberOfSequentialEmptyDays)
-          sectionsHeadersData.append(sectionData)
-          currentNumberOfSequentialEmptyDays = 0
-        }
-        guard let currentDayDate = monthDate.date(bySettingDayTo: day) else { continue }
-        let sectionData = SectionHeaderData(firstDay: currentDayDate, isEmpty: false, numberOfDays: 1)
-        sectionsHeadersData.append(sectionData)
-      } else {
-        if currentNumberOfSequentialEmptyDays == 0 {
-          firstDayOfCurrentSection = day
-        }
-        currentNumberOfSequentialEmptyDays += 1
-      }
-    }
-    if currentNumberOfSequentialEmptyDays > 0,
-      let firstEmptyDayDate = monthDate.date(bySettingDayTo: firstDayOfCurrentSection) {
-      let sectionData = SectionHeaderData(firstDay: firstEmptyDayDate, isEmpty: true,
-                                          numberOfDays: currentNumberOfSequentialEmptyDays)
-      sectionsHeadersData.append(sectionData)
-    }
-  }
   
-  func numberOfSections(in tableView: UITableView) -> Int {
-    let daysToShow: Int
-    if selectedMonthDate.isSame(granularity: .month, asDate: Date.now) {
-      daysToShow = Calendar.current.component(.day, from: Date.now)
-    } else {
-      guard let daysCount = Calendar.current.range(of: .day, in: .month, for: selectedMonthDate)?.count else { return 0 }
-      daysToShow = daysCount
-    }
-    recalculateHeaders(forNumberOfFirstDays: daysToShow, inMonth: selectedMonthDate)
-    return sectionsHeadersData.count
-  }
-  
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    let sectionData = sectionsHeadersData[section]
-    if sectionData.isEmpty {
-      return 0
-    } else {
-      let count = dataProvider.numberOfTransactions(onDay: sectionData.firstDay)
-      return count
-    }
-  }
-  
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cellID = "transactionCell"
-    let cell = tableView.dequeueReusableCell(withIdentifier: cellID) as! TransactionCell
-    let sectionDate = sectionsHeadersData[indexPath.section].firstDay
-    let transaction = dataProvider.transaction(index: indexPath.row, forDay: sectionDate)!
-    cell.emojiLabel.text = "\(transaction.category.emoji)"
-    cell.categoryLabel.text = "\(transaction.category.name)"
-    cell.amountLabel.text = formatMoney(amount: transaction.amount, currency: .JPY)
-    if transaction.authorName == Settings.main.syncName {
-      cell.authorLabel.text = ""
-      cell.topMarginConstraint.constant = 19
-    } else {
-      cell.authorLabel.text = "\(transaction.authorName)"
-      cell.topMarginConstraint.constant = 8
-    }
-    
-    cell.isFirst = indexPath.row == 0
-    let cellsInSection = self.tableView(tableView, numberOfRowsInSection: indexPath.section)
-    cell.isLast = indexPath.row == cellsInSection - 1
-    
-    return cell
-  }
-  
-  func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-    return true
-  }
-  
-  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-    guard editingStyle == .delete else { return }
-    // TODO: implement more convenient remove method in TransactionsController
-    let day = sectionsHeadersData[indexPath.section].firstDay
-    guard let transaction = dataProvider.transaction(index: indexPath.row, forDay: day) else { return }
-    dataProvider.remove(transaction: transaction)
-  }
-}
-
-extension HistorySummaryViewController: UITableViewDelegate {
-  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    var height: CGFloat = 56
-    if indexPath.row == 0 {
-      height += TransactionCell.shadowInset
-    }
-    let cellsInSection = self.tableView(tableView, numberOfRowsInSection: indexPath.section)
-    if indexPath.row == cellsInSection - 1 { // it's the last cell in section
-      height += TransactionCell.shadowInset
-    }
-    return height
-  }
-  
-  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return 56
-  }
-  
-  private func displayString(forDate date: Date, formatter: DateFormatter) -> String {
-    if Calendar.current.isDate(date, inSameDayAs: Date.now) {
-      return "Today"
-    } else if Calendar.current.isDate(date, inSameDayAs: Date(timeIntervalSinceNow: -Date.secondsPerDay)) {
-      return "Yesterday"
-    } else {
-      return formatter.string(from: date)
-    }
-  }
-  
-  private func title(forSectionHeader sectionData: SectionHeaderData) -> String {
-    if sectionData.numberOfDays == 1 {
-      return displayString(forDate: sectionData.firstDay, formatter: defaultDateFormatter)
-    } else {
-      let weekdayFormatter = DateFormatter(dateFormat: "E d")
-      let firstDayString = displayString(forDate: sectionData.firstDay, formatter: weekdayFormatter)
-      let lastDay = sectionData.firstDay.addingTimeInterval(Double(Date.secondsPerDay * Double(sectionData.numberOfDays - 1)))
-      let lastDayString = displayString(forDate: lastDay, formatter: weekdayFormatter)
-      return "\(firstDayString) - \(lastDayString)"
-    }
-  }
-  
-  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    let headerView = UIView()
-//    headerView.backgroundColor = .clear
-    let sectionData = sectionsHeadersData[section]
-    
-    let amountLabel = UILabel()
-    amountLabel.font = .systemFont(ofSize: 17, weight: .medium)
-    amountLabel.textColor = .darkGray
-    amountLabel.textAlignment = .right
-    let amount = sectionData.isEmpty ? 0 : dataProvider.totalAmount(forDay: sectionData.firstDay)
-    amountLabel.text = formatMoney(amount: amount, currency: .JPY)
-    
-    amountLabel.translatesAutoresizingMaskIntoConstraints = false
-    headerView.addSubview(amountLabel)
-    amountLabel.addConstraints([
-      NSLayoutConstraint(item: amountLabel, attribute: .width , relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 108),
-      NSLayoutConstraint(item: amountLabel, attribute: .height , relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 26)
-    ])
-    headerView.addConstraints([
-      NSLayoutConstraint(item: amountLabel, attribute: .trailing , relatedBy: .equal, toItem: headerView, attribute: .trailingMargin, multiplier: 1, constant: 0),
-      NSLayoutConstraint(item: amountLabel, attribute: .centerY , relatedBy: .equal, toItem: headerView, attribute: .centerY, multiplier: 1, constant: 0)
-    ])
-    
-    let dateLabel = UILabel()
-    dateLabel.font = .systemFont(ofSize: 17, weight: .medium)
-    dateLabel.textColor = .darkGray
-    dateLabel.text = title(forSectionHeader: sectionData)
-    
-    dateLabel.translatesAutoresizingMaskIntoConstraints = false
-    headerView.addSubview(dateLabel)
-    dateLabel.addConstraint(
-      NSLayoutConstraint(item: dateLabel, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 26)
-    )
-    headerView.addConstraints([
-      NSLayoutConstraint(item: dateLabel, attribute: .centerY, relatedBy: .equal, toItem: headerView, attribute: .centerY, multiplier: 1, constant: 0),
-      NSLayoutConstraint(item: dateLabel, attribute: .leading, relatedBy: .equal, toItem: headerView, attribute: .leading, multiplier: 1, constant: 16),
-      NSLayoutConstraint(item: dateLabel, attribute: .trailing, relatedBy: .equal, toItem: amountLabel, attribute: .leading, multiplier: 1, constant: 8)
-    ])
-    
-    return headerView
-  }
-  
-  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    guard let cell = tableView.cellForRow(at: indexPath) as? TransactionCell else { return }
-    let sectionDate = sectionsHeadersData[indexPath.section].firstDay
-    let transaction = dataProvider.transaction(index: indexPath.row, forDay: sectionDate)!
-    editor?.startEditing(transaction: transaction, byReplacingView: cell)
+  @IBAction func viewModeChanged(sender: UISegmentedControl) {
+    guard let viewMode = TransactionsViewMode(rawValue: sender.selectedSegmentIndex) else { return }
+    switchTo(mode: viewMode)
   }
 }
 
@@ -320,14 +133,14 @@ extension HistorySummaryViewController: BladeViewScrollable {
 
 extension HistorySummaryViewController: SyncNameUpdateDelegate {
   func nameUpdated(from oldName: String, to newName: String) {
-    dataProvider.changeOnwer(from: oldName, to: newName)
+    historyProvider.dataProvider.changeOnwer(from: oldName, to: newName)
   }
 }
 
 extension HistorySummaryViewController: TransactionsPresentor {
   private func updateTotal() {
-    monthSwitchProvider.reports = dataProvider.monthlyAmounts()
-    monthSwitchProvider.todayAmount = dataProvider.totalAmount(forDay: Date.now)
+    monthSwitchProvider.reports = historyProvider.dataProvider.monthlyAmounts()
+    monthSwitchProvider.todayAmount = historyProvider.dataProvider.totalAmount(forDay: Date.now)
   }
   
   func didUpdate(days: [Date]) {
@@ -339,14 +152,6 @@ extension HistorySummaryViewController: TransactionsPresentor {
       self.tableView.reloadData()
       self.updateTotal()
     }
-  }
-}
-
-extension HistorySummaryViewController: MonthSwitchDelegate {
-  func didSelect(monthDate: Date) {
-    selectedMonthDate = monthDate
-    summaryProvider.monthDate = monthDate
-    tableView.reloadData()
   }
 }
 

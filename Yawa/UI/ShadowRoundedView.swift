@@ -10,7 +10,7 @@ import UIKit
 
 class ShadowRoundedView: UIView {
   private let cornerRadius: CGFloat = 8
-  var shadowRadius: CGFloat = 8 {
+  var shadowRadius: CGFloat = 12 {
     didSet {
       layer.shadowRadius = shadowRadius
     }

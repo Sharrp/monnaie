@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func handleImportCSV(fileURL: URL) {
     guard let rootVC = window?.rootViewController as? GuillotineViewController else { return }
     guard let targetVC = rootVC.bladeViewController as? HistorySummaryViewController else { return }
-    let importer = targetVC.dataProvider
+    let importer = targetVC.historyProvider.dataProvider
     
     let removeImportedFile = {
       do {

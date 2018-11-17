@@ -186,8 +186,8 @@ extension TransactionViewController: GuillotineDelegate {
   func finishedSetup(ofGuillotine guillotineInfo: GuillotineInfo) {
     guillotine = guillotineInfo
     guard let historySummaryVC = guillotine?.bladeViewController as? HistorySummaryViewController else { return }
-    delegate = historySummaryVC.dataProvider
-    historySummaryVC.editor = self
+    delegate = historySummaryVC.historyProvider.dataProvider
+    historySummaryVC.historyProvider.editor = self
     
     // Now we have guillotine required to set proper blade state
     adjustControls(toMode: .waitingForInput, animated: false)

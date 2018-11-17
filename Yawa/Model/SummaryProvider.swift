@@ -8,21 +8,35 @@
 
 import UIKit
 
-class SummaryProvider: NSObject {
+class SummaryProvider: NSObject, TableViewFiller {
   weak var transactionsController: TransactionsController?
   private var summary: CategoriesSummary? // cached data
-  var monthDate = Date.now {
+  var getSelectedMonth: SelectedMonthGetter?
+  
+  var tableView: UITableView? {
     didSet {
-      updateData()
+      guard let tableView = tableView else { return }
+      tableView.dataSource = self
+      tableView.delegate = self
+      update()
     }
   }
+  private let minChartBarWidth: CGFloat = 8
   
-  let minChartBarWidth: CGFloat = 8
+  lazy var monthChangedCallback: MonthSwitchedCallback? = { [weak self] m in
+    self?.update()
+  }
+  
+  private func update() {
+    updateCache()
+    tableView?.reloadData()
+  }
 }
 
 extension SummaryProvider: UITableViewDataSource {
-  private func updateData() {
-    guard let updatedSummary = transactionsController?.categoriesSummary(forMonth: monthDate) else { return }
+  private func updateCache() {
+    guard let selectedMonth = getSelectedMonth?() else { return }
+    guard let updatedSummary = transactionsController?.categoriesSummary(forMonth: selectedMonth) else { return }
     summary = updatedSummary
   }
   
