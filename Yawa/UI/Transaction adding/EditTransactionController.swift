@@ -1,5 +1,5 @@
 //
-//  TransactionViewController.swift
+//  EditTransactionController.swift
 //  Yawa
 //
 //  Created by Anton Vronskii on 2018/05/03.
@@ -18,7 +18,7 @@ protocol ManagedTransactionEditor {
   func startEditing(transaction: Transaction, byReplacingView: UIView)
 }
 
-class TransactionViewController: UIViewController {
+class EditTransactionController: UIViewController {
   private enum Mode {
     case adding
     case editing
@@ -51,7 +51,7 @@ class TransactionViewController: UIViewController {
   
   weak var delegate: TransactionUpdateDelegate?
   var transaction: Transaction?
-  private var guillotine: GuillotineInfo?
+  var guillotine: GuillotineInfo?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -156,7 +156,7 @@ class TransactionViewController: UIViewController {
     }
   }
   
-  private func adjustControls(toMode mode: TransactionComposerMode, animated: Bool) {
+  func adjustControls(toMode mode: TransactionComposerMode, animated: Bool) {
     keyboardView.isHidden = mode != .amount && mode != .waitingForInput
     dateTimePicker.isHidden = mode != .date
     categoryCollectionView.isHidden = mode != .category
@@ -182,25 +182,13 @@ class TransactionViewController: UIViewController {
   }
 }
 
-extension TransactionViewController: GuillotineDelegate {
-  func finishedSetup(ofGuillotine guillotineInfo: GuillotineInfo) {
-    guillotine = guillotineInfo
-    guard let historySummaryVC = guillotine?.bladeViewController as? HistorySummaryViewController else { return }
-    delegate = historySummaryVC.historyProvider.dataProvider
-    historySummaryVC.historyProvider.editor = self
-    
-    // Now we have guillotine required to set proper blade state
-    adjustControls(toMode: .waitingForInput, animated: false)
-  }
-}
-
-extension TransactionViewController: CategorySelectionDelegate {
+extension EditTransactionController: CategorySelectionDelegate {
   func didSelect(category: TransactionCategory) {
     composer.set(category: category)
   }
 }
 
-extension TransactionViewController: GuilliotineStateDelegate {
+extension EditTransactionController: GuilliotineStateDelegate {
   func didUpdateProgress(to progress: CGFloat) {
     let restrictedProgress = min(1, max(0, progress))
     let targetTransform = CGAffineTransform(translationX: 0, y: keyboardView.frame.height * restrictedProgress)
@@ -224,7 +212,7 @@ extension TransactionViewController: GuilliotineStateDelegate {
   }
 }
 
-extension TransactionViewController: TransactionComposerDelegate {
+extension EditTransactionController: TransactionComposerDelegate {
   func didSwitch(toMode mode: TransactionComposerMode, animated: Bool = false) {
     adjustControls(toMode: mode, animated: true)
   }
@@ -234,7 +222,7 @@ extension TransactionViewController: TransactionComposerDelegate {
   }
 }
 
-extension TransactionViewController: ManagedTransactionEditor {
+extension EditTransactionController: ManagedTransactionEditor {
   private func setNavBarCancel(hidden: Bool) {
     navBarCancel.tintColor = hidden ? .clear : nil
     navBarCancel.isEnabled = !hidden

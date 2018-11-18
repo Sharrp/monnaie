@@ -1,5 +1,5 @@
 //
-//  SummaryProvider.swift
+//  SummaryViewModel.swift
 //  Yawa
 //
 //  Created by Anton Vronskii on 2018/09/26.
@@ -8,22 +8,26 @@
 
 import UIKit
 
-class SummaryProvider: NSObject, TableViewFiller {
-  weak var transactionsController: TransactionsController?
+class SummaryViewModel: NSObject {
+  private let minChartBarWidth: CGFloat = 8
+  
+  weak var transactionsController: DataService?
   private var summary: CategoriesSummary? // cached data
   var getSelectedMonth: SelectedMonthGetter?
   
-  var tableView: UITableView? {
-    didSet {
-      guard let tableView = tableView else { return }
-      tableView.dataSource = self
-      tableView.delegate = self
-      update()
-    }
-  }
-  private let minChartBarWidth: CGFloat = 8
+  private var tableView: UITableView?
   
-  lazy var monthChangedCallback: MonthSwitchedCallback? = { [weak self] m in
+  private var isActive: Bool {
+    return tableView != nil
+  }
+  
+  lazy var monthChanged: MonthSwitchedCallback? = { [weak self] _ in
+    guard let isActive = self?.isActive, isActive else { return }
+    self?.update()
+  }
+  
+  lazy var dataServiceUpdated: DataServiceUpdateCallback? = { [weak self] in
+    guard let isActive = self?.isActive, isActive else { return }
     self?.update()
   }
   
@@ -33,7 +37,21 @@ class SummaryProvider: NSObject, TableViewFiller {
   }
 }
 
-extension SummaryProvider: UITableViewDataSource {
+extension SummaryViewModel: TransactionsProjecting {
+  var projectionName: String {
+    return "Summary"
+  }
+  
+  func project(intoTableView tableView: UITableView?) {
+    self.tableView = tableView
+    guard let tableView = tableView else { return }
+    tableView.dataSource = self
+    tableView.delegate = self
+    update()
+  }
+}
+
+extension SummaryViewModel: UITableViewDataSource {
   private func updateCache() {
     guard let selectedMonth = getSelectedMonth?() else { return }
     guard let updatedSummary = transactionsController?.categoriesSummary(forMonth: selectedMonth) else { return }
@@ -70,7 +88,7 @@ extension SummaryProvider: UITableViewDataSource {
   }
 }
 
-extension SummaryProvider: UITableViewDelegate {
+extension SummaryViewModel: UITableViewDelegate {
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return 60
   }

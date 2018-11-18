@@ -1,5 +1,5 @@
 //
-//  HistoryProvider.swift
+//  HistoryViewModel.swift
 //  Yawa
 //
 //  Created by Anton Vronskii on 2018/11/17.
@@ -8,40 +8,59 @@
 
 import UIKit
 
-protocol TableViewFiller {
-  var tableView: UITableView? { get set }
-}
-
-class HistoryProvider: NSObject, TableViewFiller {
+class HistoryViewModel: NSObject {
   private struct SectionHeaderData {
     let firstDay: Date
     let isEmpty: Bool
     let numberOfDays: Int
   }
-  let dataProvider = TransactionsController(dbName: "production")
   
-  var getSelectedMonth: SelectedMonthGetter?
   private var sectionsHeadersData = [SectionHeaderData]()
-  var tableView: UITableView? {
-    didSet {
-      guard let tableView = tableView else { return }
-      tableView.dataSource = self
-      tableView.delegate = self
-    }
-  }
+  private var tableView: UITableView?
+  
+  var dataService: DataService?
   var editor: ManagedTransactionEditor?
+  var getSelectedMonth: SelectedMonthGetter?
+  
+  private var isActive: Bool {
+    return tableView != nil
+  }
   
   // It should be lazy so self is instantiated when it's assigned
-  lazy var monthChangedCallback: MonthSwitchedCallback? = { [weak self] m in
-    self?.tableView?.reloadData()
+  lazy var monthChanged: MonthSwitchedCallback? = { [weak self] m in
+    guard let isActive = self?.isActive, isActive else { return }
+    self?.update()
+  }
+  
+  lazy var dataServiceUpdated: DataServiceUpdateCallback? = { [weak self] in
+    guard let isActive = self?.isActive, isActive else { return }
+    self?.update()
+  }
+  
+  private func update() {
+    tableView?.reloadData()
   }
 }
 
-extension HistoryProvider: UITableViewDataSource {
+extension HistoryViewModel: TransactionsProjecting {
+  var projectionName: String {
+    return "History"
+  }
+  
+  func project(intoTableView tableView: UITableView?) {
+    self.tableView = tableView
+    guard let tableView = tableView else { return }
+    tableView.dataSource = self
+    tableView.delegate = self
+    update()
+  }
+}
+
+extension HistoryViewModel: UITableViewDataSource {
   // Merges all consequemtial empty days into one section
   private func recalculateHeaders(forNumberOfFirstDays numOfDays: Int, inMonth monthDate: Date) {
     sectionsHeadersData = [SectionHeaderData]()
-    let nonEmptyDays = dataProvider.daysWithTransactions(forMonth: monthDate)
+    guard let nonEmptyDays = dataService?.daysWithTransactions(forMonth: monthDate) else { return }
     var firstDayOfCurrentSection = 0
     var currentNumberOfSequentialEmptyDays = 0
     for i in 0..<numOfDays {
@@ -90,7 +109,7 @@ extension HistoryProvider: UITableViewDataSource {
     if sectionData.isEmpty {
       return 0
     } else {
-      let count = dataProvider.numberOfTransactions(onDay: sectionData.firstDay)
+      guard let count = dataService?.numberOfTransactions(onDay: sectionData.firstDay) else { return 0 }
       return count
     }
   }
@@ -99,7 +118,9 @@ extension HistoryProvider: UITableViewDataSource {
     let cellID = "transactionCell"
     let cell = tableView.dequeueReusableCell(withIdentifier: cellID) as! TransactionCell
     let sectionDate = sectionsHeadersData[indexPath.section].firstDay
-    let transaction = dataProvider.transaction(index: indexPath.row, forDay: sectionDate)!
+    guard let transaction = dataService?.transaction(index: indexPath.row, forDay: sectionDate) else {
+      fatalError("cellForRowAt: Inconsistency in UITableViewDataSource data")
+    }
     cell.emojiLabel.text = "\(transaction.category.emoji)"
     cell.categoryLabel.text = "\(transaction.category.name)"
     cell.amountLabel.text = formatMoney(amount: transaction.amount, currency: .JPY)
@@ -126,12 +147,12 @@ extension HistoryProvider: UITableViewDataSource {
     guard editingStyle == .delete else { return }
     // TODO: implement more convenient remove method in TransactionsController
     let day = sectionsHeadersData[indexPath.section].firstDay
-    guard let transaction = dataProvider.transaction(index: indexPath.row, forDay: day) else { return }
-    dataProvider.remove(transaction: transaction)
+    guard let transaction = dataService?.transaction(index: indexPath.row, forDay: day) else { return }
+    dataService?.remove(transaction: transaction)
   }
 }
 
-extension HistoryProvider: UITableViewDelegate {
+extension HistoryViewModel: UITableViewDelegate {
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     var height: CGFloat = 56
     if indexPath.row == 0 {
@@ -180,7 +201,14 @@ extension HistoryProvider: UITableViewDelegate {
     amountLabel.font = .systemFont(ofSize: 17, weight: .medium)
     amountLabel.textColor = .darkGray
     amountLabel.textAlignment = .right
-    let amount = sectionData.isEmpty ? 0 : dataProvider.totalAmount(forDay: sectionData.firstDay)
+    
+    let amount: Double
+    if !sectionData.isEmpty,
+      let dayAmount = dataService?.totalAmount(forDay: sectionData.firstDay) {
+      amount = dayAmount
+    } else {
+        amount = 0
+    }
     amountLabel.text = formatMoney(amount: amount, currency: .JPY)
     
     amountLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -216,7 +244,7 @@ extension HistoryProvider: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     guard let cell = tableView.cellForRow(at: indexPath) as? TransactionCell else { return }
     let sectionDate = sectionsHeadersData[indexPath.section].firstDay
-    let transaction = dataProvider.transaction(index: indexPath.row, forDay: sectionDate)!
+    guard let transaction = dataService?.transaction(index: indexPath.row, forDay: sectionDate) else { return }
     editor?.startEditing(transaction: transaction, byReplacingView: cell)
   }
 }

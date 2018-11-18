@@ -1,5 +1,5 @@
 //
-//  TransactionsController.swift
+//  DataService.swift
 //  Yawa
 //
 //  Created by Anton Vronskii on 2018/10/17.
@@ -9,17 +9,11 @@
 import Foundation
 import SQLite3
 
-protocol TransactionsPresentor: AnyObject {
-  func didUpdate(days: [Date])
-  func didUpdateAll()
-}
-
 typealias CategoriesSummary = [(category: TransactionCategory, amount: Double)]
+typealias DataServiceUpdateCallback = () -> Void
 
-class TransactionsController: TransactionUpdateDelegate {
-  weak var presentor: TransactionsPresentor?
-  
-  var db: OpaquePointer!
+class DataService: TransactionUpdateDelegate {
+  private var db: OpaquePointer!
   private let transactionsTableName = "transactions"
   private let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
   private let dbFileName: String
@@ -43,6 +37,18 @@ class TransactionsController: TransactionUpdateDelegate {
   
   deinit {
     sqlite3_close(db)
+  }
+  
+  /// MARK: Subscribers
+  
+  private var subscribers = [DataServiceUpdateCallback?]()
+  
+  func subscribe(callback: DataServiceUpdateCallback?) {
+    subscribers.append(callback)
+  }
+  
+  private func notifySubscribers() {
+    subscribers.forEach{ $0?() }
   }
   
   /// MARK: Testing
@@ -87,7 +93,7 @@ class TransactionsController: TransactionUpdateDelegate {
       printError(on: "binding", db)
     }
     sqlite3_finalize(statement)
-    notifyPresentor(aboutDays: [transaction.date])
+    notifySubscribers()
   }
   
   func update(transaction: Transaction) {
@@ -106,7 +112,7 @@ class TransactionsController: TransactionUpdateDelegate {
       printError(on: "updating", db)
     }
     sqlite3_finalize(statement)
-    notifyPresentor(aboutDays: [transaction.date])
+    notifySubscribers()
   }
   
   func remove(transaction: Transaction) {
@@ -116,7 +122,7 @@ class TransactionsController: TransactionUpdateDelegate {
       printError(on: "removing", db)
     }
     sqlite3_finalize(statement)
-    notifyPresentor(aboutDays: [transaction.date])
+    notifySubscribers()
   }
   
   func isEmpty() -> Bool {
@@ -216,7 +222,7 @@ class TransactionsController: TransactionUpdateDelegate {
     let statement = prepareStatement(sql: sql)
     guard sqlite3_step(statement) == SQLITE_DONE else { printError(on: "renaming", db); return }
     sqlite3_finalize(statement)
-    notifyPresentor()
+    notifySubscribers()
   }
   
   // MARK: SQLite helpers
@@ -289,17 +295,9 @@ class TransactionsController: TransactionUpdateDelegate {
     return Transaction(amount: amount, category: category, authorName: author,
                        transactionDate: date, creationDate: createdDate, modifiedDate: modifiedDate)
   }
-  
-  internal func notifyPresentor(aboutDays days: [Date]? = nil) {
-    if let days = days {
-      presentor?.didUpdate(days: days)
-    } else {
-      presentor?.didUpdateAll()
-    }
-  }
 }
 
-extension TransactionsController: SyncTransactionsDataSource {
+extension DataService: SyncTransactionsDataSource {
   func syncTransactions() -> [Transaction] {
     let sql = "SELECT * FROM \(transactionsTableName) ORDER BY date ASC "
     let statement = prepareStatement(sql: sql)
@@ -313,17 +311,17 @@ extension TransactionsController: SyncTransactionsDataSource {
   }
 }
 
-extension TransactionsController: MergeDelegate {
+extension DataService: MergeDelegate {
   func mergeDone(replacingTransactions transactions: [Transaction]) {
     removeAll()
     for transaction in transactions {
       add(transaction: transaction)
     }
-    notifyPresentor()
+    notifySubscribers()
   }
 }
 
-extension TransactionsController {
+extension DataService: CSVCompatible {
   func exportDataAsCSV() -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = dateFormatString
@@ -337,36 +335,8 @@ extension TransactionsController {
     return csv
   }
   
-  enum ImportMode {
-    case merge
-    case replace
-  }
-  
-  enum ImportResult {
-    case success(String)
-    case failure(String)
-    
-    var title: String {
-      switch self {
-      case .success:
-        return "Import finished"
-      case .failure:
-        return "Import failed"
-      }
-    }
-    
-    var message: String {
-      switch self {
-      case .success(let text):
-        return text
-      case .failure(let text):
-        return text
-      }
-    }
-  }
-  
-  func importDataFromCSV(csv: String?, mode: ImportMode) -> ImportResult {
-    let failureResult = ImportResult.failure("""
+  func importDataFromCSV(csv: String?, mode: CSVImportMode) -> CSVImportResult {
+    let failureResult = CSVImportResult.failure("""
         Incorrect CSV format.
         Export your existing data to have an example.
     """)
@@ -403,7 +373,7 @@ extension TransactionsController {
     case .replace:
       mergeDone(replacingTransactions: importedTransactions)
     }
-    notifyPresentor()
+    notifySubscribers()
     return .success("Successfully imported \(importedTransactions.count) transactions")
   }
 }

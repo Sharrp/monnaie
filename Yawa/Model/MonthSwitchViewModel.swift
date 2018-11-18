@@ -1,5 +1,5 @@
 //
-//  MonthSwitcherView.swift
+//  MonthSwitchViewModel.swift
 //  Yawa
 //
 //  Created by Anton Vronskii on 2018/11/01.
@@ -11,39 +11,43 @@ import UIKit
 typealias MonthSwitchedCallback = (Date) -> Void
 typealias SelectedMonthGetter = () -> Date?
 
-class MonthSwitchProvider: NSObject {
-  @IBOutlet weak var collectionView: UICollectionView!
+class MonthSwitchViewModel: NSObject {
+  weak var collectionView: UICollectionView? {
+    didSet {
+      collectionView?.dataSource = self
+      collectionView?.delegate = self
+    }
+  }
+  
+  var dataService: DataService? {
+    didSet {
+      dataServiceUpdated?()
+    }
+  }
+  private var reports = [MonthReport]()
+  private var todayAmount = 0.0
   
   private var selectedIndex = 0
+  var selectedMonth: Date? {
+    guard reports.count > selectedIndex else { return nil }
+    return reports[selectedIndex].monthDate
+  }
   
   private var callbacks = [MonthSwitchedCallback?]()
   func subscribe(callback: MonthSwitchedCallback?) {
     callbacks.append(callback)
   }
   
-  var reports = [MonthReport]() {
-    didSet {
-      collectionView.reloadData()
-    }
-  }
-  var todayAmount = 0.0 {
-    didSet {
-      let todayIndexPath = IndexPath(row: reports.count, section: 0)
-      collectionView.reloadItems(at: [todayIndexPath])
-    }
-  }
-  var selectedMonth: Date? {
-    guard reports.count > selectedIndex else { return nil }
-    return reports[selectedIndex].monthDate
+  lazy var dataServiceUpdated: DataServiceUpdateCallback? = { [weak self] in
+    guard let dataService = self?.dataService else { return }
+    self?.reports = dataService.monthlyAmounts()
+    self?.todayAmount = dataService.totalAmount(forDay: Date.now)
+    self?.collectionView?.reloadData()
   }
   
   private func string(forMonth monthDate: Date) -> String {
-    let format: String
-    if Calendar.current.isDate(monthDate, equalTo: Date.now, toGranularity: .year) {
-      format = "MMMM"
-    } else {
-      format = "MMM yyyy"
-    }
+    let isSameYear = Calendar.current.isDate(monthDate, equalTo: Date.now, toGranularity: .year)
+    let format = isSameYear ? "MMMM" : "MMM yyyy"
     return DateFormatter(dateFormat: format).string(from: monthDate)
   }
   
@@ -51,16 +55,16 @@ class MonthSwitchProvider: NSObject {
     // We need to wait until reload data is finished, scrollToItem won't work
     let indexPath = IndexPath(item: reports.count - 1, section: 0)
     selectedIndex = indexPath.row
-    if let selectedCell = collectionView.cellForItem(at: indexPath) as? MonthSwitchCell {
+    if let selectedCell = collectionView?.cellForItem(at: indexPath) as? MonthSwitchCell {
       selectedCell.setState(selected: true)
     }
-    collectionView.performBatchUpdates(nil, completion: { [unowned self] _ in
-      self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .left)
+    collectionView?.performBatchUpdates(nil, completion: { [unowned self] _ in
+      self.collectionView?.selectItem(at: indexPath, animated: false, scrollPosition: .left)
     })
   }
 }
 
-extension MonthSwitchProvider: UICollectionViewDataSource {
+extension MonthSwitchViewModel: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return reports.count + 1
   }
@@ -84,7 +88,7 @@ extension MonthSwitchProvider: UICollectionViewDataSource {
   }
 }
 
-extension MonthSwitchProvider: UICollectionViewDelegate {
+extension MonthSwitchViewModel: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     // There is no good way to disable celection of a particular cell ("Today" in out case)
     // That's why multiple selection is enabled and selection is maintained semi-manually
@@ -111,7 +115,7 @@ extension MonthSwitchProvider: UICollectionViewDelegate {
   }
 }
 
-extension MonthSwitchProvider: UICollectionViewDelegateFlowLayout {
+extension MonthSwitchViewModel: UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     let width: CGFloat
     if indexPath.row == reports.count {
@@ -124,24 +128,5 @@ extension MonthSwitchProvider: UICollectionViewDelegateFlowLayout {
   
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
     return UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 0)
-  }
-}
-
-class MonthSwitchCell: UICollectionViewCell {
-  @IBOutlet weak var amountLabel: UILabel!
-  @IBOutlet weak var monthLabel: UILabel!
-  
-  override func awakeFromNib() {
-    super.awakeFromNib()
-    
-    selectedBackgroundView = UIView(frame: bounds)
-    selectedBackgroundView?.backgroundColor = UIColor(hex: 0xF2F2F6)
-  }
-  
-  func setState(selected: Bool) {
-    let black = UIColor(hex: 0x333333)
-    let gray = UIColor(hex: 0xAAAAAA)
-    amountLabel.textColor = selected ? black : gray
-    monthLabel.textColor = selected ? black : gray
   }
 }

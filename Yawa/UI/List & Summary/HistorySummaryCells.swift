@@ -116,3 +116,22 @@ class SummaryCell: UITableViewCell {
   @IBOutlet weak var chartBarWidth: NSLayoutConstraint!
   @IBOutlet weak var valueLabel: UILabel! // amount or percentage
 }
+
+class MonthSwitchCell: UICollectionViewCell {
+  @IBOutlet weak var amountLabel: UILabel!
+  @IBOutlet weak var monthLabel: UILabel!
+  
+  override func awakeFromNib() {
+    super.awakeFromNib()
+    
+    selectedBackgroundView = UIView(frame: bounds)
+    selectedBackgroundView?.backgroundColor = UIColor(hex: 0xF2F2F6)
+  }
+  
+  func setState(selected: Bool) {
+    let black = UIColor(hex: 0x333333)
+    let gray = UIColor(hex: 0xAAAAAA)
+    amountLabel.textColor = selected ? black : gray
+    monthLabel.textColor = selected ? black : gray
+  }
+}
