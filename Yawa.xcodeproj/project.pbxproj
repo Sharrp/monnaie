@@ -161,13 +161,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7523C93D219CD6F40077C288 /* List & Summary */ = {
+		7523C93D219CD6F40077C288 /* History & Summary */ = {
 			isa = PBXGroup;
 			children = (
 				75C046E02098892600E8B09E /* DataProjectionsViewController.swift */,
 				75D32C0220A3093000D13420 /* HistorySummaryCells.swift */,
 			);
-			path = "List & Summary";
+			path = "History & Summary";
 			sourceTree = "<group>";
 		};
 		7524B989209AEF09006027C8 /* Model */ = {
@@ -193,7 +193,7 @@
 				7529F9582157F2C900FD8884 /* GuillotineViewController.swift */,
 				7518DC612197B0A1001ECA26 /* ShadowRoundedView.swift */,
 				7529F965215FB1FA00FD8884 /* Transaction adding */,
-				7523C93D219CD6F40077C288 /* List & Summary */,
+				7523C93D219CD6F40077C288 /* History & Summary */,
 				75D32C0920AB1DA300D13420 /* Sync */,
 				DF0B60A920F0843B0018AC98 /* Keyboard */,
 			);
