@@ -332,7 +332,7 @@
         <!--Edit Transaction Controller-->
         <scene sceneID="LqN-g1-dFt">
             <objects>
-                <viewController id="J2s-wE-pf2" customClass="EditTransactionController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="editTransactionVC" id="J2s-wE-pf2" customClass="EditTransactionController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nkC-uH-eg5">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -548,32 +548,9 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <action selector="addTapped" destination="J2s-wE-pf2" eventType="touchUpInside" id="7qN-ad-0HF"/>
+                                    <action selector="commitTapped" destination="J2s-wE-pf2" eventType="touchUpInside" id="7qN-ad-0HF"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n81-7L-OMN">
-                                <rect key="frame" x="0.0" y="-36" width="375" height="100"/>
-                                <subviews>
-                                    <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lry-JM-e9m">
-                                        <rect key="frame" x="0.0" y="56" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                        <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <items>
-                                            <navigationItem title="Adding" id="yNY-1N-d0f">
-                                                <barButtonItem key="leftBarButtonItem" title="Cancel" id="t2w-tZ-Vcl">
-                                                    <connections>
-                                                        <action selector="cancelAdding" destination="J2s-wE-pf2" id="qB1-BG-Kfz"/>
-                                                    </connections>
-                                                </barButtonItem>
-                                            </navigationItem>
-                                        </items>
-                                    </navigationBar>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="100" id="XXy-U1-dMO"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -582,10 +559,8 @@
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="n2G-7X-LBj" secondAttribute="bottom" constant="16" id="1SB-Ui-RST"/>
                             <constraint firstItem="Z7a-xh-IZb" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="2OO-i4-FFB"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="ic6-Ub-Ojj" secondAttribute="trailing" id="2oo-N6-jP2"/>
-                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="n81-7L-OMN" secondAttribute="trailing" id="3O0-dL-bEq"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="width" secondItem="TgH-T5-qXh" secondAttribute="width" id="FFJ-5f-RkY"/>
                             <constraint firstItem="K3H-rH-xga" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="GtL-o6-NMB"/>
-                            <constraint firstItem="n81-7L-OMN" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" id="N2s-7h-N6D"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="Z7a-xh-IZb" secondAttribute="bottom" constant="70" id="QoT-fS-0i6"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="TgH-T5-qXh" secondAttribute="bottom" constant="70" id="VHo-8j-LIR"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="bottom" secondItem="K3H-rH-xga" secondAttribute="bottom" id="WkF-SK-M31"/>
@@ -598,7 +573,6 @@
                             <constraint firstItem="n2G-7X-LBj" firstAttribute="leading" secondItem="4Qm-UU-hIj" secondAttribute="leading" constant="48" id="sjr-j4-lc8"/>
                             <constraint firstItem="4Qm-UU-hIj" firstAttribute="trailing" secondItem="Z7a-xh-IZb" secondAttribute="trailing" id="xcU-e1-TVf"/>
                             <constraint firstItem="ic6-Ub-Ojj" firstAttribute="top" secondItem="HNt-U5-1J3" secondAttribute="bottom" id="xnV-3h-jmA"/>
-                            <constraint firstItem="4Qm-UU-hIj" firstAttribute="top" secondItem="n81-7L-OMN" secondAttribute="bottom" constant="-44" id="ywq-ox-C5e"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="4Qm-UU-hIj"/>
                     </view>
@@ -778,16 +752,42 @@ Feel free to change your name here 👇</string>
                                     <segue destination="BYZ-38-t0r" kind="embed" id="XcB-wL-qoP"/>
                                 </connections>
                             </containerView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n81-7L-OMN">
+                                <rect key="frame" x="0.0" y="-36" width="375" height="100"/>
+                                <subviews>
+                                    <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lry-JM-e9m">
+                                        <rect key="frame" x="0.0" y="56" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                        <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <items>
+                                            <navigationItem title="Adding" id="yNY-1N-d0f">
+                                                <barButtonItem key="leftBarButtonItem" title="Cancel" id="t2w-tZ-Vcl">
+                                                    <connections>
+                                                        <action selector="navBarCancelTapped" destination="H9H-eu-ab2" id="G96-bD-qJT"/>
+                                                    </connections>
+                                                </barButtonItem>
+                                            </navigationItem>
+                                        </items>
+                                    </navigationBar>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="XXy-U1-dMO"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.97647058823529409" green="0.97647058823529409" blue="0.97647058823529409" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="8cJ-w3-3Z2" firstAttribute="trailing" secondItem="n81-7L-OMN" secondAttribute="trailing" id="370-Hz-sqs"/>
                             <constraint firstItem="juJ-eM-K12" firstAttribute="width" secondItem="8cJ-w3-3Z2" secondAttribute="width" id="4km-It-eBT"/>
+                            <constraint firstItem="n81-7L-OMN" firstAttribute="leading" secondItem="8cJ-w3-3Z2" secondAttribute="leading" id="9Cg-Fl-ZeB"/>
                             <constraint firstItem="juJ-eM-K12" firstAttribute="top" secondItem="w4I-PQ-z8L" secondAttribute="top" id="EO7-Ej-7VJ"/>
                             <constraint firstItem="L3o-dQ-hbE" firstAttribute="leading" secondItem="8cJ-w3-3Z2" secondAttribute="leading" id="S7G-Nc-Xhd"/>
                             <constraint firstAttribute="bottom" secondItem="juJ-eM-K12" secondAttribute="bottom" id="Vf9-g6-b0l"/>
                             <constraint firstItem="8cJ-w3-3Z2" firstAttribute="bottom" secondItem="L3o-dQ-hbE" secondAttribute="bottom" constant="32" id="aIi-fQ-Pjs"/>
                             <constraint firstItem="8cJ-w3-3Z2" firstAttribute="leading" secondItem="juJ-eM-K12" secondAttribute="leading" id="d0w-2c-Pxe"/>
                             <constraint firstItem="L3o-dQ-hbE" firstAttribute="width" secondItem="w4I-PQ-z8L" secondAttribute="width" id="geu-E8-g93"/>
+                            <constraint firstItem="8cJ-w3-3Z2" firstAttribute="top" secondItem="n81-7L-OMN" secondAttribute="bottom" constant="-44" id="iQl-Pw-gAb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="8cJ-w3-3Z2"/>
                     </view>
@@ -795,6 +795,8 @@ Feel free to change your name here 👇</string>
                         <outlet property="bladeBottomInsetConstraint" destination="aIi-fQ-Pjs" id="UBn-0X-eh7"/>
                         <outlet property="bladeContainerView" destination="L3o-dQ-hbE" id="ZAM-qV-Vtm"/>
                         <outlet property="bladeHeightConstraint" destination="j9O-qD-juS" id="FKK-5f-5cX"/>
+                        <outlet property="navBarContainer" destination="n81-7L-OMN" id="dPV-0d-JqY"/>
+                        <outlet property="navigationBar" destination="Lry-JM-e9m" id="GnV-I1-UuU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c02-zO-art" sceneMemberID="firstResponder"/>

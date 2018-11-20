@@ -140,6 +140,8 @@ struct Animation {
   static let durationFast = 0.3
   static let appearceWithShfit: CGFloat = 10
   static let dampingRatio: CGFloat = 0.7
+  static let curve = UIView.AnimationCurve.easeInOut
+  static let springTiming = UISpringTimingParameters(dampingRatio: Animation.dampingRatio)
 }
 
 struct Color {

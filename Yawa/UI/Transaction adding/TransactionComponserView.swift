@@ -51,6 +51,10 @@ class TransactionComponserView: UIView {
   private(set) var mode: TransactionComposerMode = .waitingForInput
   
   func set(mode: TransactionComposerMode, animated: Bool = true, disableDelegation: Bool = false) {
+    if mode == .waitingForInput && self.mode != mode {
+      amountInput.text = ""
+    }
+    
     self.mode = mode
     layoutIfNeeded()
     
@@ -60,12 +64,10 @@ class TransactionComponserView: UIView {
     animations.append(amountElementsAnimation(forMode: mode))
     
     if animated {
-      let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeIn, animations: nil)
-      animator.addAnimations { [weak self] in
+      UIViewPropertyAnimator(duration: Animation.duration, curve: .easeIn) { [weak self] in
         animations.forEach{ $0() }
         self?.layoutIfNeeded()
-      }
-      animator.startAnimation()
+      }.startAnimation()
     } else {
       animations.forEach{ $0() }
       layoutIfNeeded()

@@ -27,10 +27,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   func applicationDidBecomeActive(_ application: UIApplication) {
     if !coordinator.isInitialized {
-      guard let rootVC = window?.rootViewController as? GuillotineViewController else { return }
-      guard let projectionsVC = rootVC.bladeViewController as? ProjectionsViewController else { return }
-      guard let editVC = rootVC.baseViewController as? EditTransactionController else { return }
-      coordinator.guillotineViewController = rootVC
+      // All these casts should crash immediately for easier debug (there is no case when they can fail legally)
+      let guillotineVC = window?.rootViewController as! GuillotineViewController
+      let projectionsVC = guillotineVC.bladeViewController as! ProjectionsViewController
+      let editVC = guillotineVC.baseViewController as! EditTransactionController
+      coordinator.guillotineViewController = guillotineVC
       coordinator.projectionsViewController = projectionsVC
       coordinator.editTransactionController = editVC
       

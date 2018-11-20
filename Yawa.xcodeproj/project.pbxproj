@@ -49,6 +49,8 @@
 		75DBCAB92172061800B7476A /* real-life-initial-remote.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCAB82172060100B7476A /* real-life-initial-remote.csv */; };
 		75DBCABB21720F3800B7476A /* real-life-no-collision.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCAB62172059300B7476A /* real-life-no-collision.csv */; };
 		75DBCABC21720F5300B7476A /* real-life-complex.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCABA21720F2600B7476A /* real-life-complex.csv */; };
+		75F7D41421A342BA0033FBCC /* AddTransactionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F7D41321A342BA0033FBCC /* AddTransactionViewModel.swift */; };
+		75F7D41621A354E20033FBCC /* EditTransactionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F7D41521A354E20033FBCC /* EditTransactionViewModel.swift */; };
 		DF0B60AC20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */; };
 		DF0B60AD20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */; };
 		DF0B60AE20F0857E0018AC98 /* DigitKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF0B60AB20F0857E0018AC98 /* DigitKeyboardView.xib */; };
@@ -132,6 +134,8 @@
 		75DBCAB62172059300B7476A /* real-life-no-collision.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = "real-life-no-collision.csv"; sourceTree = "<group>"; };
 		75DBCAB82172060100B7476A /* real-life-initial-remote.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = "real-life-initial-remote.csv"; sourceTree = "<group>"; };
 		75DBCABA21720F2600B7476A /* real-life-complex.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = "real-life-complex.csv"; sourceTree = "<group>"; };
+		75F7D41321A342BA0033FBCC /* AddTransactionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionViewModel.swift; sourceTree = "<group>"; };
+		75F7D41521A354E20033FBCC /* EditTransactionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTransactionViewModel.swift; sourceTree = "<group>"; };
 		DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DigitKeyboardView.swift; sourceTree = "<group>"; };
 		DF0B60AB20F0857E0018AC98 /* DigitKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DigitKeyboardView.xib; sourceTree = "<group>"; };
 		DF80D7FA20DE2A5A00ADC203 /* SyncPermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncPermissionsManager.swift; sourceTree = "<group>"; };
@@ -183,6 +187,8 @@
 				7529F95B215BCD6900FD8884 /* SummaryViewModel.swift */,
 				755EC21C219FB63F00CC0B09 /* HistoryViewModel.swift */,
 				758C6878218A777B00F2F7BE /* MonthSwitchViewModel.swift */,
+				75F7D41321A342BA0033FBCC /* AddTransactionViewModel.swift */,
+				75F7D41521A354E20033FBCC /* EditTransactionViewModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -417,6 +423,7 @@
 				7524B992209B3497006027C8 /* Utilities.swift in Sources */,
 				7524B994209B3BD8006027C8 /* StoreManager.swift in Sources */,
 				7529F9592157F2CA00FD8884 /* GuillotineViewController.swift in Sources */,
+				75F7D41421A342BA0033FBCC /* AddTransactionViewModel.swift in Sources */,
 				7529F95F215E7A9900FD8884 /* CategorySelection.swift in Sources */,
 				7509759421A00932000FDB39 /* ExportImportCSV.swift in Sources */,
 				75DBCAAB2171A40900B7476A /* Merger.swift in Sources */,
@@ -437,6 +444,7 @@
 				75D32C0D20AB202E00D13420 /* Settings.swift in Sources */,
 				DF0B60AC20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */,
 				75097592219FF785000FDB39 /* Coordinator.swift in Sources */,
+				75F7D41621A354E20033FBCC /* EditTransactionViewModel.swift in Sources */,
 				7524B996209B4451006027C8 /* SyncViewController.swift in Sources */,
 				DF80D7FB20DE2A5A00ADC203 /* SyncPermissionsManager.swift in Sources */,
 			);

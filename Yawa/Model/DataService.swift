@@ -12,7 +12,7 @@ import SQLite3
 typealias CategoriesSummary = [(category: TransactionCategory, amount: Double)]
 typealias DataServiceUpdateCallback = () -> Void
 
-class DataService: TransactionUpdateDelegate {
+class DataService {
   private var db: OpaquePointer!
   private let transactionsTableName = "transactions"
   private let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)

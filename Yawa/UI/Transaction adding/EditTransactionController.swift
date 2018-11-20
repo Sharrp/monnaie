@@ -8,14 +8,9 @@
 
 import UIKit
 
-protocol TransactionUpdateDelegate: AnyObject {
-  func add(transaction: Transaction)
-  func update(transaction: Transaction)
-  func isEmpty() -> Bool
-}
-
-protocol ManagedTransactionEditor {
-  func startEditing(transaction: Transaction, byReplacingView: UIView)
+protocol TransactionEditorDelegate: AnyObject {
+  func didSwitch(toMode: TransactionComposerMode)
+  func commit(amount: Double, category: TransactionCategory, date: Date)
 }
 
 class EditTransactionController: UIViewController {
@@ -28,18 +23,6 @@ class EditTransactionController: UIViewController {
   @IBOutlet weak var blurView: UIVisualEffectView!
   @IBOutlet weak var commitButton: UIButton!
   @IBOutlet weak var composer: TransactionComponserView!
-  private var composerTransformBeforeEditing = CGAffineTransform.identity
-  private var composerTransformToMatchCell = CGAffineTransform.identity
-  private weak var replacedView: UIView?
-  private var editingTransaction: Transaction?
-  
-  @IBOutlet weak var navBarContainer: UIView!
-  @IBOutlet weak var navigationBar: UINavigationBar!
-  @IBOutlet weak var navBarCancel: UIBarButtonItem!
-  private var isNavigationBarVisible: Bool {
-    // FIX: should reflect real visibility through frame intersection
-    return navBarContainer.transform == .identity
-  }
   
   @IBOutlet weak var keyboardHeightConstraint: NSLayoutConstraint!
   @IBOutlet weak var keyboardView: DigitKeyboardView!
@@ -49,14 +32,10 @@ class EditTransactionController: UIViewController {
   
   @IBOutlet weak var dateTimePicker: UIDatePicker!
   
-  weak var delegate: TransactionUpdateDelegate?
-  var transaction: Transaction?
-  var guillotine: GuillotineInfo?
+  weak var delegate: TransactionEditorDelegate?
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    NotificationCenter.default.addObserver(self, selector: #selector(syncDidDismiss), name: .syncDidDismiss, object: nil)
     
     keyboardView.textField = composer.amountInput
     keyboardView.heightContraint = keyboardHeightConstraint
@@ -74,12 +53,6 @@ class EditTransactionController: UIViewController {
     composer.delegate = self
     
     blurView.effect = nil
-  }
-  
-  @objc func syncDidDismiss() {
-    if composer.mode == .amount || composer.mode == .waitingForInput {
-      composer.set(mode: composer.mode)
-    }
   }
   
   // MARK: Category
@@ -100,6 +73,10 @@ class EditTransactionController: UIViewController {
     deselectCategory()
   }
   
+  func set(category: TransactionCategory) {
+    selectCategory(atIndex: category.rawValue)
+  }
+  
   // MARK: Date & time
   
   private func resetDate() {
@@ -112,72 +89,79 @@ class EditTransactionController: UIViewController {
     composer.set(date: sender.date)
   }
   
+  func set(date: Date) {
+    dateTimePicker.date = date
+  }
+  
   // MARK: Add transaction
   
-  @IBAction func addTapped() {
+  func setCommitButton(enabled: Bool) {
+    commitButton.isEnabled = enabled
+  }
+  
+  func setCommitButton(title: String) {
+    commitButton.setTitle(title, for: .normal)
+  }
+  
+  @IBAction func commitTapped() {
     guard let amount = composer.amount else { return }
     let category = categoriesProvider.selectedCategory
-    switch mode {
-    case .adding:
-      let transaction = Transaction(amount: amount, category: category, authorName: Settings.main.syncName, transactionDate: dateTimePicker.date)
-      delegate?.add(transaction: transaction)
-      
-      composer.set(mode: .table)
-      let yShiftFlyAway = -(composer.frame.maxY + 30)
-      let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [unowned self] in
-        self.composer.transform = CGAffineTransform(translationX: 0, y: yShiftFlyAway).scaledBy(x: 0.1, y: 0.1)
-      }
-      animator.addCompletion { [unowned self] _ in
-        self.composer.reset(animated: false)
-        self.composer.transform = .identity
-      }
-      animator.startAnimation(afterDelay: 0.3)
-    case .editing:
-      editingTransaction?.amount = amount
-      editingTransaction?.category = category
-      editingTransaction?.date = dateTimePicker.date
-      finishEditingAndCommit(transaction: editingTransaction!)
+    delegate?.commit(amount: amount, category: category, date: dateTimePicker.date)
+  }
+
+  func animateComposerFlyAway() {
+    composer.set(mode: .table)
+    let yShiftFlyAway = -(composer.frame.maxY + 30)
+    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [unowned self] in
+      self.composer.transform = CGAffineTransform(translationX: 0, y: yShiftFlyAway).scaledBy(x: 0.1, y: 0.1)
+    }
+    animator.addCompletion { [unowned self] _ in
+      self.composer.reset(animated: false)
+      self.composer.transform = .identity
+    }
+    animator.startAnimation(afterDelay: 0.3)
+  }
+  
+  func switchTo(mode: TransactionComposerMode, animated: Bool) {
+    // Only internal changes should trigger delegate calls so delegationEnabled = false
+    adjustControls(toMode: mode, animated: animated, delegationEnabled: false)
+    composer.set(mode: mode, animated: animated, disableDelegation: false)
+  }
+  
+  func hideControls(withProgress progress: CGFloat, includingComposer: Bool = true) {
+    var controls = [keyboardView, categoryCollectionView, dateTimePicker]
+    if includingComposer {
+      controls.append(composer)
+    }
+    let targetTransform = CGAffineTransform(translationX: 0, y: keyboardView.frame.height * progress)
+    for control in controls {
+      control?.transform = targetTransform
+      control?.alpha = 1 - progress
+    }
+    commitButton.transform = targetTransform
+    if composer.mode != .waitingForInput {
+      commitButton.alpha = 1 - progress
     }
   }
   
-  @IBAction func cancelAdding() {
-    composer.reset()
-  }
-  
-  private func setNavigationBar(visible: Bool) {
-    if isNavigationBarVisible == visible {
-      return
-    }
-    
-    if isNavigationBarVisible {
-      navBarContainer.transform = CGAffineTransform(translationX: 0, y: -navBarContainer.frame.height)
-    } else {
-      navBarContainer.transform = .identity
-    }
-  }
-  
-  func adjustControls(toMode mode: TransactionComposerMode, animated: Bool) {
-    keyboardView.isHidden = mode != .amount && mode != .waitingForInput
+  private func adjustControls(toMode mode: TransactionComposerMode, animated: Bool, delegationEnabled: Bool = true) {
+    keyboardView.isHidden = mode == .date || mode == .category
     dateTimePicker.isHidden = mode != .date
     categoryCollectionView.isHidden = mode != .category
     
-    let hasNoTransactions = delegate?.isEmpty() ?? true
-    let bladeHidden = hasNoTransactions || mode != .waitingForInput
     let addHidden = mode == .waitingForInput
-    
     let animation = { [unowned self] in
       self.commitButton.alpha = addHidden ? 0 : 1
       self.commitButton.transform = addHidden ? CGAffineTransform(translationX: 0, y: Animation.appearceWithShfit) : .identity
-      self.setNavigationBar(visible: !addHidden)
-      
-      if self.mode == .adding {
-        self.guillotine?.setBlade(hidden: bladeHidden, animated: animated)
-      }
     }
     if animated {
       UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut, animations: animation).startAnimation()
     } else {
       animation()
+    }
+    
+    if delegationEnabled {
+      delegate?.didSwitch(toMode: mode)
     }
   }
 }
@@ -191,15 +175,7 @@ extension EditTransactionController: CategorySelectionDelegate {
 extension EditTransactionController: GuilliotineStateDelegate {
   func didUpdateProgress(to progress: CGFloat) {
     let restrictedProgress = min(1, max(0, progress))
-    let targetTransform = CGAffineTransform(translationX: 0, y: keyboardView.frame.height * restrictedProgress)
-    for control in [keyboardView, categoryCollectionView, dateTimePicker, composer] {
-      control?.transform = targetTransform
-      control?.alpha = 1 - restrictedProgress
-    }
-    commitButton.transform = targetTransform
-    if composer.mode != .waitingForInput {
-      commitButton.alpha = 1 - restrictedProgress
-    }
+    hideControls(withProgress: restrictedProgress)
   }
   
   func willSwitch(toState bladeState: BladeState, withDuration duration: Double, andTimingProvider timing: UITimingCurveProvider) {
@@ -219,73 +195,5 @@ extension EditTransactionController: TransactionComposerDelegate {
   
   func amountChangedValidity(isValid amountIsValid: Bool) {
     commitButton.isEnabled = amountIsValid
-  }
-}
-
-extension EditTransactionController: ManagedTransactionEditor {
-  private func setNavBarCancel(hidden: Bool) {
-    navBarCancel.tintColor = hidden ? .clear : nil
-    navBarCancel.isEnabled = !hidden
-  }
-  
-  func startEditing(transaction: Transaction, byReplacingView viewToReplace: UIView) {
-    guard let viewToReplaceSuperview = viewToReplace.superview else { return }
-    replacedView = viewToReplace
-    replacedView?.isHidden = true
-    editingTransaction = transaction
-    
-    mode = .editing
-    guillotine?.bringBaseToFront()
-    
-    let newPosition = viewToReplaceSuperview.convert(viewToReplace.frame.origin, to: nil)
-    composerTransformBeforeEditing = composer.transform
-    composer.transform = .identity // to properly calculate transform to match cell
-    let currentPosition = view.convert(composer.frame.origin, to: nil)
-    composerTransformToMatchCell = CGAffineTransform(translationX: 0, y: newPosition.y - currentPosition.y - composer.padding)
-    composer.transform = composerTransformToMatchCell
-    
-    composer.alpha = 1
-    composer.set(mode: .table, animated: false, disableDelegation: true)
-    composer.display(transaction: transaction)
-    dateTimePicker.date = transaction.date
-    categoriesProvider.selectedCategory = transaction.category
-    
-    navigationBar.topItem?.title = "Editing"
-    setNavBarCancel(hidden: true)
-    commitButton.setTitle("Save", for: .normal)
-    commitButton.isEnabled = true
-    
-    UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [unowned self] in
-      self.blurView.effect = UIBlurEffect(style: .light)
-      self.setNavigationBar(visible: true)
-    }.startAnimation()
-    
-    let timingProvider = UISpringTimingParameters(dampingRatio: Animation.dampingRatio)
-    willSwitch(toState: .collapsed, withDuration: 2*Animation.duration, andTimingProvider: timingProvider)
-    composer.set(mode: .amount, animated: true, disableDelegation: true)
-  }
-  
-  private func finishEditingAndCommit(transaction: Transaction) {
-    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeInOut) { [unowned self] in
-      self.blurView.effect = nil
-      self.setNavigationBar(visible: false)
-      self.composer.transform = self.composerTransformToMatchCell
-    }
-    animator.addCompletion { [unowned self] _ in
-      self.composer.reset()
-      self.composer.transform = self.composerTransformBeforeEditing
-      self.commitButton.isEnabled = false
-      self.commitButton.setTitle("Add", for: .normal)
-      self.navigationBar.topItem?.title = "Adding"
-      self.replacedView?.isHidden = false
-      self.guillotine?.sendBaseToBack()
-      self.didUpdateProgress(to: 1)
-      
-      self.delegate?.update(transaction: transaction)
-    }
-    animator.startAnimation()
-    composer.set(mode: .table, animated: true, disableDelegation: true)
-    
-    mode = .adding
   }
 }

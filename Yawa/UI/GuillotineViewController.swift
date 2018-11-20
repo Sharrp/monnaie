@@ -8,19 +8,7 @@
 
 import UIKit
 
-protocol GuillotineDelegate {
-  func finishedSetup(ofGuillotine: GuillotineInfo)
-}
-
-protocol GuillotineInfo: class {
-  var bladeViewController: UIViewController! { get }
-  var baseViewController: UIViewController! { get }
-  var bladeState: BladeState { get }
-  
-  func setBlade(hidden: Bool, animated: Bool)
-  func bringBaseToFront()
-  func sendBaseToBack()
-}
+typealias GuillotineCancelCallback = () -> Void
 
 protocol BladeViewScrollable {
   var scrollView: UIScrollView? { get }
@@ -43,6 +31,8 @@ class GuillotineViewController: UIViewController {
   @IBOutlet weak var bladeBottomInsetConstraint: NSLayoutConstraint!
   @IBOutlet weak var bladeHeightConstraint: NSLayoutConstraint!
   
+  @IBOutlet weak var navBarContainer: UIView!
+  @IBOutlet weak var navigationBar: UINavigationBar!
   private var panGesture: UIPanGestureRecognizer!
   private var directionDetectionDistance: CGFloat = 20
   private var verticalPanDetectionAngle = CGFloat.pi / 6
@@ -70,8 +60,6 @@ class GuillotineViewController: UIViewController {
     guard let bladeVC = children.last else { return }
     baseViewController = baseVC
     bladeViewController = bladeVC
-    (baseVC as? GuillotineDelegate)?.finishedSetup(ofGuillotine: self)
-    (bladeVC as? GuillotineDelegate)?.finishedSetup(ofGuillotine: self)
     
     view.addGestureRecognizer(panGesture)
   }
@@ -103,6 +91,40 @@ class GuillotineViewController: UIViewController {
     case .expanded:
       return expandedBottomInset
     }
+  }
+  
+  func setNavigationBar(hidden: Bool, animated: Bool) {
+    view.bringSubviewToFront(navBarContainer)
+    let animation = { [unowned self] in
+      if hidden {
+        self.navBarContainer.transform = CGAffineTransform(translationX: 0, y: -self.navBarContainer.frame.height)
+      } else {
+        self.navBarContainer.transform = .identity
+      }
+    }
+    if animated {
+      UIViewPropertyAnimator(duration: Animation.duration, curve: Animation.curve, animations: animation).startAnimation()
+    } else {
+      animation()
+    }
+  }
+  
+  var navigationBarTitle: String? {
+    get {
+      return navigationBar.topItem?.title
+    }
+    set {
+      navigationBar.topItem?.title = newValue
+    }
+  }
+  
+  private var cancelCallbacks = [GuillotineCancelCallback?]()
+  func subscribeToCancel(callback: GuillotineCancelCallback?) {
+    cancelCallbacks.append(callback)
+  }
+  
+  @IBAction func navBarCancelTapped() {
+    cancelCallbacks.forEach{ $0?() }
   }
   
   @objc func panHandler(pan: UIPanGestureRecognizer) {
@@ -198,20 +220,16 @@ class GuillotineViewController: UIViewController {
   private func elasticTranslation(forExcess excess: CGFloat, onDistance distance: CGFloat) -> CGFloat {
     return distance * (1 + log10(1 + 0.5*excess/distance))
   }
-}
-
-extension GuillotineViewController: GuillotineInfo {
+  
   func setBlade(hidden: Bool, animated: Bool) {
     panGesture.isEnabled = !hidden
     
     let transform: CGAffineTransform
     if hidden {
-       // FIX: replace 44 with view.safeAreaInsets.top but ensure layout is done when the method is called after launch
+      // FIX: replace 44 with view.safeAreaInsets.top but ensure layout is done when the method is called after launch
       transform = CGAffineTransform(translationX: 0, y: -alwaysVisibleHeight - 44)
-      view.sendSubviewToBack(bladeContainerView)
     } else {
       transform = .identity
-      view.bringSubviewToFront(bladeContainerView)
     }
     
     if animated {
@@ -222,16 +240,6 @@ extension GuillotineViewController: GuillotineInfo {
     } else {
       bladeViewController.view.transform = transform
     }
-  }
-  
-  func bringBaseToFront() {
-    guard let baseContaineView = baseViewController.view.superview else { return }
-    view.bringSubviewToFront(baseContaineView)
-  }
-  
-  func sendBaseToBack() {
-    guard let baseContaineView = baseViewController.view.superview else { return }
-    view.sendSubviewToBack(baseContaineView)
   }
 }
 
