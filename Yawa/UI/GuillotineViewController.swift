@@ -9,14 +9,11 @@
 import UIKit
 
 typealias GuillotineCancelCallback = () -> Void
+typealias GuillotineScrollCallback = (CGFloat) -> Void
+typealias GuillotineBladeStateCallback = (BladeState) -> Void
 
 protocol BladeViewScrollable {
   var scrollView: UIScrollView? { get }
-}
-
-protocol GuilliotineStateDelegate {
-  func didUpdateProgress(to progress: CGFloat)
-  func willSwitch(toState: BladeState, withDuration: Double, andTimingProvider: UITimingCurveProvider)
 }
 
 enum BladeState {
@@ -82,6 +79,16 @@ class GuillotineViewController: UIViewController {
   
   override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
     return UIInterfaceOrientationMask(arrayLiteral: [.portrait, .portraitUpsideDown])
+  }
+  
+  private var scrollCallbacks = [GuillotineScrollCallback?]()
+  func subscribeForScroll(callback: GuillotineScrollCallback?) {
+    scrollCallbacks.append(callback)
+  }
+  
+  private var bladeStateCallbacks = [GuillotineBladeStateCallback?]()
+  func subscribeForBladeState(callback: GuillotineBladeStateCallback?) {
+    bladeStateCallbacks.append(callback)
   }
   
   private func bottomInset(forState state: BladeState) -> CGFloat {
@@ -174,8 +181,8 @@ class GuillotineViewController: UIViewController {
         self.view.layoutIfNeeded()
       }
       animator.startAnimation()
-      (baseViewController as? GuilliotineStateDelegate)?.willSwitch(toState: bladeState, withDuration: Animation.duration, andTimingProvider: timingProvider)
-      (bladeViewController as? GuilliotineStateDelegate)?.willSwitch(toState: bladeState, withDuration: Animation.duration, andTimingProvider: timingProvider)
+      
+      bladeStateCallbacks.forEach{ $0?(bladeState) }
     case .possible:
       break
     }
@@ -213,8 +220,7 @@ class GuillotineViewController: UIViewController {
     view.setNeedsLayout()
     
     let progress = (collapsedBottomInset - displayedInset) / distance
-    (baseViewController as? GuilliotineStateDelegate)?.didUpdateProgress(to: progress)
-    (bladeViewController as? GuilliotineStateDelegate)?.didUpdateProgress(to: progress)
+    scrollCallbacks.forEach{ $0?(progress) }
   }
   
   private func elasticTranslation(forExcess excess: CGFloat, onDistance distance: CGFloat) -> CGFloat {

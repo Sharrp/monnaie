@@ -69,6 +69,28 @@ class ProjectionsViewController: UIViewController {
     navBarBorder.frame = CGRect(x: 0, y: navigationBar.frame.height, width: view.frame.width, height: 1)
   }
   
+  lazy var bladeScroll: GuillotineScrollCallback? = { [weak self] progress in
+    guard let fakeCardOffsetWhenExpanded = self?.fakeCardOffsetWhenExpanded else { return }
+    let tableTransform: CGAffineTransform
+    if progress == 1 {
+      tableTransform = .identity
+    } else {
+      guard let tableViewBottomOffsetWhenCollapsed = self?.tableViewBottomOffsetWhenCollapsed else { return }
+      tableTransform = CGAffineTransform(translationX: 0, y: (1 - progress) * tableViewBottomOffsetWhenCollapsed)
+    }
+    self?.tableView.transform = tableTransform
+    self?.fakeCard.transform = CGAffineTransform(translationX: 0, y: fakeCardOffsetWhenExpanded * progress)
+  }
+  
+  lazy var bladeStateSwitch: GuillotineBladeStateCallback? = { [weak self] bladeState in
+    let progress: CGFloat = bladeState == .expanded ? 1 : 0
+    let animator = UIViewPropertyAnimator(duration: Animation.duration, timingParameters: Animation.springTiming)
+    animator.addAnimations { [weak self] in
+      self?.bladeScroll?(progress)
+    }
+    animator.startAnimation()
+  }
+  
   private func scrollToBottom(animated: Bool = false) { // TODO: update when month switcher is done
     tableView.setContentOffset(CGPoint(x: 0, y: CGFloat.greatestFiniteMagnitude), animated: false)
   }
@@ -94,27 +116,5 @@ class ProjectionsViewController: UIViewController {
 extension ProjectionsViewController: BladeViewScrollable {
   var scrollView: UIScrollView? {
     return tableView
-  }
-}
-
-extension ProjectionsViewController: GuilliotineStateDelegate {
-  func didUpdateProgress(to progress: CGFloat) {
-    let tableTransform: CGAffineTransform
-    if progress == 1 {
-      tableTransform = .identity
-    } else {
-      tableTransform = CGAffineTransform(translationX: 0, y: (1 - progress) * tableViewBottomOffsetWhenCollapsed)
-    }
-    tableView.transform = tableTransform
-    fakeCard.transform = CGAffineTransform(translationX: 0, y: fakeCardOffsetWhenExpanded * progress)
-  }
-  
-  func willSwitch(toState state: BladeState, withDuration duration: Double, andTimingProvider timing: UITimingCurveProvider) {
-    let progress: CGFloat = state == .expanded ? 1 : 0
-    let animator = UIViewPropertyAnimator(duration: duration, timingParameters: timing)
-    animator.addAnimations { [unowned self] in
-      self.didUpdateProgress(to: progress)
-    }
-    animator.startAnimation()
   }
 }

@@ -45,6 +45,12 @@ class Coordinator {
     
     guillotineViewController?.subscribeToCancel(callback: addViewModel.guillotineCancel)
     guillotineViewController?.subscribeToCancel(callback: editViewModel.guillotineCancel)
+    guillotineViewController?.subscribeForScroll(callback: monthSwitch.bladeScroll)
+    guillotineViewController?.subscribeForBladeState(callback: monthSwitch.bladeStateSwitch)
+    guillotineViewController?.subscribeForScroll(callback: editTransactionController?.bladeScroll)
+    guillotineViewController?.subscribeForBladeState(callback: editTransactionController?.bladeStateSwitch)
+    guillotineViewController?.subscribeForScroll(callback: projectionsViewController?.bladeScroll)
+    guillotineViewController?.subscribeForBladeState(callback: projectionsViewController?.bladeStateSwitch)
     
     addViewModel.dataService = dataService
     addViewModel.guillotine = guillotineViewController

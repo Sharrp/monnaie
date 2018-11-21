@@ -45,6 +45,14 @@ class MonthSwitchViewModel: NSObject {
     self?.collectionView?.reloadData()
   }
   
+  lazy var bladeScroll: GuillotineScrollCallback? = { progress in
+    
+  }
+  
+  lazy var bladeStateSwitch: GuillotineBladeStateCallback? = { state in
+    
+  }
+  
   private func string(forMonth monthDate: Date) -> String {
     let isSameYear = Calendar.current.isDate(monthDate, equalTo: Date.now, toGranularity: .year)
     let format = isSameYear ? "MMMM" : "MMM yyyy"

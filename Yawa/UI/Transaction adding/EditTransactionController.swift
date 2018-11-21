@@ -55,6 +55,20 @@ class EditTransactionController: UIViewController {
     blurView.effect = nil
   }
   
+  lazy var bladeScroll: GuillotineScrollCallback? = { [weak self] progress in
+    let restrictedProgress = min(1, max(0, progress))
+    self?.hideControls(withProgress: restrictedProgress)
+  }
+  
+  lazy var bladeStateSwitch: GuillotineBladeStateCallback? = { [weak self] bladeState in
+    let progress: CGFloat = bladeState == .collapsed ? 0 : 1
+    let animator = UIViewPropertyAnimator(duration: Animation.duration, timingParameters: Animation.springTiming)
+    animator.addAnimations { [weak self] in
+      self?.bladeScroll?(progress)
+    }
+    animator.startAnimation()
+  }
+  
   // MARK: Category
   
   private func selectCategory(atIndex index: Int) {
@@ -169,22 +183,6 @@ class EditTransactionController: UIViewController {
 extension EditTransactionController: CategorySelectionDelegate {
   func didSelect(category: TransactionCategory) {
     composer.set(category: category)
-  }
-}
-
-extension EditTransactionController: GuilliotineStateDelegate {
-  func didUpdateProgress(to progress: CGFloat) {
-    let restrictedProgress = min(1, max(0, progress))
-    hideControls(withProgress: restrictedProgress)
-  }
-  
-  func willSwitch(toState bladeState: BladeState, withDuration duration: Double, andTimingProvider timing: UITimingCurveProvider) {
-    let animator = UIViewPropertyAnimator(duration: duration, timingParameters: timing)
-    let progress: CGFloat = bladeState == .collapsed ? 0 : 1
-    animator.addAnimations { [unowned self] in
-      self.didUpdateProgress(to: progress)
-    }
-    animator.startAnimation()
   }
 }
 
