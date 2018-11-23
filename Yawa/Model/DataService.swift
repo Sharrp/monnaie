@@ -22,7 +22,7 @@ class DataService {
   }
   private var dateFormatString = "yyyy-MM-dd_HH:mm:ss.SSSZ"
   
-  init(dbName dbFileName: String = "testing") {
+  init(dbName dbFileName: String) {
     self.dbFileName = dbFileName
     guard sqlite3_open(dbPath.path, &db) == SQLITE_OK else { print("error opening database"); return }
     

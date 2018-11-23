@@ -40,6 +40,7 @@
 		75D1CEC121A7B54200695054 /* MonthSwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F37D8521A59C2400997E91 /* MonthSwitchView.swift */; };
 		75D1CEC221A7B55400695054 /* ExportImportCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7509759321A00932000FDB39 /* ExportImportCSV.swift */; };
 		75D1CEC421A7E38B00695054 /* TabSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D1CEC321A7E38B00695054 /* TabSwitcher.swift */; };
+		75D1CEC521A82F1A00695054 /* TabSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D1CEC321A7E38B00695054 /* TabSwitcher.swift */; };
 		75D32C0320A3093000D13420 /* HistorySummaryCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0220A3093000D13420 /* HistorySummaryCells.swift */; };
 		75D32C0B20AB1DB300D13420 /* SyncNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */; };
 		75D32C0D20AB202E00D13420 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0C20AB202E00D13420 /* Settings.swift */; };
@@ -64,7 +65,7 @@
 		DF80D7FF20DE851600ADC203 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF80D7FE20DE851600ADC203 /* SyncController.swift */; };
 		DF80D80020DE851600ADC203 /* SyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF80D7FE20DE851600ADC203 /* SyncController.swift */; };
 		DF8C66C720B00C9A008A7488 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66C620B00C9A008A7488 /* DataService.swift */; };
-		DF8C66CF20B0635D008A7488 /* YawaTransactionsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66CE20B0635D008A7488 /* YawaTransactionsControllerTests.swift */; };
+		DF8C66CF20B0635D008A7488 /* YawaDataServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66CE20B0635D008A7488 /* YawaDataServiceTests.swift */; };
 		DF8C66D620B063B4008A7488 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8C66C620B00C9A008A7488 /* DataService.swift */; };
 		DF8C66D720B0648A008A7488 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98C209B0F9F006027C8 /* DataModel.swift */; };
 		DF8C66D820B06722008A7488 /* EditTransactionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7524B98E209B284F006027C8 /* EditTransactionController.swift */; };
@@ -148,7 +149,7 @@
 		DF80D7FE20DE851600ADC203 /* SyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncController.swift; sourceTree = "<group>"; };
 		DF8C66C620B00C9A008A7488 /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		DF8C66CC20B0635D008A7488 /* YawaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YawaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		DF8C66CE20B0635D008A7488 /* YawaTransactionsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YawaTransactionsControllerTests.swift; sourceTree = "<group>"; };
+		DF8C66CE20B0635D008A7488 /* YawaDataServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YawaDataServiceTests.swift; sourceTree = "<group>"; };
 		DF8C66D020B0635D008A7488 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DF959F38209C733C000AB980 /* Sync.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Sync.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -186,12 +187,12 @@
 			isa = PBXGroup;
 			children = (
 				75097591219FF785000FDB39 /* Coordinator.swift */,
-				DF80D7FD20DE846900ADC203 /* Sync */,
 				7524B98C209B0F9F006027C8 /* DataModel.swift */,
-				7509759321A00932000FDB39 /* ExportImportCSV.swift */,
+				DF8C66C620B00C9A008A7488 /* DataService.swift */,
 				7524B993209B3BD8006027C8 /* StoreManager.swift */,
 				75D32C0C20AB202E00D13420 /* Settings.swift */,
-				DF8C66C620B00C9A008A7488 /* DataService.swift */,
+				DF80D7FD20DE846900ADC203 /* Sync */,
+				7509759321A00932000FDB39 /* ExportImportCSV.swift */,
 				7529F95B215BCD6900FD8884 /* SummaryViewModel.swift */,
 				755EC21C219FB63F00CC0B09 /* HistoryViewModel.swift */,
 				758C6878218A777B00F2F7BE /* MonthSwitchViewModel.swift */,
@@ -307,7 +308,7 @@
 			children = (
 				DF8C66D020B0635D008A7488 /* Info.plist */,
 				75DBCAAF2171AAF000B7476A /* csv */,
-				DF8C66CE20B0635D008A7488 /* YawaTransactionsControllerTests.swift */,
+				DF8C66CE20B0635D008A7488 /* YawaDataServiceTests.swift */,
 				75DBCAAC2171A94000B7476A /* YawaMergerTests.swift */,
 				7518DC63219842EA001ECA26 /* csvImportTests.swift */,
 			);
@@ -464,6 +465,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75D1CEC521A82F1A00695054 /* TabSwitcher.swift in Sources */,
 				DF8C66D920B06725008A7488 /* DataProjectionsViewController.swift in Sources */,
 				75DBCAAE2171A94B00B7476A /* Merger.swift in Sources */,
 				DF8C66DB20B06732008A7488 /* StoreManager.swift in Sources */,
@@ -481,7 +483,7 @@
 				DF8C66DE20B06753008A7488 /* Settings.swift in Sources */,
 				751C8103218688F100BA7E6E /* TransactionComponserView.swift in Sources */,
 				7529F95D215BCD6900FD8884 /* SummaryViewModel.swift in Sources */,
-				DF8C66CF20B0635D008A7488 /* YawaTransactionsControllerTests.swift in Sources */,
+				DF8C66CF20B0635D008A7488 /* YawaDataServiceTests.swift in Sources */,
 				DF8C66DC20B06737008A7488 /* P2PSyncManager.swift in Sources */,
 				7518DC64219842EA001ECA26 /* csvImportTests.swift in Sources */,
 				DF8C66D720B0648A008A7488 /* DataModel.swift in Sources */,

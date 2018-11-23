@@ -77,7 +77,7 @@ extension EditTransactionViewModel: TransactionEditorDelegate {
   }
   
   func commit(amount: Double, category: TransactionCategory, date: Date) {
-    guard let transaction = editingTransaction else { return }
+    guard var transaction = editingTransaction else { return }
     transaction.amount = amount
     transaction.category = category
     transaction.date = date

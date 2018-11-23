@@ -8,8 +8,8 @@
 
 import XCTest
 
-class YawaTransactionsControllerTests: XCTestCase {
-  var dataProvider: TransactionsController!
+class YawaDataServiceTests: XCTestCase {
+  var dataProvider: DataService!
   
   let calendar = Calendar(identifier: .gregorian)
   var currentMonth: Int!
@@ -22,7 +22,7 @@ class YawaTransactionsControllerTests: XCTestCase {
   override func setUp() {
     super.setUp()
     
-    dataProvider = TransactionsController(dbName: "testing")
+    dataProvider = DataService(dbName: "testing")
     
     currentMonth = calendar.component(.month, from: Date.now)
     currentYear =  calendar.component(.year, from: Date.now)
@@ -52,7 +52,7 @@ class YawaTransactionsControllerTests: XCTestCase {
       let date = Date(calendar: calendar, year: dateValues[0], month: dateValues[1], day: dateValues[2], nanoseconds: nanoseconds)!
       
       let dayDate = Date(calendar: calendar, year: dateValues[0], month: dateValues[1], day: dateValues[2])!
-      if !testingDays.contains(where: { dayDate.isSame(granularity: .day, asDate: $0) }) {
+      if !testingDays.contains(where: { dayDate.isSame(.day, asDate: $0) }) {
         testingDays.append(date)
       }
       
@@ -132,7 +132,7 @@ class YawaTransactionsControllerTests: XCTestCase {
       return self.dataProvider.transaction(index: 2, forDay: self.testingDays[1])
     }
     
-    guard let t1 = testingTransaction() else { XCTFail(); return }
+    guard var t1 = testingTransaction() else { XCTFail(); return }
     let newAmount = 112.0
     let newCategory = TransactionCategory.entertainment
     t1.amount = newAmount

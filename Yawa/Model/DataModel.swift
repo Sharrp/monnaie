@@ -82,7 +82,7 @@ enum TransactionCategory: Int, CustomStringConvertible {
   }
 }
 
-class Transaction: NSObject, NSCoding {
+struct Transaction {
   var amount: Double {
     didSet {
       modifiedDate = Date.now
@@ -116,57 +116,25 @@ class Transaction: NSObject, NSCoding {
     self.modifiedDate = modifiedDate
   }
   
-  required init(coder decoder: NSCoder) {
-    amount = decoder.decodeDouble(forKey: "amount")
-    let categoryRawValue = decoder.decodeInteger(forKey: "category")
-    category = TransactionCategory(rawValue: categoryRawValue)!
-    authorName = decoder.decodeObject(forKey: "authorName") as! String
-    
-    date = decoder.decodeObject(forKey: "date") as! Date
-    createdDate = decoder.decodeObject(forKey: "createdDate") as! Date
-    modifiedDate = decoder.decodeObject(forKey: "modifiedDate") as! Date
-  }
-  
-  func encode(with coder: NSCoder) {
-    coder.encode(amount, forKey: "amount")
-    coder.encode(category.rawValue, forKey: "category")
-    coder.encode(authorName, forKey: "authorName")
-    
-    coder.encode(date, forKey: "date")
-    coder.encode(createdDate, forKey: "createdDate")
-    coder.encode(modifiedDate, forKey: "modifiedDate")
-  }
-}
-
-extension Transaction {
-  override func isEqual(_ object: Any?) -> Bool {
-    guard let transaction = object as? Transaction else { return false }
-    return amount == transaction.amount &&
-      authorName == transaction.authorName &&
-      category == transaction.category &&
-      abs(createdDate.timeIntervalSince(transaction.createdDate)) < 1e-6 &&
-      abs(date.timeIntervalSince(transaction.date)) < 1e-6
-  }
-  
-  override var hash: Int {
+  var hash: Int {
     return createdDate.hashValue
   }
 }
 
-extension Transaction {
-  override var description: String {
-    return "\(authorName), \(date): \(category), \(amount)"
+extension Transaction: Equatable {
+  public static func ==(lhs: Transaction, rhs: Transaction) -> Bool {
+    return lhs.amount == rhs.amount &&
+      lhs.authorName == rhs.authorName &&
+      lhs.category == rhs.category &&
+      abs(lhs.createdDate.timeIntervalSince(rhs.createdDate)) < 1e-6 &&
+      abs(lhs.date.timeIntervalSince(rhs.date)) < 1e-6
   }
 }
 
-func ==(lhs: [Transaction], rhs: [Transaction]) -> Bool {
-  guard lhs.count == rhs.count else { return false }
-  for i in 0..<lhs.count {
-    if lhs[i] != rhs[i] {
-      return false
-    }
+extension Transaction: CustomStringConvertible {
+  var description: String {
+    return "\(authorName), \(date): \(category), \(amount)"
   }
-  return true
 }
 
 struct MonthReport {

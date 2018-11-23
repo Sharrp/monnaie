@@ -8,7 +8,7 @@
 
 import XCTest
 
-func importCSV(bundle: Bundle, fileName: String, intoControlller controller: TransactionsController) {
+func importCSV(bundle: Bundle, fileName: String, intoControlller controller: DataService) {
   guard let path = bundle.path(forResource: fileName, ofType: "csv") else { XCTFail(); return }
   guard let csv = try? String(contentsOfFile: path) else { XCTFail(); return }
   let result = controller.importDataFromCSV(csv: csv, mode: .replace)
@@ -21,7 +21,7 @@ func importCSV(bundle: Bundle, fileName: String, intoControlller controller: Tra
 }
 
 class csvImportTests: XCTestCase {
-  private var dataProvider: TransactionsController!
+  private var dataProvider: DataService!
   private let monthDate = Date(timeIntervalSince1970: 1541934821) // Somewhere in November 2018
   private var testingDays: [Date]!
   private let emptyDay = Date(timeIntervalSince1970: 1541679833) // Nov 8, 2018
@@ -29,7 +29,7 @@ class csvImportTests: XCTestCase {
   override func setUp() {
     super.setUp()
     
-    dataProvider = TransactionsController()
+    dataProvider = DataService(dbName: "testing")
     importCSV(bundle: Bundle(for: type(of: self)), fileName: "csv-import", intoControlller: dataProvider)
     testingDays = dataProvider.allDates(ofGranularity: .day)
   }
@@ -97,7 +97,7 @@ class csvImportTests: XCTestCase {
       return self.dataProvider.transaction(index: 1, forDay: self.testingDays[2])
     }
 
-    guard let t1 = testingTransaction() else { XCTFail(); return }
+    guard var t1 = testingTransaction() else { XCTFail(); return }
     let newAmount = 112.0
     let newCategory = TransactionCategory.entertainment
     t1.amount = newAmount

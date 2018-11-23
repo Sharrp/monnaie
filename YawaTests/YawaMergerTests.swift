@@ -9,22 +9,22 @@
 import XCTest
 
 class YawaMergerTests: XCTestCase {
-  private var local: TransactionsController!
+  private var local: DataService!
   private let localAuthor = "Localler"
-  private var remote: TransactionsController!
+  private var remote: DataService!
   private let remoteAuthor = "Remoter"
-  private var expected: TransactionsController! // used sometimes to load expected results from CSV
+  private var expected: DataService! // used sometimes to load expected results from CSV
   private let merger = Merger()
   private var previousSync: [Int]!
   
-  func importCSV(fileName: String, intoControlller controller: TransactionsController) {
+  func importCSV(fileName: String, intoControlller controller: DataService) {
     YawaTests.importCSV(bundle: Bundle(for: type(of: self)), fileName: fileName, intoControlller: controller)
   }
 
   override func setUp() {
-    local = TransactionsController(dbName: "local")
-    remote = TransactionsController(dbName: "remote")
-    expected = TransactionsController(dbName: "expected")
+    local = DataService(dbName: "local")
+    remote = DataService(dbName: "remote")
+    expected = DataService(dbName: "expected")
     
     importCSV(fileName: "initial", intoControlller: local)
     importCSV(fileName: "initial", intoControlller: remote)
@@ -90,29 +90,13 @@ class YawaMergerTests: XCTestCase {
     let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
     var expectedTransactions = local.syncTransactions()
     expectedTransactions.append(newRemoteTransaction)
-    
-//    print()
-//    print(local.syncTransactions())
-//    print()
-//    print(remote.syncTransactions())
-//    print()
-//    print(merged)
-//    print()
-//    print(expectedTransactions)
-//    print()
     XCTAssert(merged == expectedTransactions)
-    
-//    XCTAssert(merged.count == expectedTransactions.count)
-//    for i in 0..<merged.count {
-//      XCTAssert(merged[i] == expectedTransactions[i], "Non equal transactions:\n\(merged[i])\n\(expectedTransactions[i])")
-//    }
-//    XCTAssert(merged == expectedTransactions)
   }
   
   func testUpdatedLocal() {
     Thread.sleep(forTimeInterval: 0.01) // so we will have different modifiedDate
     let index = 2
-    let transaction = local.syncTransactions()[index]
+    var transaction = local.syncTransactions()[index]
     transaction.amount += 200
     let expectedAmount = transaction.amount
     local.update(transaction: transaction)
@@ -125,7 +109,7 @@ class YawaMergerTests: XCTestCase {
   func testUpdatedRemote() {
     Thread.sleep(forTimeInterval: 0.01)
     let index = 3
-    let transaction = remote.syncTransactions()[index]
+    var transaction = remote.syncTransactions()[index]
     let newCategory = TransactionCategory.bills
     XCTAssert(transaction.category != newCategory)
     transaction.category = newCategory
@@ -139,11 +123,11 @@ class YawaMergerTests: XCTestCase {
   // Remote and location devices change different transactions
   func testUpdatedBoth() {
     Thread.sleep(forTimeInterval: 0.01)
-    let localTransaction = local.syncTransactions()[4]
+    var localTransaction = local.syncTransactions()[4]
     localTransaction.date = localTransaction.date.addingTimeInterval(-3600)
     local.update(transaction: localTransaction)
     
-    let remoteTransaction = remote.syncTransactions()[1]
+    var remoteTransaction = remote.syncTransactions()[1]
     remoteTransaction.date = remoteTransaction.date.addingTimeInterval(2 * Date.secondsPerDay)
     remote.update(transaction: remoteTransaction)
     
@@ -158,7 +142,7 @@ class YawaMergerTests: XCTestCase {
     local.remove(transaction: transaction)
     let merged = merger.merge(local: local.syncTransactions(), remote: remote.syncTransactions(), previousSyncTransactions: previousSync)
     XCTAssert(merged == local.syncTransactions())
-    XCTAssert(local.syncTransactions() != remote.syncTransactions())
+    XCTAssertNotEqual(local.syncTransactions(), remote.syncTransactions())
   }
   
   func testDeletedRemote() {
@@ -189,12 +173,12 @@ class YawaMergerTests: XCTestCase {
   func testConflictUpdatedBoth() {
     let index = 0
     Thread.sleep(forTimeInterval: 0.01)
-    let localTransaction = local.syncTransactions()[index]
+    var localTransaction = local.syncTransactions()[index]
     localTransaction.date = localTransaction.date.addingTimeInterval(-1200)
     local.update(transaction: localTransaction)
     
     Thread.sleep(forTimeInterval: 0.01) // so the remote version is newer and we expect it in merged list
-    let remoteTransaction = remote.syncTransactions()[index]
+    var remoteTransaction = remote.syncTransactions()[index]
     let expectedDate = remoteTransaction.date.addingTimeInterval(-5000)
     remoteTransaction.date = expectedDate
     remote.update(transaction: remoteTransaction)
@@ -217,7 +201,7 @@ class YawaMergerTests: XCTestCase {
   }
   
   func testConflictLocalUpdateRemoteDelete() {
-    guard let transaction = local.transaction(withIndex: 1, forDayIndex: 0) else { XCTFail(); return }
+    guard var transaction = local.transaction(withIndex: 1, forDayIndex: 0) else { XCTFail(); return }
     transaction.amount += 200
     local.update(transaction: transaction)
     remote.remove(transaction: transaction)
@@ -227,7 +211,7 @@ class YawaMergerTests: XCTestCase {
   }
   
   func testConflictLocalDeleteRemoteUpdate() {
-    guard let transaction = local.transaction(withIndex: 0, forDayIndex: 1) else { XCTFail(); return }
+    guard var transaction = local.transaction(withIndex: 0, forDayIndex: 1) else { XCTFail(); return }
     local.remove(transaction: transaction)
     transaction.amount += 200
     remote.update(transaction: transaction)
@@ -286,7 +270,7 @@ class YawaMergerTests: XCTestCase {
   }
 }
 
-extension TransactionsController {
+extension DataService {
   func transaction(withIndex index: Int, forDayIndex dayIndex: Int) -> Transaction? {
     let day = allDates(ofGranularity: .day)[dayIndex]
     return transaction(index: index, forDay: day)
