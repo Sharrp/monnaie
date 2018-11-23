@@ -13,7 +13,7 @@ class TransactionCell: UITableViewCell {
   @IBOutlet weak var categoryLabel: UILabel!
   @IBOutlet weak var authorLabel: UILabel!
   @IBOutlet weak var topMarginConstraint: NSLayoutConstraint!
-  @IBOutlet var amountLabel: UILabel!
+  @IBOutlet weak var amountLabel: UILabel!
   
   var isFirst = false
   var isLast = false
