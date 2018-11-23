@@ -102,11 +102,12 @@ class GuillotineViewController: UIViewController {
   
   func setNavigationBar(hidden: Bool, animated: Bool) {
     view.bringSubviewToFront(navBarContainer)
-    let animation = { [unowned self] in
+    let animation = { [weak self] in
       if hidden {
-        self.navBarContainer.transform = CGAffineTransform(translationX: 0, y: -self.navBarContainer.frame.height)
+        guard let navBarHeight = self?.navBarContainer.frame.height else { return }
+        self?.navBarContainer.transform = CGAffineTransform(translationX: 0, y: -navBarHeight)
       } else {
-        self.navBarContainer.transform = .identity
+        self?.navBarContainer.transform = .identity
       }
     }
     if animated {
@@ -177,8 +178,8 @@ class GuillotineViewController: UIViewController {
       // That's the way constraints are animated
       view.layoutIfNeeded()
       bladeBottomInsetConstraint.constant = bottomInset(forState: bladeState)
-      animator.addAnimations { [unowned self] in
-        self.view.layoutIfNeeded()
+      animator.addAnimations { [weak self] in
+        self?.view.layoutIfNeeded()
       }
       animator.startAnimation()
       
@@ -239,8 +240,8 @@ class GuillotineViewController: UIViewController {
     }
     
     if animated {
-      let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [unowned self] in
-        self.bladeViewController.view.transform = transform
+      let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [weak self] in
+        self?.bladeViewController.view.transform = transform
       }
       animator.startAnimation()
     } else {

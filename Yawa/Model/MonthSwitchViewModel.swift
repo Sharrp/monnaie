@@ -65,10 +65,10 @@ class MonthSwitchViewModel: NSObject {
   lazy var dataServiceUpdated: DataServiceUpdateCallback? = { [weak self] in
     guard let dataService = self?.dataService else { return }
     guard let strongSelf = self else { return }
+    guard let collectionView = self?.view?.collectionView else { return }
     let reports = dataService.monthlyAmounts()
     strongSelf.reports = reports
     strongSelf.todayAmount = dataService.totalAmount(forDay: Date.now)
-    guard let collectionView = self?.view?.collectionView else { return }
     collectionView.reloadData()
   }
   
@@ -85,8 +85,11 @@ class MonthSwitchViewModel: NSObject {
   
   lazy var bladeStateSwitch: GuillotineBladeStateCallback? = { [weak self] state in
     let hideProgress: CGFloat = state == .expanded ? 0 : 1
-    guard let strongSelf = self else { return }
-    self?.view?.collectionView.contentInset.right = strongSelf.margin - (strongSelf.interCellMargin + strongSelf.todayWidth) * (1 - hideProgress)
+    guard let margin = self?.margin else { return }
+    guard let interCellMargin = self?.interCellMargin else { return }
+    guard let todayWidth = self?.todayWidth else { return }
+    self?.view?.collectionView.contentInset.right = margin - (interCellMargin + todayWidth) * (1 - hideProgress)
+    
     let scrollAndSelectionEnabled = state == .expanded
     self?.view?.collectionView.isScrollEnabled = scrollAndSelectionEnabled
     self?.view?.collectionView.allowsSelection = scrollAndSelectionEnabled

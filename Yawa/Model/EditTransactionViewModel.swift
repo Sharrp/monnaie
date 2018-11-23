@@ -88,16 +88,17 @@ extension EditTransactionViewModel: TransactionEditorDelegate {
   private func dismiss() {
     guillotine?.setNavigationBar(hidden: true, animated: true)
     viewController?.composer.set(mode: .table, animated: true)
-    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeInOut) { [unowned self] in
-      self.viewController?.blurView.effect = nil
-      self.viewController?.composer.transform = self.composerTransformToMatchCell
-      self.viewController?.hideControls(withProgress: 1, includingComposer: false)
+    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeInOut) { [weak self] in
+      guard let transformToMatchCell = self?.composerTransformToMatchCell else { return }
+      self?.viewController?.blurView.effect = nil
+      self?.viewController?.composer.transform = transformToMatchCell
+      self?.viewController?.hideControls(withProgress: 1, includingComposer: false)
     }
-    animator.addCompletion { [unowned self] _ in
-      self.replacedView?.isHidden = false
-      self.viewController?.view.removeFromSuperview()
-      self.viewController = nil
-      self.replacedView?.isHidden = false
+    animator.addCompletion { [weak self] _ in
+      self?.replacedView?.isHidden = false
+      self?.viewController?.view.removeFromSuperview()
+      self?.viewController = nil
+      self?.replacedView?.isHidden = false
     }
     animator.startAnimation()
   }

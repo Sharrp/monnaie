@@ -94,8 +94,7 @@ extension SyncViewController: SyncPresentorDelegate {
     updateStatus(to: "Sync finished")
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-      guard let strongSelf = self else { return }
-      strongSelf.dismissWithNotification()
+      self?.dismissWithNotification()
     }
   }
   

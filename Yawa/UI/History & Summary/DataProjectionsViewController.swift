@@ -71,7 +71,7 @@ class ProjectionsViewController: UIViewController {
     self?.fakeCard.transform = CGAffineTransform(translationX: 0, y: fakeCardOffsetWhenExpanded * progress)
   }
   
-  lazy var bladeStateSwitch: GuillotineBladeStateCallback? = { [weak self] bladeState in
+  lazy var bladeStateSwitch: GuillotineBladeStateCallback? = { bladeState in
     let progress: CGFloat = bladeState == .expanded ? 1 : 0
     let animator = UIViewPropertyAnimator(duration: Animation.duration, timingParameters: Animation.springTiming)
     animator.addAnimations { [weak self] in

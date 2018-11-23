@@ -60,7 +60,7 @@ class EditTransactionController: UIViewController {
     self?.hideControls(withProgress: restrictedProgress)
   }
   
-  lazy var bladeStateSwitch: GuillotineBladeStateCallback? = { [weak self] bladeState in
+  lazy var bladeStateSwitch: GuillotineBladeStateCallback? = { bladeState in
     let progress: CGFloat = bladeState == .collapsed ? 0 : 1
     let animator = UIViewPropertyAnimator(duration: Animation.duration, timingParameters: Animation.springTiming)
     animator.addAnimations { [weak self] in
@@ -127,12 +127,12 @@ class EditTransactionController: UIViewController {
     composer.set(mode: .table, animated: true)
     adjustControls(toMode: .waitingForInput, animated: false)
     let yShiftFlyAway = -(composer.frame.maxY + 30)
-    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [unowned self] in
-      self.composer.transform = CGAffineTransform(translationX: 0, y: yShiftFlyAway).scaledBy(x: 0.1, y: 0.1)
+    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [weak self] in
+      self?.composer.transform = CGAffineTransform(translationX: 0, y: yShiftFlyAway).scaledBy(x: 0.1, y: 0.1)
     }
-    animator.addCompletion { [unowned self] _ in
-      self.composer.reset(animated: false)
-      self.composer.transform = .identity
+    animator.addCompletion { [weak self] _ in
+      self?.composer.reset(animated: false)
+      self?.composer.transform = .identity
     }
     animator.startAnimation(afterDelay: 0.3)
   }
@@ -165,9 +165,9 @@ class EditTransactionController: UIViewController {
     categoryCollectionView.isHidden = mode != .category
     
     let addHidden = mode == .waitingForInput
-    let animation = { [unowned self] in
-      self.commitButton.alpha = addHidden ? 0 : 1
-      self.commitButton.transform = addHidden ? CGAffineTransform(translationX: 0, y: Animation.appearceWithShfit) : .identity
+    let animation = { [weak self] in
+      self?.commitButton.alpha = addHidden ? 0 : 1
+      self?.commitButton.transform = addHidden ? CGAffineTransform(translationX: 0, y: Animation.appearceWithShfit) : .identity
     }
     if animated {
       UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut, animations: animation).startAnimation()

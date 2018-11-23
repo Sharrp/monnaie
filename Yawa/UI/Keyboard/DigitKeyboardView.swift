@@ -125,7 +125,7 @@ class DigitKeyboardView: UIView {
     switch longTap.state {
     case .began:
       removeLastCharacter()
-      deleteTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] (timer: Timer) in
+      deleteTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] _ in
         self?.removeLastCharacter()
       }
     case .cancelled, .ended, .failed:

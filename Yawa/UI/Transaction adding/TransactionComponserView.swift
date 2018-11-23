@@ -178,32 +178,32 @@ class TransactionComponserView: UIView {
   private func amountElementsAnimation(forMode mode: TransactionComposerMode) -> ModeSwitchAnimation {
     let scaleFactor: CGFloat = 3
     let downscale = CGAffineTransform(scaleX: 1/scaleFactor, y: 1/scaleFactor)
-    return { [unowned self] in
+    return { [weak self] in
       switch mode {
       case .waitingForInput, .amount:
-        self.amountInput.becomeFirstResponder()
-        self.amountInput.transform = .identity
-        self.amountInput.alpha = 1
-        self.amountLabel.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
-        self.amountLabel.alpha = 0
-        self.amountButton.transform = downscale
-        self.amountButton.alpha = 0
+        self?.amountInput.becomeFirstResponder()
+        self?.amountInput.transform = .identity
+        self?.amountInput.alpha = 1
+        self?.amountLabel.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+        self?.amountLabel.alpha = 0
+        self?.amountButton.transform = downscale
+        self?.amountButton.alpha = 0
       case .category, .date:
-        self.amountInput.resignFirstResponder()
-        self.amountInput.transform = downscale
-        self.amountInput.alpha = 0
-        self.amountLabel.transform = .identity
-        self.amountLabel.alpha = 1
-        self.amountButton.transform = .identity
-        self.amountButton.alpha = 1
+        self?.amountInput.resignFirstResponder()
+        self?.amountInput.transform = downscale
+        self?.amountInput.alpha = 0
+        self?.amountLabel.transform = .identity
+        self?.amountLabel.alpha = 1
+        self?.amountButton.transform = .identity
+        self?.amountButton.alpha = 1
       case .table:
-        self.amountInput.resignFirstResponder()
-        self.amountInput.transform = downscale
-        self.amountInput.alpha = 0
-        self.amountLabel.transform = .identity
-        self.amountLabel.alpha = 1
-        self.amountButton.transform = downscale
-        self.amountButton.alpha = 0
+        self?.amountInput.resignFirstResponder()
+        self?.amountInput.transform = downscale
+        self?.amountInput.alpha = 0
+        self?.amountLabel.transform = .identity
+        self?.amountLabel.alpha = 1
+        self?.amountButton.transform = downscale
+        self?.amountButton.alpha = 0
       }
     }
   }
@@ -221,50 +221,48 @@ class TransactionComponserView: UIView {
       self.categoryButtonWidth.constant = UIScreen.main.bounds.width - 2 * 8 // fucking new margin
     }
     
-    return { [unowned self] in
-      self.categoryButton.layer.borderWidth = 1
-//      self.categoryButton.layer.borderWidth = mode == .category ? 1 : 0
-      self.categoryButton.backgroundColor = mode == .category ? .clear : .white
-      self.categoryButton.alpha = mode == .waitingForInput ? 0 : 1
+    return { [weak self] in
+      self?.categoryButton.layer.borderWidth = 1
+      self?.categoryButton.backgroundColor = mode == .category ? .clear : .white
+      self?.categoryButton.alpha = mode == .waitingForInput ? 0 : 1
       
       let defaultCategoryTitleInset = UIEdgeInsets(top: 0, left: 13, bottom: 0, right: 0)
       switch mode {
       case .waitingForInput:
-        self.categoryButton.transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
-        self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        self?.categoryButton.transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
+        self?.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
       case .amount:
-        self.categoryButton.transform = .identity
-        self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        self?.categoryButton.transform = .identity
+        self?.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
       case .date:
-        self.categoryButton.transform = .identity
-        self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        self?.categoryButton.transform = .identity
+        self?.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
       case .category:
-        self.categoryButton.transform = .identity
-        self.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        self?.categoryButton.transform = .identity
+        self?.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
       case .table:
-        self.categoryButton.transform = CGAffineTransform(translationX: -self.baseSize-self.margin+2, y: 0)
-        self.categoryButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
+        guard let baseSize = self?.baseSize else { return }
+        guard let margin = self?.margin else { return }
+        self?.categoryButton.transform = CGAffineTransform(translationX: -baseSize-margin+2, y: 0)
+        self?.categoryButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
       }
     }
   }
   
   private func dateButtonAnimation(forMode mode: TransactionComposerMode) -> ModeSwitchAnimation {
-    return { [unowned self] in
-      self.dateButton.layer.borderWidth = 1
-//      self.dateButton.layer.borderWidth = mode == .date ? 1 : 0
-      self.dateButton.backgroundColor = mode == .date ? .clear : .white
+    return { [weak self] in
+      self?.dateButton.layer.borderWidth = 1
+      self?.dateButton.backgroundColor = mode == .date ? .clear : .white
       let isVisible = mode == .category || mode == .date || mode == .amount
-      self.dateButton.alpha = isVisible ? 1 : 0
+      self?.dateButton.alpha = isVisible ? 1 : 0
       
       switch mode {
       case .waitingForInput:
-        self.dateButton.transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
-      case .amount, .category:
-        self.dateButton.transform = .identity
-      case .date:
-        self.dateButton.transform = .identity
+        self?.dateButton.transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
+      case .amount, .category, .date:
+        self?.dateButton.transform = .identity
       case .table:
-        self.dateButton.transform = CGAffineTransform(translationX: -5*Animation.appearceWithShfit, y: 0)
+        self?.dateButton.transform = CGAffineTransform(translationX: -5*Animation.appearceWithShfit, y: 0)
       }
     }
   }
