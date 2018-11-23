@@ -44,6 +44,7 @@ extension AddTransactionViewModel: TransactionEditorDelegate {
   func commit(amount: Double, category: TransactionCategory, date: Date) {
     let transaction = Transaction(amount: amount, category: category, authorName: Settings.main.syncName, transactionDate: date)
     dataService?.add(transaction: transaction)
+    configure(forMode: .waitingForInput, animated: true)
     viewController?.animateComposerFlyAway()
   }
 }

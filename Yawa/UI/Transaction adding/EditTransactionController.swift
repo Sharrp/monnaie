@@ -124,7 +124,8 @@ class EditTransactionController: UIViewController {
   }
 
   func animateComposerFlyAway() {
-    composer.set(mode: .table)
+    composer.set(mode: .table, animated: true)
+    adjustControls(toMode: .waitingForInput, animated: false)
     let yShiftFlyAway = -(composer.frame.maxY + 30)
     let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [unowned self] in
       self.composer.transform = CGAffineTransform(translationX: 0, y: yShiftFlyAway).scaledBy(x: 0.1, y: 0.1)
@@ -138,8 +139,8 @@ class EditTransactionController: UIViewController {
   
   func switchTo(mode: TransactionComposerMode, animated: Bool) {
     // Only internal changes should trigger delegate calls so delegationEnabled = false
-    adjustControls(toMode: mode, animated: animated, delegationEnabled: false)
-    composer.set(mode: mode, animated: animated, disableDelegation: false)
+    adjustControls(toMode: mode, animated: animated)
+    composer.set(mode: mode, animated: animated)
   }
   
   func hideControls(withProgress progress: CGFloat, includingComposer: Bool = true) {
@@ -158,7 +159,7 @@ class EditTransactionController: UIViewController {
     }
   }
   
-  private func adjustControls(toMode mode: TransactionComposerMode, animated: Bool, delegationEnabled: Bool = true) {
+  private func adjustControls(toMode mode: TransactionComposerMode, animated: Bool, delegationEnabled: Bool = false) {
     keyboardView.isHidden = mode == .date || mode == .category
     dateTimePicker.isHidden = mode != .date
     categoryCollectionView.isHidden = mode != .category
@@ -188,7 +189,7 @@ extension EditTransactionController: CategorySelectionDelegate {
 
 extension EditTransactionController: TransactionComposerDelegate {
   func didSwitch(toMode mode: TransactionComposerMode, animated: Bool = false) {
-    adjustControls(toMode: mode, animated: true)
+    adjustControls(toMode: mode, animated: true, delegationEnabled: true)
   }
   
   func amountChangedValidity(isValid amountIsValid: Bool) {

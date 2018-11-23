@@ -50,7 +50,11 @@ class TransactionComponserView: UIView {
   
   private(set) var mode: TransactionComposerMode = .waitingForInput
   
-  func set(mode: TransactionComposerMode, animated: Bool = true, disableDelegation: Bool = false) {
+  func set(mode: TransactionComposerMode, animated: Bool) {
+    set(mode: mode, animated: animated, enableDelegation: false)
+  }
+  
+  private func set(mode: TransactionComposerMode, animated: Bool, enableDelegation: Bool) {
     if mode == .waitingForInput && self.mode != mode {
       amountInput.text = ""
     }
@@ -73,7 +77,7 @@ class TransactionComponserView: UIView {
       layoutIfNeeded()
     }
     
-    if !disableDelegation {
+    if enableDelegation {
       delegate?.didSwitch(toMode: mode, animated: animated)
     }
   }
@@ -137,20 +141,20 @@ class TransactionComponserView: UIView {
   }
   
   @IBAction func dateButtonTouched() {
-    set(mode: .date)
+    set(mode: .date, animated: true, enableDelegation: true)
   }
   
   @IBAction func categoryButtonTouched() {
-    set(mode: .category)
+    set(mode: .category, animated: true, enableDelegation: true)
   }
   
   @IBAction func amountButtonTouched() {
-    set(mode: .amount)
+    set(mode: .amount, animated: true, enableDelegation: true)
   }
   
   func reset(animated: Bool = true) {
     amountInput.text = ""
-    set(mode: .waitingForInput, animated: animated)
+    set(mode: .waitingForInput, animated: animated, enableDelegation: false)
   }
   
   func set(date: Date) {
@@ -268,8 +272,8 @@ class TransactionComponserView: UIView {
   @IBAction func amountTextChanged() {
     delegate?.amountChangedValidity(isValid: inputHasValidContent)
     guard let textLength = amountInput.text?.count else { return }
-    let nextMode: TransactionComposerMode = textLength > 0 ? .amount: .waitingForInput
-    set(mode: nextMode)
+    let nextMode: TransactionComposerMode = textLength > 0 ? .amount : .waitingForInput
+    set(mode: nextMode, animated: true, enableDelegation: true)
     if let amount = amount {
       amountLabel.text = formatMoney(amount: amount, currency: .JPY)
     }

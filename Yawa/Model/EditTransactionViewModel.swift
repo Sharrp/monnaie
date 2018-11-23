@@ -51,13 +51,11 @@ extension EditTransactionViewModel: ManagedTransactionEditor {
     let newPosition = superviewOfViewToReplace.convert(viewToReplace.frame.origin, to: nil)
     composerTransformBeforeEditing = composer.transform
     composer.transform = .identity // to properly calculate transform to match cell
-//    let currentPosition = addViewController!.view.convert(addViewController!.composer.frame.origin, to: nil)
     composerTransformToMatchCell = CGAffineTransform(translationX: 0, y: newPosition.y - 519)
     composer.transform = composerTransformToMatchCell
     
     controller.switchTo(mode: .table, animated: false)
     composer.alpha = 1
-//    composer.set(mode: .table, animated: false, disableDelegation: true)
     composer.display(transaction: transaction)
     controller.setCommitButton(enabled: true)
     controller.set(date: transaction.date)
@@ -69,7 +67,7 @@ extension EditTransactionViewModel: ManagedTransactionEditor {
       controller.hideControls(withProgress: 0)
     }.startAnimation()
 
-    composer.set(mode: .amount, animated: true, disableDelegation: true)
+    composer.set(mode: .amount, animated: true)
   }
 }
 
@@ -89,7 +87,7 @@ extension EditTransactionViewModel: TransactionEditorDelegate {
   
   private func dismiss() {
     guillotine?.setNavigationBar(hidden: true, animated: true)
-    viewController?.composer.set(mode: .table, animated: true, disableDelegation: true)
+    viewController?.composer.set(mode: .table, animated: true)
     let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeInOut) { [unowned self] in
       self.viewController?.blurView.effect = nil
       self.viewController?.composer.transform = self.composerTransformToMatchCell
