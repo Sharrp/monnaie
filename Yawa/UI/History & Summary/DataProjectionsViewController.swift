@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol TransactionsProjecting: class {
+protocol TransactionsProjecting: AnyObject {
   var projectionName: String { get }
   func project(intoTableView: UITableView?)
 }
