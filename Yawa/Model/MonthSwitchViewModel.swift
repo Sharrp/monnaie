@@ -95,11 +95,11 @@ class MonthSwitchViewModel: NSObject {
   }
   
   private func update(hideProgress: CGFloat, animated: Bool) {
+    view?.setSeparatorHidden(progress: hideProgress, animated: animated)
+    
     let zeroOffset = usersScrollOffset ?? offsetToHideToday
     let offset = zeroOffset + hideProgress * (offsetToShowToday - zeroOffset)
     view?.collectionView?.contentOffset.x = offset
-    
-    view?.setSeparatorHidden(progress: hideProgress, animated: animated)
     monthsHideProgress = hideProgress
     view?.collectionView.reloadData()
   }
@@ -131,18 +131,24 @@ extension MonthSwitchViewModel: UICollectionViewDataSource {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseID, for: indexPath) as! MonthSwitchCell
     cell.layer.cornerRadius = 8
     
+    let isSelected = indexPath.row == selectedIndex
+    let isCurrentMonth = indexPath.row == reports.count - 1 // FIX: works only if there is no months from the future
     if indexPath.row < reports.count {
       let report = reports[indexPath.row]
       cell.amountLabel.text = formatMoney(amount: report.amount, currency: .JPY)
       cell.monthLabel.text = string(forMonth: report.monthDate)
-      cell.setState(selected: indexPath.row == selectedIndex)
       
-      let isCurrentMonth = report.monthDate.isSame(.month, asDate: Date.now)
+      let backgroundAlpha = isSelected ? (1 - monthsHideProgress) : 0
+      var textActitvityLevel: CGFloat = 1
+      if !isSelected {
+        textActitvityLevel = isCurrentMonth ? monthsHideProgress : 0
+      }
+      cell.setState(textActiveLevel: textActitvityLevel, backgroundAlpha: backgroundAlpha)
       cell.alpha = isCurrentMonth ? 1 : 1 - monthsHideProgress
     } else {
       cell.amountLabel.text = formatMoney(amount: todayAmount, currency: .JPY)
       cell.monthLabel.text = "Today"
-      cell.setState(selected: true)
+      cell.setState(textActiveLevel: 1, backgroundAlpha: 0)
       cell.alpha = monthsHideProgress
     }
     return cell
@@ -150,23 +156,6 @@ extension MonthSwitchViewModel: UICollectionViewDataSource {
 }
 
 extension MonthSwitchViewModel: UICollectionViewDelegate {
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    // There is no good way to disable celection of a particular cell ("Today" in out case)
-    // That's why multiple selection is enabled and selection is maintained semi-manually
-    let previouslySelectedIndex = IndexPath(row: selectedIndex, section: 0)
-    collectionView.deselectItem(at: previouslySelectedIndex, animated: true)
-    if let deselectedRow = collectionView.cellForItem(at: previouslySelectedIndex) as? MonthSwitchCell {
-      deselectedRow.setState(selected: false)
-    }
-    
-    selectedIndex = indexPath.row
-    let report = reports[selectedIndex]
-    if let selectedRow = collectionView.cellForItem(at: indexPath) as? MonthSwitchCell {
-      selectedRow.setState(selected: true)
-    }
-    callbacks.forEach{ $0?(report.monthDate) }
-  }
-  
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
     if scrollView.isDragging {
       usersScrollOffset = scrollView.contentOffset.x
@@ -174,11 +163,13 @@ extension MonthSwitchViewModel: UICollectionViewDelegate {
   }
   
   func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-    return indexPath.row != reports.count
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
-    return false // we deselect cells manually on selection
+    guard indexPath.row < reports.count else { return false }
+    guard selectedIndex != indexPath.row else { return false }
+    selectedIndex = indexPath.row
+    let report = reports[selectedIndex]
+    callbacks.forEach{ $0?(report.monthDate) }
+    collectionView.reloadData()
+    return false
   }
 }
 

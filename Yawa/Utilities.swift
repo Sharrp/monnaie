@@ -149,4 +149,5 @@ struct Color {
   static let accentText = UIColor(hex: 0x333333)
   static let shadowColor = UIColor(white: 0.84, alpha: 1)
   static let background = UIColor(hex: 0xF9F9F9)
+  static let cellBackground = UIColor(hex: 0xF2F2F6)
 }
