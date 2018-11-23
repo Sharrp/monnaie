@@ -23,7 +23,7 @@ extension FileManager {
         let filePath = dirPath + "/" + fileName
         try removeItem(atPath: filePath)
       }
-    } catch let error {
+    } catch {
       print("Error while cleaning directory \(dirPath): \(error)")
     }
   }
