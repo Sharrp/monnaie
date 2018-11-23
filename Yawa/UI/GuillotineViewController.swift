@@ -240,10 +240,9 @@ class GuillotineViewController: UIViewController {
     }
     
     if animated {
-      let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [weak self] in
+      UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [weak self] in
         self?.bladeViewController.view.transform = transform
-      }
-      animator.startAnimation()
+      }.startAnimation()
     } else {
       bladeViewController.view.transform = transform
     }
