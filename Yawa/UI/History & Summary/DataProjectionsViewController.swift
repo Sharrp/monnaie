@@ -44,6 +44,12 @@ class ProjectionsViewController: UIViewController {
     navigationBar.backgroundColor = .white
     tabSwitcher.subscribe(callback: tabSwitched)
     
+    navigationBar.layer.masksToBounds = false
+    navigationBar.layer.shadowOffset = CGSize()
+    navigationBar.layer.shadowColor = Color.shadowColor.cgColor
+    navigationBar.layer.shadowRadius = 8
+    navigationBar.layer.shadowOpacity = 1
+    
     scrollToBottom()
   }
   
