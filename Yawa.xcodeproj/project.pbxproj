@@ -39,6 +39,7 @@
 		75C046E92098892600E8B09E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C046E72098892600E8B09E /* LaunchScreen.storyboard */; };
 		75D1CEC121A7B54200695054 /* MonthSwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F37D8521A59C2400997E91 /* MonthSwitchView.swift */; };
 		75D1CEC221A7B55400695054 /* ExportImportCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7509759321A00932000FDB39 /* ExportImportCSV.swift */; };
+		75D1CEC421A7E38B00695054 /* TabSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D1CEC321A7E38B00695054 /* TabSwitcher.swift */; };
 		75D32C0320A3093000D13420 /* HistorySummaryCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0220A3093000D13420 /* HistorySummaryCells.swift */; };
 		75D32C0B20AB1DB300D13420 /* SyncNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */; };
 		75D32C0D20AB202E00D13420 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0C20AB202E00D13420 /* Settings.swift */; };
@@ -126,6 +127,7 @@
 		75C046E52098892600E8B09E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		75C046E82098892600E8B09E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		75C046EA2098892600E8B09E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		75D1CEC321A7E38B00695054 /* TabSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabSwitcher.swift; sourceTree = "<group>"; };
 		75D32C0220A3093000D13420 /* HistorySummaryCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySummaryCells.swift; sourceTree = "<group>"; };
 		75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncNameViewController.swift; sourceTree = "<group>"; };
 		75D32C0C20AB202E00D13420 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				75C046E02098892600E8B09E /* DataProjectionsViewController.swift */,
 				75D32C0220A3093000D13420 /* HistorySummaryCells.swift */,
 				75F37D8521A59C2400997E91 /* MonthSwitchView.swift */,
+				75D1CEC321A7E38B00695054 /* TabSwitcher.swift */,
 			);
 			path = "History & Summary";
 			sourceTree = "<group>";
@@ -452,6 +455,7 @@
 				75097592219FF785000FDB39 /* Coordinator.swift in Sources */,
 				75F7D41621A354E20033FBCC /* EditTransactionViewModel.swift in Sources */,
 				7524B996209B4451006027C8 /* SyncViewController.swift in Sources */,
+				75D1CEC421A7E38B00695054 /* TabSwitcher.swift in Sources */,
 				DF80D7FB20DE2A5A00ADC203 /* SyncPermissionsManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

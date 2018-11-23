@@ -16,24 +16,15 @@ protocol TransactionsProjecting: class {
 class ProjectionsViewController: UIViewController {
   var projectors = [TransactionsProjecting]() {
     didSet {
-      guard projectors.count > 0 else {
-        selectedProjectionIndex = nil
-        return
-      }
       contentOffsets = [CGFloat](repeating: 0, count: projectors.count)
-      selectedProjectionIndex = 0
-    }
-  }
-  private var selectedProjectionIndex: Int? {
-    didSet {
-      guard let selectedIndex = selectedProjectionIndex else { return }
-      guard selectedIndex < projectors.count else { return }
-      switchProjector(fromIndex: oldValue, toIndex: selectedIndex)
+      tabSwitcher.titles = projectors.map{ $0.projectionName }
+      switchProjector(fromIndex: nil, toIndex: 0)
     }
   }
   
-  @IBOutlet weak var navigationBar: UINavigationBar!
+  @IBOutlet weak var navigationBar: UIView!
   private var navBarBorder = UIView()
+  @IBOutlet weak var tabSwitcher: TabSwitcher!
   @IBOutlet weak var tableView: UITableView!
   private let tableViewBottomOffsetWhenCollapsed: CGFloat = -60
   
@@ -49,11 +40,9 @@ class ProjectionsViewController: UIViewController {
     tableView.transform = CGAffineTransform(translationX: 0, y: tableViewBottomOffsetWhenCollapsed)
     tableView.showsVerticalScrollIndicator = false
     
-    navigationBar.setBackgroundImage(UIImage(), for: .default)
-    navigationBar.shadowImage = UIImage()
-    navigationBar.isTranslucent = true
     navigationBar.addSubview(navBarBorder)
-    navBarBorder.backgroundColor = UIColor(white: 1, alpha: 0.2)
+    navigationBar.backgroundColor = .white
+    tabSwitcher.subscribe(callback: tabSwitched)
     
     scrollToBottom()
   }
@@ -85,6 +74,10 @@ class ProjectionsViewController: UIViewController {
     animator.startAnimation()
   }
   
+  lazy var tabSwitched: TabSwitchedCallback = { [weak self] previous, next in
+    self?.switchProjector(fromIndex: previous, toIndex: next)
+  }
+  
   private func scrollToBottom(animated: Bool = false) { // TODO: update when month switcher is done
     tableView.setContentOffset(CGPoint(x: 0, y: CGFloat.greatestFiniteMagnitude), animated: false)
   }
@@ -100,10 +93,6 @@ class ProjectionsViewController: UIViewController {
     next.project(intoTableView: tableView)
     tableView.layoutIfNeeded()
     tableView.contentOffset = CGPoint(x: 0, y: contentOffsets[nextIndex])
-  }
-  
-  @IBAction func viewModeChanged(sender: UISegmentedControl) {
-    selectedProjectionIndex = sender.selectedSegmentIndex
   }
 }
 

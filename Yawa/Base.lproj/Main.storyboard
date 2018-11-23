@@ -278,44 +278,44 @@
                                     <outlet property="separator" destination="Roi-lv-hht" id="QmK-go-83T"/>
                                 </connections>
                             </view>
-                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NaU-ZR-wJp">
-                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="barTintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <items>
-                                    <navigationItem id="00v-SC-aFf">
-                                        <nil key="title"/>
-                                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="YcS-hR-o8f">
-                                            <rect key="frame" x="112.5" y="7" width="150" height="30"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <segments>
-                                                <segment title="History"/>
-                                                <segment title="Summary"/>
-                                            </segments>
-                                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <connections>
-                                                <action selector="viewModeChangedWithSender:" destination="BYZ-38-t0r" eventType="valueChanged" id="JvL-3S-3Wg"/>
-                                            </connections>
-                                        </segmentedControl>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dR6-9D-Tfj">
+                                <rect key="frame" x="0.0" y="-36" width="375" height="100"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w2q-Oc-fKm" customClass="TabSwitcher" customModule="Yawa" customModuleProvider="target">
+                                        <rect key="frame" x="67.5" y="59" width="240" height="41"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="240" id="5FJ-hL-faO"/>
+                                            <constraint firstAttribute="height" constant="41" id="VDf-Jf-Lxp"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="width" destination="5FJ-hL-faO" id="ErE-HU-K8h"/>
+                                        </connections>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="Thd-rX-Rih"/>
+                                    <constraint firstAttribute="bottom" secondItem="w2q-Oc-fKm" secondAttribute="bottom" id="nUT-Ra-Giz"/>
+                                    <constraint firstItem="w2q-Oc-fKm" firstAttribute="centerX" secondItem="dR6-9D-Tfj" secondAttribute="centerX" id="vpA-gM-lj1"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="NaU-ZR-wJp" firstAttribute="bottom" secondItem="fGI-zP-s8Q" secondAttribute="top" id="2te-ET-TlH"/>
                             <constraint firstItem="yfF-yw-6if" firstAttribute="top" secondItem="fGI-zP-s8Q" secondAttribute="bottom" constant="-10" id="4Co-3Y-FVg"/>
+                            <constraint firstItem="dR6-9D-Tfj" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="4Tj-SA-s7B"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="sZb-W2-qke" secondAttribute="bottom" constant="68" id="5dB-u8-cJG"/>
-                            <constraint firstItem="NaU-ZR-wJp" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="G1f-9I-rhE"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yfF-yw-6if" secondAttribute="trailing" constant="8" id="IbK-V5-O2J"/>
+                            <constraint firstItem="dR6-9D-Tfj" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="44" id="JoY-JW-hdi"/>
                             <constraint firstItem="sZb-W2-qke" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Md2-Wd-1ZR"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="fGI-zP-s8Q" secondAttribute="trailing" id="TW2-lm-LHe"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="sZb-W2-qke" secondAttribute="trailing" constant="16" id="Ulv-Nm-DKa"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="yfF-yw-6if" secondAttribute="bottom" id="d3Q-MA-F42"/>
                             <constraint firstItem="fGI-zP-s8Q" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="daT-I6-qKh"/>
                             <constraint firstItem="yfF-yw-6if" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="fJ3-1s-1dh"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="NaU-ZR-wJp" secondAttribute="top" id="kUG-Rc-pLH"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="NaU-ZR-wJp" secondAttribute="trailing" id="knJ-DN-Q9l"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dR6-9D-Tfj" secondAttribute="trailing" id="gAF-xo-Pxw"/>
+                            <constraint firstItem="fGI-zP-s8Q" firstAttribute="top" secondItem="dR6-9D-Tfj" secondAttribute="bottom" id="mZI-Ce-rRn"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -324,7 +324,8 @@
                     <connections>
                         <outlet property="fakeCard" destination="sZb-W2-qke" id="xu2-NW-a4M"/>
                         <outlet property="monthSwitchView" destination="yfF-yw-6if" id="9r9-x8-jqz"/>
-                        <outlet property="navigationBar" destination="NaU-ZR-wJp" id="xz2-6f-M2f"/>
+                        <outlet property="navigationBar" destination="dR6-9D-Tfj" id="cxw-XQ-kBb"/>
+                        <outlet property="tabSwitcher" destination="w2q-Oc-fKm" id="9TU-sQ-UGC"/>
                         <outlet property="tableView" destination="fGI-zP-s8Q" id="Yii-n4-49b"/>
                     </connections>
                 </viewController>
