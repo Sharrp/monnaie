@@ -12,10 +12,16 @@ typealias MonthSwitchedCallback = (Date) -> Void
 typealias SelectedMonthGetter = () -> Date?
 
 class MonthSwitchViewModel: NSObject {
-  weak var collectionView: UICollectionView? {
+  weak var view: MonthSwitchView? {
     didSet {
-      collectionView?.dataSource = self
-      collectionView?.delegate = self
+      guard let view = view else { return }
+      view.collectionView.allowsMultipleSelection = true
+      view.collectionView.contentInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 8)
+      view.collectionView.dataSource = self
+      view.collectionView.delegate = self
+      view.collectionView.isScrollEnabled = false
+//      view.collectionView.allowsSelection = false
+      view.setSeparatorHidden(progress: 1, animated: false)
     }
   }
   
@@ -26,6 +32,24 @@ class MonthSwitchViewModel: NSObject {
   }
   private var reports = [MonthReport]()
   private var todayAmount = 0.0
+  private var monthsHideProgress: CGFloat = 1
+  
+  // Layout
+  private let margin: CGFloat = 8
+  private let interCellMargin: CGFloat = 4
+  private let monthWidth: CGFloat = 110
+  private let todayWidth: CGFloat = 92
+  
+  private var scrollStarted = false // ensures that offsetWhenScrollStarted calculated only once when scroll started
+  private var offsetWhenScrollStarted: CGFloat = 0
+  private var usersScrollOffset: CGFloat?
+  private var offsetToHideToday: CGFloat {
+    guard let collectionViewWidth = view?.collectionView.frame.width else { return 0 }
+    return CGFloat(reports.count) * (monthWidth + interCellMargin) + margin - collectionViewWidth
+  }
+  private var offsetToShowToday: CGFloat {
+    return offsetToHideToday + interCellMargin + todayWidth
+  }
   
   private var selectedIndex = 0
   var selectedMonth: Date? {
@@ -40,17 +64,49 @@ class MonthSwitchViewModel: NSObject {
   
   lazy var dataServiceUpdated: DataServiceUpdateCallback? = { [weak self] in
     guard let dataService = self?.dataService else { return }
-    self?.reports = dataService.monthlyAmounts()
-    self?.todayAmount = dataService.totalAmount(forDay: Date.now)
-    self?.collectionView?.reloadData()
+    guard let strongSelf = self else { return }
+    let reports = dataService.monthlyAmounts()
+    strongSelf.reports = reports
+    strongSelf.todayAmount = dataService.totalAmount(forDay: Date.now)
+    guard let collectionView = self?.view?.collectionView else { return }
+    collectionView.reloadData()
   }
   
-  lazy var bladeScroll: GuillotineScrollCallback? = { progress in
-    
+  lazy var bladeScroll: GuillotineScrollCallback? = { [weak self] progress in
+    guard let scrollStarted = self?.scrollStarted else { return }
+    guard let collectionView = self?.view?.collectionView else { return }
+    let hideProgress = 1 - progress
+    if !scrollStarted {
+      self?.offsetWhenScrollStarted = collectionView.contentOffset.x
+      self?.scrollStarted = true
+    }
+    self?.update(hideProgress: hideProgress, animated: false)
   }
   
-  lazy var bladeStateSwitch: GuillotineBladeStateCallback? = { state in
+  lazy var bladeStateSwitch: GuillotineBladeStateCallback? = { [weak self] state in
+    let hideProgress: CGFloat = state == .expanded ? 0 : 1
+    guard let strongSelf = self else { return }
+    self?.view?.collectionView.contentInset.right = strongSelf.margin - (strongSelf.interCellMargin + strongSelf.todayWidth) * (1 - hideProgress)
+    let scrollAndSelectionEnabled = state == .expanded
+    self?.view?.collectionView.isScrollEnabled = scrollAndSelectionEnabled
+    self?.view?.collectionView.allowsSelection = scrollAndSelectionEnabled
+    self?.scrollStarted = false
+    self?.update(hideProgress: hideProgress, animated: true)
+  }
+  
+  private func update(hideProgress: CGFloat, animated: Bool) {
+    let zeroOffset = usersScrollOffset ?? offsetToHideToday
+    let offset = zeroOffset + hideProgress * (offsetToShowToday - zeroOffset)
+    view?.collectionView?.contentOffset.x = offset
     
+    view?.setSeparatorHidden(progress: hideProgress, animated: animated)
+    monthsHideProgress = hideProgress
+    view?.collectionView.reloadData()
+  }
+  
+  private func setNonCurrentMonthCellsHidden(progress: CGFloat, animated: Bool) {
+    monthsHideProgress = progress
+    view?.collectionView.reloadData()
   }
   
   private func string(forMonth monthDate: Date) -> String {
@@ -60,15 +116,8 @@ class MonthSwitchViewModel: NSObject {
   }
   
   func selectLastMonth() {
-    // We need to wait until reload data is finished, scrollToItem won't work
-    let indexPath = IndexPath(item: reports.count - 1, section: 0)
-    selectedIndex = indexPath.row
-    if let selectedCell = collectionView?.cellForItem(at: indexPath) as? MonthSwitchCell {
-      selectedCell.setState(selected: true)
-    }
-    collectionView?.performBatchUpdates(nil, completion: { [unowned self] _ in
-      self.collectionView?.selectItem(at: indexPath, animated: false, scrollPosition: .left)
-    })
+    selectedIndex = reports.count - 1
+    update(hideProgress: 1, animated: false)
   }
 }
 
@@ -87,10 +136,14 @@ extension MonthSwitchViewModel: UICollectionViewDataSource {
       cell.amountLabel.text = formatMoney(amount: report.amount, currency: .JPY)
       cell.monthLabel.text = string(forMonth: report.monthDate)
       cell.setState(selected: indexPath.row == selectedIndex)
+      
+      let isCurrentMonth = report.monthDate.isSame(.month, asDate: Date.now)
+      cell.alpha = isCurrentMonth ? 1 : 1 - monthsHideProgress
     } else {
       cell.amountLabel.text = formatMoney(amount: todayAmount, currency: .JPY)
       cell.monthLabel.text = "Today"
       cell.setState(selected: true)
+      cell.alpha = monthsHideProgress
     }
     return cell
   }
@@ -100,9 +153,9 @@ extension MonthSwitchViewModel: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     // There is no good way to disable celection of a particular cell ("Today" in out case)
     // That's why multiple selection is enabled and selection is maintained semi-manually
-    let prviouslySelectedIndex = IndexPath(row: selectedIndex, section: 0)
-    collectionView.deselectItem(at: prviouslySelectedIndex, animated: true)
-    if let deselectedRow = collectionView.cellForItem(at: prviouslySelectedIndex) as? MonthSwitchCell {
+    let previouslySelectedIndex = IndexPath(row: selectedIndex, section: 0)
+    collectionView.deselectItem(at: previouslySelectedIndex, animated: true)
+    if let deselectedRow = collectionView.cellForItem(at: previouslySelectedIndex) as? MonthSwitchCell {
       deselectedRow.setState(selected: false)
     }
     
@@ -112,6 +165,12 @@ extension MonthSwitchViewModel: UICollectionViewDelegate {
       selectedRow.setState(selected: true)
     }
     callbacks.forEach{ $0?(report.monthDate) }
+  }
+  
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    if scrollView.isDragging {
+      usersScrollOffset = scrollView.contentOffset.x
+    }
   }
   
   func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
@@ -125,16 +184,12 @@ extension MonthSwitchViewModel: UICollectionViewDelegate {
 
 extension MonthSwitchViewModel: UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    let width: CGFloat
-    if indexPath.row == reports.count {
-      width = 92
-    } else {
-      width = 110
-    }
+    let isTodayCell = indexPath.row == reports.count
+    let width = isTodayCell ? todayWidth : monthWidth
     return CGSize(width: width, height: 56)
   }
   
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-    return UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 0)
+    return UIEdgeInsets(top: 0, left: interCellMargin, bottom: 0, right: 0)
   }
 }

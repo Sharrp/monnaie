@@ -36,13 +36,10 @@ class ProjectionsViewController: UIViewController {
   private var navBarBorder = UIView()
   @IBOutlet weak var tableView: UITableView!
   private let tableViewBottomOffsetWhenCollapsed: CGFloat = -60
-  @IBOutlet weak var controlPanel: UIView!
   
   @IBOutlet weak var fakeCard: ShadowRoundedView!
   private let fakeCardOffsetWhenExpanded: CGFloat = 16
-  
-  @IBOutlet weak var monthSwitcherCollectionView: UICollectionView!
-  
+  @IBOutlet weak var monthSwitchView: MonthSwitchView!
   private var contentOffsets = [CGFloat]()
   
   override func viewDidLoad() {
@@ -57,9 +54,6 @@ class ProjectionsViewController: UIViewController {
     navigationBar.isTranslucent = true
     navigationBar.addSubview(navBarBorder)
     navBarBorder.backgroundColor = UIColor(white: 1, alpha: 0.2)
-    
-    monthSwitcherCollectionView.allowsMultipleSelection = true
-    monthSwitcherCollectionView.contentInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 8)
     
     scrollToBottom()
   }

@@ -25,7 +25,7 @@ class Coordinator {
   // Assumes that all view controller variables are set
   func appDidFinishLaunching() {
     // History & summary need monthSwitch so it's set up first
-    monthSwitch.collectionView = projectionsViewController?.monthSwitcherCollectionView
+    monthSwitch.view = projectionsViewController?.monthSwitchView
     monthSwitch.dataService = dataService
     monthSwitch.selectLastMonth()
     
@@ -36,7 +36,6 @@ class Coordinator {
     
     monthSwitch.subscribe(callback: history.monthChanged)
     monthSwitch.subscribe(callback: summary.monthChanged)
-    
     editTransactionController?.delegate = addViewModel
     
     dataService.subscribe(callback: history.dataServiceUpdated)

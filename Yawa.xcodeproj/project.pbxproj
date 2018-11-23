@@ -37,6 +37,8 @@
 		75C046E42098892600E8B09E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C046E22098892600E8B09E /* Main.storyboard */; };
 		75C046E62098892600E8B09E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75C046E52098892600E8B09E /* Assets.xcassets */; };
 		75C046E92098892600E8B09E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C046E72098892600E8B09E /* LaunchScreen.storyboard */; };
+		75D1CEC121A7B54200695054 /* MonthSwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F37D8521A59C2400997E91 /* MonthSwitchView.swift */; };
+		75D1CEC221A7B55400695054 /* ExportImportCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7509759321A00932000FDB39 /* ExportImportCSV.swift */; };
 		75D32C0320A3093000D13420 /* HistorySummaryCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0220A3093000D13420 /* HistorySummaryCells.swift */; };
 		75D32C0B20AB1DB300D13420 /* SyncNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */; };
 		75D32C0D20AB202E00D13420 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0C20AB202E00D13420 /* Settings.swift */; };
@@ -49,6 +51,7 @@
 		75DBCAB92172061800B7476A /* real-life-initial-remote.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCAB82172060100B7476A /* real-life-initial-remote.csv */; };
 		75DBCABB21720F3800B7476A /* real-life-no-collision.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCAB62172059300B7476A /* real-life-no-collision.csv */; };
 		75DBCABC21720F5300B7476A /* real-life-complex.csv in Resources */ = {isa = PBXBuildFile; fileRef = 75DBCABA21720F2600B7476A /* real-life-complex.csv */; };
+		75F37D8621A59C2400997E91 /* MonthSwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F37D8521A59C2400997E91 /* MonthSwitchView.swift */; };
 		75F7D41421A342BA0033FBCC /* AddTransactionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F7D41321A342BA0033FBCC /* AddTransactionViewModel.swift */; };
 		75F7D41621A354E20033FBCC /* EditTransactionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F7D41521A354E20033FBCC /* EditTransactionViewModel.swift */; };
 		DF0B60AC20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */; };
@@ -134,6 +137,7 @@
 		75DBCAB62172059300B7476A /* real-life-no-collision.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = "real-life-no-collision.csv"; sourceTree = "<group>"; };
 		75DBCAB82172060100B7476A /* real-life-initial-remote.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = "real-life-initial-remote.csv"; sourceTree = "<group>"; };
 		75DBCABA21720F2600B7476A /* real-life-complex.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = "real-life-complex.csv"; sourceTree = "<group>"; };
+		75F37D8521A59C2400997E91 /* MonthSwitchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthSwitchView.swift; sourceTree = "<group>"; };
 		75F7D41321A342BA0033FBCC /* AddTransactionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionViewModel.swift; sourceTree = "<group>"; };
 		75F7D41521A354E20033FBCC /* EditTransactionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTransactionViewModel.swift; sourceTree = "<group>"; };
 		DF0B60AA20F0857E0018AC98 /* DigitKeyboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DigitKeyboardView.swift; sourceTree = "<group>"; };
@@ -170,6 +174,7 @@
 			children = (
 				75C046E02098892600E8B09E /* DataProjectionsViewController.swift */,
 				75D32C0220A3093000D13420 /* HistorySummaryCells.swift */,
+				75F37D8521A59C2400997E91 /* MonthSwitchView.swift */,
 			);
 			path = "History & Summary";
 			sourceTree = "<group>";
@@ -429,6 +434,7 @@
 				75DBCAAB2171A40900B7476A /* Merger.swift in Sources */,
 				7529F963215FB19900FD8884 /* ColorfulView.swift in Sources */,
 				DF80D7FF20DE851600ADC203 /* SyncController.swift in Sources */,
+				75F37D8621A59C2400997E91 /* MonthSwitchView.swift in Sources */,
 				75D32C0B20AB1DB300D13420 /* SyncNameViewController.swift in Sources */,
 				7524B98B209AEF26006027C8 /* P2PSyncManager.swift in Sources */,
 				75C046E12098892600E8B09E /* DataProjectionsViewController.swift in Sources */,
@@ -457,6 +463,7 @@
 				DF8C66D920B06725008A7488 /* DataProjectionsViewController.swift in Sources */,
 				75DBCAAE2171A94B00B7476A /* Merger.swift in Sources */,
 				DF8C66DB20B06732008A7488 /* StoreManager.swift in Sources */,
+				75D1CEC121A7B54200695054 /* MonthSwitchView.swift in Sources */,
 				DF8C66E020B0676F008A7488 /* HistorySummaryCells.swift in Sources */,
 				7518DC6721984501001ECA26 /* ShadowRoundedView.swift in Sources */,
 				7529F95A2157F2CA00FD8884 /* GuillotineViewController.swift in Sources */,
@@ -475,6 +482,7 @@
 				7518DC64219842EA001ECA26 /* csvImportTests.swift in Sources */,
 				DF8C66D720B0648A008A7488 /* DataModel.swift in Sources */,
 				75DBCAAD2171A94000B7476A /* YawaMergerTests.swift in Sources */,
+				75D1CEC221A7B55400695054 /* ExportImportCSV.swift in Sources */,
 				DF8C66D820B06722008A7488 /* EditTransactionController.swift in Sources */,
 				DF0B60AD20F0857E0018AC98 /* DigitKeyboardView.swift in Sources */,
 				DF8C66DA20B06727008A7488 /* SyncViewController.swift in Sources */,

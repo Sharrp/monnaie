@@ -178,7 +178,7 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yfF-yw-6if" customClass="ShadowRoundedView" customModule="Yawa" customModuleProvider="target">
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yfF-yw-6if" customClass="MonthSwitchView" customModule="Yawa" customModuleProvider="target">
                                 <rect key="frame" x="8" y="587" width="359" height="80"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Roi-lv-hht">
@@ -273,6 +273,10 @@
                                     <constraint firstItem="e5v-CO-i9X" firstAttribute="top" secondItem="yfF-yw-6if" secondAttribute="top" id="uTd-t0-H6r"/>
                                     <constraint firstAttribute="bottom" secondItem="Roi-lv-hht" secondAttribute="bottom" constant="10" id="xma-DA-NtF"/>
                                 </constraints>
+                                <connections>
+                                    <outlet property="collectionView" destination="e5v-CO-i9X" id="yJF-o2-wxc"/>
+                                    <outlet property="separator" destination="Roi-lv-hht" id="QmK-go-83T"/>
+                                </connections>
                             </view>
                             <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NaU-ZR-wJp">
                                 <rect key="frame" x="0.0" y="20" width="375" height="44"/>
@@ -318,9 +322,8 @@
                     <toolbarItems/>
                     <size key="freeformSize" width="375" height="667"/>
                     <connections>
-                        <outlet property="controlPanel" destination="yfF-yw-6if" id="gNE-ey-6uP"/>
                         <outlet property="fakeCard" destination="sZb-W2-qke" id="xu2-NW-a4M"/>
-                        <outlet property="monthSwitcherCollectionView" destination="e5v-CO-i9X" id="3WV-vz-nuy"/>
+                        <outlet property="monthSwitchView" destination="yfF-yw-6if" id="9r9-x8-jqz"/>
                         <outlet property="navigationBar" destination="NaU-ZR-wJp" id="xz2-6f-M2f"/>
                         <outlet property="tableView" destination="fGI-zP-s8Q" id="Yii-n4-49b"/>
                     </connections>

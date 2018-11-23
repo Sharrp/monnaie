@@ -94,7 +94,7 @@ extension HistoryViewModel: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
     guard let selectedMonthDate = getSelectedMonth?() else { return 0 }
     let daysToShow: Int
-    if selectedMonthDate.isSame(granularity: .month, asDate: Date.now) {
+    if selectedMonthDate.isSame(.month, asDate: Date.now) {
       daysToShow = Calendar.current.component(.day, from: Date.now)
     } else {
       guard let daysCount = Calendar.current.range(of: .day, in: .month, for: selectedMonthDate)?.count else { return 0 }

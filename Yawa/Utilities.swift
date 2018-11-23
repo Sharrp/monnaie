@@ -105,7 +105,7 @@ extension Date {
     self = date
   }
   
-  func isSame(granularity: Calendar.Component, asDate dateToCompare: Date) -> Bool {
+  func isSame(_ granularity: Calendar.Component, asDate dateToCompare: Date) -> Bool {
     return Calendar.current.compare(self, to: dateToCompare, toGranularity: granularity) == .orderedSame
   }
   
