@@ -52,7 +52,7 @@ class MonthSwitchViewModel: NSObject {
   }
   
   private var selectedIndex = 0
-  var selectedMonth: Date? {
+  private var selectedMonth: Date? {
     guard reports.count > selectedIndex else { return nil }
     return reports[selectedIndex].monthDate
   }
@@ -92,6 +92,10 @@ class MonthSwitchViewModel: NSObject {
     self?.view?.collectionView.allowsSelection = scrollAndSelectionEnabled
     self?.scrollStarted = false
     self?.update(hideProgress: hideProgress, animated: true)
+  }
+  
+  lazy var getSelectedMonth: SelectedMonthGetter = { [weak self] in
+    return self?.selectedMonth
   }
   
   private func update(hideProgress: CGFloat, animated: Bool) {

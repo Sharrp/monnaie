@@ -11,7 +11,7 @@ import UIKit
 class SummaryViewModel: NSObject {
   private let minChartBarWidth: CGFloat = 8
   
-  weak var transactionsController: DataService?
+  weak var dataService: DataService?
   private var summary: CategoriesSummary? // cached data
   var getSelectedMonth: SelectedMonthGetter?
   
@@ -54,7 +54,7 @@ extension SummaryViewModel: TransactionsProjecting {
 extension SummaryViewModel: UITableViewDataSource {
   private func updateCache() {
     guard let selectedMonth = getSelectedMonth?() else { return }
-    guard let updatedSummary = transactionsController?.categoriesSummary(forMonth: selectedMonth) else { return }
+    guard let updatedSummary = dataService?.categoriesSummary(forMonth: selectedMonth) else { return }
     summary = updatedSummary
   }
   

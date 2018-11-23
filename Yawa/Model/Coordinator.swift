@@ -30,9 +30,9 @@ class Coordinator {
     monthSwitch.selectLastMonth()
     
     history.dataService = dataService
-    history.getSelectedMonth = { [weak self] in self?.monthSwitch.selectedMonth }
-    summary.getSelectedMonth = { [weak self] in self?.monthSwitch.selectedMonth }
-    summary.transactionsController = dataService
+    history.getSelectedMonth = monthSwitch.getSelectedMonth
+    summary.getSelectedMonth = monthSwitch.getSelectedMonth
+    summary.dataService = dataService
     
     monthSwitch.subscribe(callback: history.monthChanged)
     monthSwitch.subscribe(callback: summary.monthChanged)
