@@ -51,8 +51,9 @@ class MonthSwitchViewModel: NSObject {
     return offsetToHideToday + interCellMargin + todayWidth
   }
   
-  private var selectedIndex = 0
+  private var selectedIndex = -1
   private var selectedMonth: Date? {
+    guard selectedIndex >= 0 else { return nil }
     guard reports.count > selectedIndex else { return nil }
     return reports[selectedIndex].monthDate
   }
@@ -69,6 +70,11 @@ class MonthSwitchViewModel: NSObject {
     let reports = dataService.monthlyAmounts()
     strongSelf.reports = reports
     strongSelf.todayAmount = dataService.totalAmount(forDay: Date.now)
+    
+    // Set selectedIndex if first month appeared or the last one deleted
+    if strongSelf.selectedIndex < 0 || reports.count == 0 {
+      self?.selectedIndex = reports.count - 1
+    }
     collectionView.reloadData()
   }
   

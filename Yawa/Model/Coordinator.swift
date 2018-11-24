@@ -38,9 +38,9 @@ class Coordinator {
     monthSwitch.subscribe(callback: summary.monthChanged)
     editTransactionController?.delegate = addViewModel
     
+    dataService.subscribe(callback: monthSwitch.dataServiceUpdated)
     dataService.subscribe(callback: history.dataServiceUpdated)
     dataService.subscribe(callback: summary.dataServiceUpdated)
-    dataService.subscribe(callback: monthSwitch.dataServiceUpdated)
     
     guillotineViewController?.subscribeToCancel(callback: addViewModel.guillotineCancel)
     guillotineViewController?.subscribeToCancel(callback: editViewModel.guillotineCancel)
