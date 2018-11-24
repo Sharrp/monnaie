@@ -52,10 +52,20 @@ class DigitKeyboardView: UIView {
     }
   }
   
-  weak var textField: UITextField! {
+  weak var textField: UITextField? {
     didSet {
-      textField.inputView = UIView()
-      textField.becomeFirstResponder()
+      textField?.inputView = UIView()
+      textField?.becomeFirstResponder()
+    }
+  }
+  
+  var backspaceEnabled: Bool? {
+    get {
+      return deleteButton.isEnabled
+    }
+    set {
+      deleteButton.isEnabled = newValue!
+      deleteButton.isHidden = !(newValue!)
     }
   }
   
@@ -90,34 +100,35 @@ class DigitKeyboardView: UIView {
   }
   
   private func removeLastCharacter() {
-    textField.deleteBackward()
+    textField?.deleteBackward()
   }
   
   /// Event handling
   
   @IBAction func digitTouchUp(sender: UIButton) {
-    textField.insertText("\(sender.tag)")
+    textField?.insertText("\(sender.tag)")
   }
   
   @IBAction func backspaceTouchUp(sender: UIButton) {
-    let text = textField.text!
+    guard let text = textField?.text else { return }
     guard text.count > 0 else { return }
     if text == "0." {
       removeLastCharacter() // to generate EditingChanged event
-      textField.text = ""
+      textField?.text = ""
       return
     }
     removeLastCharacter()
   }
   
   @IBAction func dotTouchUp(sender: UIButton) {
-    if !textField.hasText {
-      textField.insertText("0.")
+    guard let text = textField?.text else { return }
+    if text.count <= 0 {
+      textField?.insertText("0.")
       return
     }
     
-    if textField.text!.contains(".") {
-      textField.insertText(".")
+    if !text.contains(".") {
+      textField?.insertText(".")
     }
   }
   

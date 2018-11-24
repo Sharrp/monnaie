@@ -160,6 +160,7 @@ class EditTransactionController: UIViewController {
   }
   
   private func adjustControls(toMode mode: TransactionComposerMode, animated: Bool, delegationEnabled: Bool = false) {
+    keyboardView.backspaceEnabled = mode != .waitingForInput
     keyboardView.isHidden = mode == .date || mode == .category
     dateTimePicker.isHidden = mode != .date
     categoryCollectionView.isHidden = mode != .category
