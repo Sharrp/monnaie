@@ -113,9 +113,8 @@ class DigitKeyboardView: UIView {
     guard let text = textField?.text else { return }
     guard text.count > 0 else { return }
     if text == "0." {
-      removeLastCharacter() // to generate EditingChanged event
-      textField?.text = ""
-      return
+      // Remove twice to generate EditingChanged (instead of text = "")
+      removeLastCharacter()
     }
     removeLastCharacter()
   }
