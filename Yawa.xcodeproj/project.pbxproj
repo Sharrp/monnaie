@@ -39,6 +39,8 @@
 		75D1CEC221A7B55400695054 /* ExportImportCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7509759321A00932000FDB39 /* ExportImportCSV.swift */; };
 		75D1CEC421A7E38B00695054 /* TabSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D1CEC321A7E38B00695054 /* TabSwitcher.swift */; };
 		75D1CEC521A82F1A00695054 /* TabSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D1CEC321A7E38B00695054 /* TabSwitcher.swift */; };
+		75D1CECA21AC1B2400695054 /* CurrencySettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D1CEC921AC1B2400695054 /* CurrencySettingViewController.swift */; };
+		75D1CED021AC1BB300695054 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D1CECF21AC1BB300695054 /* SettingsViewController.swift */; };
 		75D32C0320A3093000D13420 /* HistorySummaryCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0220A3093000D13420 /* HistorySummaryCells.swift */; };
 		75D32C0B20AB1DB300D13420 /* SyncNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */; };
 		75D32C0D20AB202E00D13420 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D32C0C20AB202E00D13420 /* Settings.swift */; };
@@ -126,6 +128,8 @@
 		75C046E82098892600E8B09E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		75C046EA2098892600E8B09E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75D1CEC321A7E38B00695054 /* TabSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabSwitcher.swift; sourceTree = "<group>"; };
+		75D1CEC921AC1B2400695054 /* CurrencySettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySettingViewController.swift; sourceTree = "<group>"; };
+		75D1CECF21AC1BB300695054 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		75D32C0220A3093000D13420 /* HistorySummaryCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySummaryCells.swift; sourceTree = "<group>"; };
 		75D32C0A20AB1DB300D13420 /* SyncNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncNameViewController.swift; sourceTree = "<group>"; };
 		75D32C0C20AB202E00D13420 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
@@ -207,6 +211,7 @@
 				7529F965215FB1FA00FD8884 /* Transaction adding */,
 				7523C93D219CD6F40077C288 /* History & Summary */,
 				75D32C0920AB1DA300D13420 /* Sync */,
+				75D1CECC21AC1B3E00695054 /* Settings */,
 				DF0B60A920F0843B0018AC98 /* Keyboard */,
 			);
 			path = UI;
@@ -253,6 +258,15 @@
 				75C046EA2098892600E8B09E /* Info.plist */,
 			);
 			path = Yawa;
+			sourceTree = "<group>";
+		};
+		75D1CECC21AC1B3E00695054 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				75D1CECF21AC1BB300695054 /* SettingsViewController.swift */,
+				75D1CEC921AC1B2400695054 /* CurrencySettingViewController.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		75D32C0920AB1DA300D13420 /* Sync */ = {
@@ -440,9 +454,11 @@
 				758C6879218A777B00F2F7BE /* MonthSwitchViewModel.swift in Sources */,
 				7524B98F209B284F006027C8 /* EditTransactionController.swift in Sources */,
 				755EC21D219FB63F00CC0B09 /* HistoryViewModel.swift in Sources */,
+				75D1CECA21AC1B2400695054 /* CurrencySettingViewController.swift in Sources */,
 				7518DC622197B0A1001ECA26 /* ShadowRoundedView.swift in Sources */,
 				7529F95C215BCD6900FD8884 /* SummaryViewModel.swift in Sources */,
 				75D32C0320A3093000D13420 /* HistorySummaryCells.swift in Sources */,
+				75D1CED021AC1BB300695054 /* SettingsViewController.swift in Sources */,
 				7527EF182183D57800E232AE /* TransactionComponserView.swift in Sources */,
 				7524B98D209B0F9F006027C8 /* DataModel.swift in Sources */,
 				75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */,

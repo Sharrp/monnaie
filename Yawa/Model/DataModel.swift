@@ -142,6 +142,48 @@ struct MonthReport {
   let amount: Double
 }
 
+enum Currency: Int {
+  case USD
+  case EUR
+  case GBP
+  case JPY
+  case RUB
+  case all
+  
+  static var allCases: [Currency] {
+    var raw = 0
+    var cases = [Currency]()
+    while true {
+      guard let currency = Currency(rawValue: raw) else { break }
+      cases.append(currency)
+      raw += 1
+    }
+    return cases
+  }
+  
+  var sign: String {
+    switch self {
+    case .USD: return "$"
+    case .EUR: return "€"
+    case .GBP: return "£"
+    case .JPY: return "¥"
+    case .RUB: return "₽"
+    case .all: return "¤"
+    }
+  }
+  
+  var name: String {
+    switch self {
+    case .USD: return "US Dollar"
+    case .EUR: return "Euro"
+    case .GBP: return "Great Britain Pound"
+    case .JPY: return "Japanese Yen"
+    case .RUB: return "Russian Rouble"
+    case .all: return "Universal currency sign"
+    }
+  }
+}
+
 enum SyncMode: Int, CustomStringConvertible {
   case merge
   case update

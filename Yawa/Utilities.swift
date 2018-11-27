@@ -29,12 +29,9 @@ extension FileManager {
   }
 }
 
-enum Currency {
-  case JPY
-}
-
 func formatMoney(amount: Double, currency: Currency, symbolEnabled: Bool = true) -> String {
-  return NSString(format: "%@%.0f", symbolEnabled ? "¥" : "", amount) as String
+  let sign = symbolEnabled ? currency.sign : ""
+  return NSString(format: "%@%.0f", sign, amount) as String
 }
 
 extension UIButton {
