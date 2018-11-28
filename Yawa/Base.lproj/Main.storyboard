@@ -349,10 +349,10 @@
             </objects>
             <point key="canvasLocation" x="-1263.2" y="1518.8905547226389"/>
         </scene>
-        <!--Edit Transaction Controller-->
+        <!--Edit Transaction View Controller-->
         <scene sceneID="LqN-g1-dFt">
             <objects>
-                <viewController storyboardIdentifier="editTransactionVC" id="J2s-wE-pf2" customClass="EditTransactionController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="editTransactionVC" id="J2s-wE-pf2" customClass="EditTransactionViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nkC-uH-eg5">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

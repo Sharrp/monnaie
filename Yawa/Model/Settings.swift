@@ -20,8 +20,8 @@ class Settings {
   private let peerIDKey = "peerIDKey"
   private let currencyKey = "currencyKey"
   
-  private var callbacks = [String: [SettingUpdateCallback]]()
-  func subscribe(callback: @escaping SettingUpdateCallback, forSetting setting: SubscribableSetting) {
+  private var callbacks = [String: [SettingUpdateCallback?]]()
+  func subscribe(callback: SettingUpdateCallback?, forSetting setting: SubscribableSetting) {
     let key = setting.rawValue
     if callbacks.keys.contains(key) {
       callbacks[key]?.append(callback)
@@ -33,7 +33,7 @@ class Settings {
   private func notifySubscribers(aboutSettingUpdate setting: SubscribableSetting) {
     guard let settingCallbacks = callbacks[setting.rawValue] else { return }
     for callback in settingCallbacks {
-      callback()
+      callback?()
     }
   }
   

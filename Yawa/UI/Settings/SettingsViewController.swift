@@ -12,14 +12,14 @@ enum SettingOption {
   case currency
   case export
   case hapticFeedback
-  case feedback
+  case feedbackTelegram
   
   var title: String {
     switch self {
     case .currency: return "Currency sign"
     case .export: return "Export data as CSV"
     case .hapticFeedback: return "Haptic feedback"
-    case .feedback: return "Email feedback"
+    case .feedbackTelegram: return "Telegram your feedback"
     }
   }
 }
@@ -72,7 +72,7 @@ extension SettingsViewController: UITableViewDataSource {
     case (1, 0):
       return .hapticFeedback
     case (2, 0):
-      return .feedback
+      return .feedbackTelegram
     default:
       fatalError("Unkown option in settings at index: \(indexPath)")
     }

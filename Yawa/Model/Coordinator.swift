@@ -21,7 +21,7 @@ class Coordinator {
   private(set) var isInitialized = false
   weak var guillotineViewController: GuillotineViewController?
   weak var projectionsViewController: ProjectionsViewController?
-  weak var editTransactionController: EditTransactionController?
+  weak var editTransactionController: EditTransactionViewController?
   
   // Assumes that all view controller variables are set
   func appDidFinishLaunching() {
@@ -58,6 +58,7 @@ class Coordinator {
     settings.subscribe(callback: monthSwitch.currencyChanged, forSetting: .currency)
     settings.subscribe(callback: history.currencyChanged, forSetting: .currency)
     settings.subscribe(callback: summary.currencyChanged, forSetting: .currency)
+    settings.subscribe(callback: editTransactionController?.currencyChanged, forSetting: .currency)
     
     addViewModel.dataService = dataService
     addViewModel.guillotine = guillotineViewController
@@ -73,6 +74,7 @@ class Coordinator {
     // Only after all assigned projections are ready
     projectionsViewController?.projectors = [history, summary]
     projectionsViewController?.settings = settings
+    editTransactionController?.settings = settings
     
     csvHandler.presentor = guillotineViewController
     csvHandler.generateCSV = { [weak self] in self?.dataService.exportDataAsCSV() }

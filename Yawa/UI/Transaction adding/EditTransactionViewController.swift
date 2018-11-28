@@ -1,5 +1,5 @@
 //
-//  EditTransactionController.swift
+//  EditTransactionViewController.swift
 //  Yawa
 //
 //  Created by Anton Vronskii on 2018/05/03.
@@ -33,6 +33,11 @@ class EditTransactionViewController: UIViewController {
   @IBOutlet weak var dateTimePicker: UIDatePicker!
   
   weak var delegate: TransactionEditorDelegate?
+  weak var settings: Settings? {
+    didSet {
+      currencyChanged()
+    }
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -67,6 +72,11 @@ class EditTransactionViewController: UIViewController {
       self?.bladeScroll?(progress)
     }
     animator.startAnimation()
+  }
+  
+  lazy var currencyChanged: SettingUpdateCallback = { [weak self] in
+    guard let currency = self?.settings?.userCurrency else { return }
+    self?.composer.currency = currency
   }
   
   // MARK: Category

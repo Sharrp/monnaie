@@ -32,6 +32,13 @@ class TransactionComponserView: UIView {
   var padding: CGFloat {
     return dateButton.frame.origin.y
   }
+  var currency: Currency = Currency.defaultCurrency {
+    didSet {
+      updatePlaceholder(sign: currency.sign)
+      guard let amount = amountInput.text else { return } // assumes there is no sign in the input
+      amountLabel.text = currency.sign + amount
+    }
+  }
   
   @IBOutlet weak var amountInput: UITextField!
   @IBOutlet weak var amountInputRightMargin: NSLayoutConstraint!
@@ -103,8 +110,7 @@ class TransactionComponserView: UIView {
     categoryButton.clipsToBounds = true
     categoryButton.addSubview(categoryLabel)
     
-    let coloredPlaceholder = NSAttributedString(string: "¥0", attributes: [.foregroundColor: UIColor(white: 0.75, alpha: 1)])
-    amountInput.attributedPlaceholder = coloredPlaceholder
+    updatePlaceholder(sign: currency.sign)
     amountInput.layer.anchorPoint = CGPoint(x: 1, y: 0.5)
     amountLabel.layer.anchorPoint = CGPoint(x: 1, y: 0.5)
     amountButton.layer.anchorPoint = CGPoint(x: 1, y: 0.5)
@@ -136,8 +142,8 @@ class TransactionComponserView: UIView {
   func display(transaction: Transaction) {
     set(date: transaction.date)
     set(category: transaction.category)
-    amountLabel.text = formatMoney(amount: transaction.amount, currency: .JPY)
-    amountInput.text = formatMoney(amount: transaction.amount, currency: .JPY, symbolEnabled: false)
+    amountLabel.text = formatMoney(amount: transaction.amount, currency: currency)
+    amountInput.text = formatMoney(amount: transaction.amount, currency: currency, symbolEnabled: false)
   }
   
   @IBAction func dateButtonTouched() {
@@ -155,6 +161,12 @@ class TransactionComponserView: UIView {
   func reset(animated: Bool = true) {
     amountInput.text = ""
     set(mode: .waitingForInput, animated: animated, enableDelegation: false)
+  }
+  
+  private func updatePlaceholder(sign: String) {
+    let text = "\(sign)0"
+    let coloredPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: UIColor(white: 0.75, alpha: 1)])
+    amountInput.attributedPlaceholder = coloredPlaceholder
   }
   
   func set(date: Date) {
@@ -273,7 +285,7 @@ class TransactionComponserView: UIView {
     let nextMode: TransactionComposerMode = textLength > 0 ? .amount : .waitingForInput
     set(mode: nextMode, animated: true, enableDelegation: true)
     if let amount = amount {
-      amountLabel.text = formatMoney(amount: amount, currency: .JPY)
+      amountLabel.text = formatMoney(amount: amount, currency: currency)
     }
   }
 }

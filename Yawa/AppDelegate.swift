@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       // All these casts should crash immediately for easier debug (there is no case when they can fail legally)
       let guillotineVC = window?.rootViewController as! GuillotineViewController
       let projectionsVC = guillotineVC.bladeViewController as! ProjectionsViewController
-      let editVC = guillotineVC.baseViewController as! EditTransactionController
+      let editVC = guillotineVC.baseViewController as! EditTransactionViewController
       coordinator.guillotineViewController = guillotineVC
       coordinator.projectionsViewController = projectionsVC
       coordinator.editTransactionController = editVC

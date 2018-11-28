@@ -15,7 +15,7 @@ protocol ManagedTransactionEditor {
 class EditTransactionViewModel {
   weak var guillotine: GuillotineViewController?
   weak var dataService: DataService?
-  private var viewController: EditTransactionController?
+  private var viewController: EditTransactionViewController?
   
   private var composerTransformBeforeEditing = CGAffineTransform.identity
   private var composerTransformToMatchCell = CGAffineTransform.identity
@@ -34,7 +34,7 @@ class EditTransactionViewModel {
 extension EditTransactionViewModel: ManagedTransactionEditor {
   func startEditing(transaction: Transaction, byReplacingView viewToReplace: UIView) {
     let storyboard = UIStoryboard(name: "Main", bundle: nil)
-    guard let controller = storyboard.instantiateViewController(withIdentifier: "editTransactionVC") as? EditTransactionController else { return }
+    guard let controller = storyboard.instantiateViewController(withIdentifier: "editTransactionVC") as? EditTransactionViewController else { return }
     viewController = controller
     guillotine?.view.addSubview(controller.view)
     controller.delegate = self

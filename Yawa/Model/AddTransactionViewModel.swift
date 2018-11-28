@@ -11,7 +11,7 @@ import UIKit
 class AddTransactionViewModel {
   weak var guillotine: GuillotineViewController?
   weak var dataService: DataService?
-  weak var viewController: EditTransactionController?
+  weak var viewController: EditTransactionViewController?
   weak var settings: Settings?
   
   lazy var guillotineCancel: GuillotineCancelCallback = { [weak self] in
