@@ -14,6 +14,7 @@ class SummaryViewModel: NSObject {
   weak var dataService: DataService?
   private var summary: CategoriesSummary? // cached data
   var getSelectedMonth: SelectedMonthGetter?
+  weak var settings: Settings?
   
   private var tableView: UITableView?
   
@@ -28,6 +29,10 @@ class SummaryViewModel: NSObject {
   
   lazy var dataServiceUpdated: DataServiceUpdateCallback? = { [weak self] in
     guard let isActive = self?.isActive, isActive else { return }
+    self?.update()
+  }
+  
+  lazy var currencyChanged: SettingUpdateCallback = { [weak self] in
     self?.update()
   }
   
@@ -83,7 +88,8 @@ extension SummaryViewModel: UITableViewDataSource {
     let maxCategoryAmount = summary[0].amount
     let chartBarWidth = maxChartBarWidth * CGFloat(categoryInfo.amount / maxCategoryAmount)
     cell.chartBarWidth.constant = max(minChartBarWidth, chartBarWidth)
-    cell.valueLabel.text = "\(formatMoney(amount: categoryInfo.amount, currency: .JPY))"
+    let currency = settings?.userCurrency ?? Currency.defaultCurrency
+    cell.valueLabel.text = "\(formatMoney(amount: categoryInfo.amount, currency: currency))"
     return cell
   }
 }

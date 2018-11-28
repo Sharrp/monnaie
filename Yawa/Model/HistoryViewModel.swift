@@ -38,6 +38,10 @@ class HistoryViewModel: NSObject {
     self?.update()
   }
   
+  lazy var currencyChanged: SettingUpdateCallback = { [weak self] in
+    self?.update()
+  }
+  
   private func update() {
     tableView?.reloadData()
   }
@@ -211,7 +215,8 @@ extension HistoryViewModel: UITableViewDelegate {
     } else {
         amount = 0
     }
-    amountLabel.text = formatMoney(amount: amount, currency: .JPY)
+    let currency = settings?.userCurrency ?? Currency.defaultCurrency
+    amountLabel.text = formatMoney(amount: amount, currency: currency)
     
     amountLabel.translatesAutoresizingMaskIntoConstraints = false
     headerView.addSubview(amountLabel)

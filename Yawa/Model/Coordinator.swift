@@ -33,8 +33,10 @@ class Coordinator {
     
     history.dataService = dataService
     history.getSelectedMonth = monthSwitch.getSelectedMonth
+    history.settings = settings
     summary.getSelectedMonth = monthSwitch.getSelectedMonth
     summary.dataService = dataService
+    summary.settings = settings
     
     monthSwitch.subscribe(callback: history.monthChanged)
     monthSwitch.subscribe(callback: summary.monthChanged)
@@ -54,6 +56,8 @@ class Coordinator {
     guillotineViewController?.subscribeForBladeState(callback: projectionsViewController?.bladeStateSwitch)
     
     settings.subscribe(callback: monthSwitch.currencyChanged, forSetting: .currency)
+    settings.subscribe(callback: history.currencyChanged, forSetting: .currency)
+    settings.subscribe(callback: summary.currencyChanged, forSetting: .currency)
     
     addViewModel.dataService = dataService
     addViewModel.guillotine = guillotineViewController
@@ -65,7 +69,6 @@ class Coordinator {
     editViewModel.guillotine = guillotineViewController
     
     history.editor = editViewModel
-    history.settings = settings
     
     // Only after all assigned projections are ready
     projectionsViewController?.projectors = [history, summary]
