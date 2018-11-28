@@ -16,6 +16,7 @@ class Coordinator {
   private let addViewModel = AddTransactionViewModel()
   private let editViewModel = EditTransactionViewModel()
   private let csvHandler = CSVImportExportHandler()
+  private let settings = Settings()
   
   private(set) var isInitialized = false
   weak var guillotineViewController: GuillotineViewController?
@@ -54,15 +55,18 @@ class Coordinator {
     addViewModel.dataService = dataService
     addViewModel.guillotine = guillotineViewController
     addViewModel.viewController = editTransactionController
+    addViewModel.settings = settings
     addViewModel.didFinishLaunching()
     
     editViewModel.dataService = dataService
     editViewModel.guillotine = guillotineViewController
     
     history.editor = editViewModel
+    history.settings = settings
     
     // Only after all assigned projections are ready
     projectionsViewController?.projectors = [history, summary]
+    projectionsViewController?.settings = settings
     
     csvHandler.presentor = guillotineViewController
     csvHandler.generateCSV = { [weak self] in self?.dataService.exportDataAsCSV() }

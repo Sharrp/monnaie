@@ -9,14 +9,33 @@
 import UIKit
 import MultipeerConnectivity
 
-struct Settings {
-  static var main: Settings = {
-    return Settings()
-  }()
-  
+enum SubscribableSetting: String {
+  case currency
+}
+
+typealias SettingUpdateCallback = () -> Void
+
+class Settings {
   private let syncNameKey = "syncNameKey"
   private let peerIDKey = "peerIDKey"
-  private let didChangeDefaultIconKey = "didChangeDefaultIconKey"
+  private let currencyKey = "currencyKey"
+  
+  private var callbacks = [String: [SettingUpdateCallback]]()
+  func subscribe(callback: @escaping SettingUpdateCallback, forSetting setting: SubscribableSetting) {
+    let key = setting.rawValue
+    if callbacks.keys.contains(key) {
+      callbacks[key]?.append(callback)
+    } else {
+      callbacks[key] = [callback]
+    }
+  }
+  
+  private func notifySubscribers(aboutSettingUpdate setting: SubscribableSetting) {
+    guard let settingCallbacks = callbacks[setting.rawValue] else { return }
+    for callback in settingCallbacks {
+      callback()
+    }
+  }
   
   var syncName: String {
     get {
@@ -44,14 +63,17 @@ struct Settings {
     }
   }
   
-  var didChangeDefaultIcon: Bool {
+  var userCurrency: Currency? {
     get {
-      return UserDefaults.standard.bool(forKey: didChangeDefaultIconKey)
+      guard let currencyCode = UserDefaults.standard.string(forKey: currencyKey) else { return nil }
+      return Currency(withCode: currencyCode)
     }
     
     set {
-      UserDefaults.standard.set(newValue, forKey: didChangeDefaultIconKey)
+      guard let code = newValue?.code else { return }
+      UserDefaults.standard.set(code, forKey: currencyKey)
       UserDefaults.standard.synchronize()
+      notifySubscribers(aboutSettingUpdate: SubscribableSetting.currency)
     }
   }
 }

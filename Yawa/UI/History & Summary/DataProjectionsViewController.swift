@@ -21,6 +21,7 @@ class ProjectionsViewController: UIViewController {
       switchProjector(fromIndex: nil, toIndex: 0)
     }
   }
+  weak var settings: Settings?
   
   @IBOutlet weak var navigationBar: UIView!
   private var navBarBorder = UIView()
@@ -99,6 +100,16 @@ class ProjectionsViewController: UIViewController {
     next.project(intoTableView: tableView)
     tableView.layoutIfNeeded()
     tableView.contentOffset = CGPoint(x: 0, y: contentOffsets[nextIndex])
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if let navController = segue.destination as? UINavigationController {
+      guard let settingsVC = navController.children.first as? SettingsViewController else { return }
+      settingsVC.settings = settings
+    } else if let syncVC = segue.destination as? SyncViewController {
+      guard let settings = settings else { return }
+      syncVC.syncManager = P2PSyncManager(settings: settings)
+    }
   }
 }
 

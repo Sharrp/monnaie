@@ -18,9 +18,10 @@ class HistoryViewModel: NSObject {
   private var sectionsHeadersData = [SectionHeaderData]()
   private var tableView: UITableView?
   
-  var dataService: DataService?
+  weak var dataService: DataService?
   var editor: ManagedTransactionEditor?
   var getSelectedMonth: SelectedMonthGetter?
+  weak var settings: Settings?
   
   private var isActive: Bool {
     return tableView != nil
@@ -123,8 +124,9 @@ extension HistoryViewModel: UITableViewDataSource {
     }
     cell.emojiLabel.text = "\(transaction.category.emoji)"
     cell.categoryLabel.text = "\(transaction.category.name)"
-    cell.amountLabel.text = formatMoney(amount: transaction.amount, currency: .JPY)
-    if transaction.authorName == Settings.main.syncName {
+    let currency = settings?.userCurrency ?? Currency.defaultCurrency
+    cell.amountLabel.text = formatMoney(amount: transaction.amount, currency: currency)
+    if transaction.authorName == settings?.syncName {
       cell.authorLabel.text = ""
       cell.topMarginConstraint.constant = 19
     } else {

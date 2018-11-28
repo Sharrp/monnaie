@@ -8,8 +8,15 @@
 
 import UIKit
 
+protocol CurrencyDelegate {
+  func didChangeCurrency(to: Currency)
+}
+
 class CurrencySettingViewController: UIViewController {
   @IBOutlet weak var tableView: UITableView!
+  var delegate: CurrencyDelegate?
+  var selectedCurrency: Currency?
+  private var selectedPath: IndexPath?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -32,7 +39,7 @@ extension CurrencySettingViewController: UITableViewDataSource {
   }
   
   private func currencyFor(indexPath: IndexPath) -> Currency {
-    return indexPath.section == 1 ? Currency.all : Currency.allCases[indexPath.row]
+    return indexPath.section == 1 ? Currency.any : Currency.allCases[indexPath.row]
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -48,6 +55,11 @@ extension CurrencySettingViewController: UITableViewDataSource {
     }
     let currency = currencyFor(indexPath: indexPath)
     cell.textLabel?.text = currency.name
+    let isSelected = selectedCurrency == currency
+    cell.accessoryType = isSelected ? .checkmark : .none
+    if isSelected {
+      selectedPath = indexPath
+    }
     return cell
   }
   
@@ -61,14 +73,16 @@ extension CurrencySettingViewController: UITableViewDataSource {
 
 extension CurrencySettingViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    if let selectedPath = selectedPath,
+      let previouslySelectedCell = tableView.cellForRow(at: selectedPath) {
+      previouslySelectedCell.accessoryType = .none
+    }
+    
     guard let cell = tableView.cellForRow(at: indexPath) else { return }
     cell.accessoryType = .checkmark
-//    let currency = currencyFor(indexPath: indexPath)
-  }
-  
-  func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
-    guard let cell = tableView.cellForRow(at: indexPath) else { return nil }
-    cell.accessoryType = .none
-    return indexPath
+    let currency = currencyFor(indexPath: indexPath)
+    selectedCurrency = currency
+    selectedPath = indexPath
+    delegate?.didChangeCurrency(to: currency)
   }
 }

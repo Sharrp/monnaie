@@ -101,16 +101,22 @@ class P2PSyncManager: NSObject {
   
   weak var presentor: SyncPresentorDelegate?
   weak var dataDelegate: SyncDataDelegate?
+  private var settings: Settings
+  
+  var syncName: String {
+    return settings.syncName
+  }
 
-  override init() {
+  init(settings: Settings) {
+    self.settings = settings
     super.init()
     
     let peerID: MCPeerID
-    if let savedPeerID = Settings.main.devicePeerID {
+    if let savedPeerID = settings.devicePeerID {
       peerID = savedPeerID
     } else {
-      peerID = MCPeerID(displayName: Settings.main.syncName)
-      Settings.main.devicePeerID = peerID
+      peerID = MCPeerID(displayName: settings.syncName)
+      settings.devicePeerID = peerID
     }
     
     initializeForSync(asPeerID: peerID)
@@ -158,7 +164,7 @@ class P2PSyncManager: NSObject {
   func deviceNameUpdated(toName name: String) {
     stopSync()
     let peerID = MCPeerID(displayName: name)
-    Settings.main.devicePeerID = peerID
+    settings.devicePeerID = peerID
     initializeForSync(asPeerID: peerID)
   }
 }

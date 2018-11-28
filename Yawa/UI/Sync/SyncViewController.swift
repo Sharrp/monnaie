@@ -15,7 +15,15 @@ extension Notification.Name {
 
 // Responsible for setting up all the pieces requried for sync
 class SyncViewController: UIViewController {
-  let syncManager = P2PSyncManager()
+  var syncManager: P2PSyncManager? {
+    didSet {
+      syncManager?.presentor = self
+      syncManager?.dataDelegate = syncController
+      syncController.dataSender = syncManager
+      guard let syncName = syncManager?.syncName else { return }
+      display(name: syncName)
+    }
+  }
   weak var nameDelegate: SyncNameUpdateDelegate?
   weak var mergeDelegate: MergeDelegate?
   weak var transactionsDataSource: SyncTransactionsDataSource?
@@ -30,12 +38,8 @@ class SyncViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    display(name: Settings.main.syncName)
-    syncManager.presentor = self
-    syncManager.dataDelegate = syncController
     
     syncController.mergeDelegate = mergeDelegate
-    syncController.dataSender = syncManager
     syncController.dataSource = transactionsDataSource
   }
   
@@ -45,7 +49,7 @@ class SyncViewController: UIViewController {
   }
   
   @IBAction func cancel() {
-    syncManager.stopSync()
+    syncManager?.stopSync()
     dismissWithNotification()
   }
   
@@ -114,7 +118,7 @@ extension SyncViewController: SyncNameUpdateDelegate {
   func nameUpdated(from oldName: String, to newName: String) {
     display(name: newName)
     nameDelegate?.nameUpdated(from: oldName, to: newName)
-    syncManager.deviceNameUpdated(toName: newName)
+    syncManager?.deviceNameUpdated(toName: newName)
   }
 }
 
@@ -140,7 +144,7 @@ extension SyncViewController: UITableViewDataSource {
 extension SyncViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let buddy = buddies[indexPath.row]
-    syncManager.inviteToSync(buddy: buddy)
+    syncManager?.inviteToSync(buddy: buddy)
     updateStatus(to: "Waiting a response from \(buddy.name)")
   }
 }

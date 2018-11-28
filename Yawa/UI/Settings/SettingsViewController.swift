@@ -16,7 +16,7 @@ enum SettingOption {
   
   var title: String {
     switch self {
-    case .currency: return "Currency"
+    case .currency: return "Currency sign"
     case .export: return "Export data as CSV"
     case .hapticFeedback: return "Haptic feedback"
     case .feedback: return "Email feedback"
@@ -26,6 +26,7 @@ enum SettingOption {
 
 class SettingsViewController: UIViewController {
   @IBOutlet weak var tableView: UITableView!
+  weak var settings: Settings?
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -35,6 +36,12 @@ class SettingsViewController: UIViewController {
   
   @IBAction func dismiss() {
     dismiss(animated: true, completion: nil)
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    guard let currencyVC = segue.destination as? CurrencySettingViewController else { return }
+    currencyVC.delegate = self
+    currencyVC.selectedCurrency = settings?.userCurrency ?? Currency.defaultCurrency
   }
 }
 
@@ -99,5 +106,11 @@ extension SettingsViewController: UITableViewDelegate {
       break
     }
     tableView.deselectRow(at: indexPath, animated: true)
+  }
+}
+
+extension SettingsViewController: CurrencyDelegate {
+  func didChangeCurrency(to currency: Currency) {
+    settings?.userCurrency = currency
   }
 }

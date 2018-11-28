@@ -16,10 +16,11 @@ class SyncNameViewController: UIViewController {
   @IBOutlet weak var nameTextField: UITextField!
   @IBOutlet weak var saveButton: UIButton!
   weak var delegate: SyncNameUpdateDelegate?
+  weak var settings: Settings?
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    nameTextField.text = Settings.main.syncName
+    nameTextField.text = settings?.syncName ?? ""
     nameTextField.becomeFirstResponder()
   }
   
@@ -30,8 +31,8 @@ class SyncNameViewController: UIViewController {
   
   @IBAction func savePressed() {
     if let newName = nameTextField.text {
-      let oldName = Settings.main.syncName
-      Settings.main.syncName = newName
+      let oldName = settings?.syncName ?? ""
+      settings?.syncName = newName
       delegate?.nameUpdated(from: oldName, to: newName)
     }
     dismiss()

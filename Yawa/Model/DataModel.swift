@@ -148,7 +148,18 @@ enum Currency: Int {
   case GBP
   case JPY
   case RUB
-  case all
+  case any
+  
+  init?(withCode code: String?) {
+    guard let code = code else { return nil }
+    for currency in Currency.allCases {
+      if currency.code == code {
+        self = currency
+        return
+      }
+    }
+    return nil
+  }
   
   static var allCases: [Currency] {
     var raw = 0
@@ -161,6 +172,22 @@ enum Currency: Int {
     return cases
   }
   
+  static var defaultCurrency: Currency {
+    let localCode = NumberFormatter().currencyCode
+    return Currency(withCode: localCode) ?? .USD
+  }
+  
+  var code: String {
+    switch self {
+    case .USD: return "USD"
+    case .EUR: return "EUR"
+    case .GBP: return "GBP"
+    case .JPY: return "JPY"
+    case .RUB: return "RUB"
+    case .any: return ""
+    }
+  }
+  
   var sign: String {
     switch self {
     case .USD: return "$"
@@ -168,7 +195,7 @@ enum Currency: Int {
     case .GBP: return "£"
     case .JPY: return "¥"
     case .RUB: return "₽"
-    case .all: return "¤"
+    case .any: return "¤"
     }
   }
   
@@ -179,7 +206,7 @@ enum Currency: Int {
     case .GBP: return "Great Britain Pound"
     case .JPY: return "Japanese Yen"
     case .RUB: return "Russian Rouble"
-    case .all: return "Universal currency sign"
+    case .any: return "Universal currency sign"
     }
   }
 }

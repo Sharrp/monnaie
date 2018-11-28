@@ -12,6 +12,7 @@ class AddTransactionViewModel {
   weak var guillotine: GuillotineViewController?
   weak var dataService: DataService?
   weak var viewController: EditTransactionController?
+  weak var settings: Settings?
   
   lazy var guillotineCancel: GuillotineCancelCallback = { [weak self] in
     self?.viewController?.switchTo(mode: .waitingForInput, animated: true)
@@ -42,7 +43,9 @@ extension AddTransactionViewModel: TransactionEditorDelegate {
   }
   
   func commit(amount: Double, category: TransactionCategory, date: Date) {
-    let transaction = Transaction(amount: amount, category: category, authorName: Settings.main.syncName, transactionDate: date)
+    let syncName = settings?.syncName ?? ""
+    let transaction = Transaction(amount: amount, category: category,
+                                  authorName: syncName, transactionDate: date)
     dataService?.add(transaction: transaction)
     configure(forMode: .waitingForInput, animated: true)
     viewController?.animateComposerFlyAway()
