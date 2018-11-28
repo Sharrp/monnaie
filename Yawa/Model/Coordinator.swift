@@ -28,6 +28,7 @@ class Coordinator {
     // History & summary need monthSwitch so it's set up first
     monthSwitch.view = projectionsViewController?.monthSwitchView
     monthSwitch.dataService = dataService
+    monthSwitch.settings = settings
     monthSwitch.selectLastMonth()
     
     history.dataService = dataService
@@ -51,6 +52,8 @@ class Coordinator {
     guillotineViewController?.subscribeForBladeState(callback: editTransactionController?.bladeStateSwitch)
     guillotineViewController?.subscribeForScroll(callback: projectionsViewController?.bladeScroll)
     guillotineViewController?.subscribeForBladeState(callback: projectionsViewController?.bladeStateSwitch)
+    
+    settings.subscribe(callback: monthSwitch.currencyChanged, forSetting: .currency)
     
     addViewModel.dataService = dataService
     addViewModel.guillotine = guillotineViewController

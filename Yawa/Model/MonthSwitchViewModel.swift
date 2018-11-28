@@ -20,7 +20,6 @@ class MonthSwitchViewModel: NSObject {
       view.collectionView.dataSource = self
       view.collectionView.delegate = self
       view.collectionView.isScrollEnabled = false
-//      view.collectionView.allowsSelection = false
       view.setSeparatorHidden(progress: 1, animated: false)
     }
   }
@@ -33,6 +32,7 @@ class MonthSwitchViewModel: NSObject {
   private var reports = [MonthReport]()
   private var todayAmount = 0.0
   private var monthsHideProgress: CGFloat = 1
+  weak var settings: Settings?
   
   // Layout
   private let margin: CGFloat = 8
@@ -107,6 +107,10 @@ class MonthSwitchViewModel: NSObject {
     return self?.selectedMonth
   }
   
+  lazy var currencyChanged: SettingUpdateCallback = { [weak self] in
+    self?.view?.collectionView.reloadData()
+  }
+  
   private func update(hideProgress: CGFloat, animated: Bool) {
     view?.setSeparatorHidden(progress: hideProgress, animated: animated)
     
@@ -146,9 +150,10 @@ extension MonthSwitchViewModel: UICollectionViewDataSource {
     
     let isSelected = indexPath.row == selectedIndex
     let isCurrentMonth = indexPath.row == reports.count - 1 // FIX: works only if there is no months from the future
+    let currency = settings?.userCurrency ?? Currency.defaultCurrency
     if indexPath.row < reports.count {
       let report = reports[indexPath.row]
-      cell.amountLabel.text = formatMoney(amount: report.amount, currency: .JPY)
+      cell.amountLabel.text = formatMoney(amount: report.amount, currency: currency)
       cell.monthLabel.text = string(forMonth: report.monthDate)
       
       let backgroundAlpha = isSelected ? (1 - monthsHideProgress) : 0
@@ -159,7 +164,7 @@ extension MonthSwitchViewModel: UICollectionViewDataSource {
       cell.setState(textActiveLevel: textActitvityLevel, backgroundAlpha: backgroundAlpha)
       cell.alpha = isCurrentMonth ? 1 : 1 - monthsHideProgress
     } else {
-      cell.amountLabel.text = formatMoney(amount: todayAmount, currency: .JPY)
+      cell.amountLabel.text = formatMoney(amount: todayAmount, currency: currency)
       cell.monthLabel.text = "Today"
       cell.setState(textActiveLevel: 1, backgroundAlpha: 0)
       cell.alpha = monthsHideProgress
