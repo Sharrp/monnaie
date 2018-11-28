@@ -27,6 +27,7 @@ enum SettingOption {
 class SettingsViewController: UIViewController {
   @IBOutlet weak var tableView: UITableView!
   weak var settings: Settings?
+  private let telegramUsername = "sharrp"
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -97,11 +98,32 @@ extension SettingsViewController: UITableViewDataSource {
 }
 
 extension SettingsViewController: UITableViewDelegate {
+  private func openTelegram() {
+    guard let url = URL(string: "tg://resolve?domain=\(telegramUsername)") else { return }
+    if UIApplication.shared.canOpenURL(url) {
+      UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    } else {
+      let alert = UIAlertController(title: "Telegram isn't installed",
+                                    message: "Reach out to @\(telegramUsername) on Telegram messenger",
+        preferredStyle: .actionSheet)
+      let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+      let install = UIAlertAction(title: "Install Telegram", style: .default) { _ in
+        guard let telegramAppStoreURL = URL(string: "https://itunes.apple.com/app/id686449807") else { return }
+        UIApplication.shared.open(telegramAppStoreURL, options: [:], completionHandler: nil)
+      }
+      alert.addAction(cancel)
+      alert.addAction(install)
+      present(alert, animated: true, completion: nil)
+    }
+  }
+  
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let setting = settingOption(forIndexPath: indexPath)
     switch setting {
     case .currency:
       performSegue(withIdentifier: "CurrecySettingSegue", sender: self)
+    case .feedbackTelegram:
+      openTelegram()
     default:
       break
     }
