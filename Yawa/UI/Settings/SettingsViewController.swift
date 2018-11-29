@@ -28,15 +28,23 @@ class SettingsViewController: UIViewController {
   @IBOutlet weak var tableView: UITableView!
   weak var settings: Settings?
   private let telegramUsername = "sharrp"
+  private let hapticSwitch = UISwitch()
 
   override func viewDidLoad() {
     super.viewDidLoad()
     tableView.backgroundColor = Color.background
     navigationController?.navigationBar.tintColor = Color.accentText
+    
+    hapticSwitch.addTarget(self, action: #selector(hapticEnabledChanged), for: .valueChanged)
+    hapticSwitch.onTintColor = Color.accentText
   }
   
   @IBAction func dismiss() {
     dismiss(animated: true, completion: nil)
+  }
+  
+  @objc func hapticEnabledChanged(theSwitch: UISwitch) {
+    settings?.hapticEnabled = theSwitch.isOn
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -90,8 +98,15 @@ extension SettingsViewController: UITableViewDataSource {
     }
     let setting = settingOption(forIndexPath: indexPath)
     cell.textLabel?.text = setting.title
-    if setting == .currency {
+    
+    switch setting {
+    case .currency:
       cell.accessoryType = .disclosureIndicator
+    case .hapticFeedback:
+      cell.accessoryView = hapticSwitch
+      hapticSwitch.isOn = settings?.hapticEnabled ?? false
+    default:
+      break
     }
     return cell
   }

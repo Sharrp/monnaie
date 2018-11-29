@@ -19,6 +19,8 @@ class Settings {
   private let syncNameKey = "syncNameKey"
   private let peerIDKey = "peerIDKey"
   private let currencyKey = "currencyKey"
+  private let hapticKey = "hapticKey"
+  private let hapticSetKey = "hapticSetKey"
   
   private var callbacks = [String: [SettingUpdateCallback?]]()
   func subscribe(callback: SettingUpdateCallback?, forSetting setting: SubscribableSetting) {
@@ -74,6 +76,22 @@ class Settings {
       UserDefaults.standard.set(code, forKey: currencyKey)
       UserDefaults.standard.synchronize()
       notifySubscribers(aboutSettingUpdate: SubscribableSetting.currency)
+    }
+  }
+  
+  var hapticEnabled: Bool {
+    get {
+      if UserDefaults.standard.bool(forKey: hapticSetKey) {
+        return UserDefaults.standard.bool(forKey: hapticKey)
+      } else {
+        return true
+      }
+    }
+    
+    set {
+      UserDefaults.standard.set(true, forKey: hapticSetKey)
+      UserDefaults.standard.set(newValue, forKey: hapticKey)
+      UserDefaults.standard.synchronize()
     }
   }
 }

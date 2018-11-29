@@ -660,10 +660,10 @@
             </objects>
             <point key="canvasLocation" x="325.60000000000002" y="850.52473763118451"/>
         </scene>
-        <!--Currency-->
+        <!--Currency sign-->
         <scene sceneID="MVz-wl-Wz6">
             <objects>
-                <viewController title="Currency" id="EGv-Lv-XOR" customClass="CurrencySettingViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Currency sign" id="EGv-Lv-XOR" customClass="CurrencySettingViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NNO-Qd-842">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
