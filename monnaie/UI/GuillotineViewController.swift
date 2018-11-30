@@ -12,6 +12,10 @@ typealias GuillotineCancelCallback = () -> Void
 typealias GuillotineScrollCallback = (CGFloat) -> Void
 typealias GuillotineBladeStateCallback = (BladeState) -> Void
 
+protocol ViewControllerLoadDelegate: AnyObject {
+  func didLoad(viewController: UIViewController)
+}
+
 protocol BladeViewScrollable {
   var scrollView: UIScrollView? { get }
 }
@@ -22,6 +26,7 @@ enum BladeState {
 }
 
 class GuillotineViewController: UIViewController {
+  weak var loadDelegate: ViewControllerLoadDelegate?
   private(set) var baseViewController: UIViewController!
   private(set) var bladeViewController: UIViewController!
   @IBOutlet weak var bladeContainerView: UIView!
@@ -59,6 +64,8 @@ class GuillotineViewController: UIViewController {
     bladeViewController = bladeVC
     
     view.addGestureRecognizer(panGesture)
+    
+    loadDelegate?.didLoad(viewController: self)
   }
   
   override func viewDidLayoutSubviews() {

@@ -6,7 +6,7 @@
 //  Copyright © 2018 Anton Vronskii. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class Coordinator {
   private let dataService = DataService(dbName: "production")
@@ -18,13 +18,12 @@ class Coordinator {
   private let csvHandler = CSVImportExportHandler()
   private let settings = Settings()
   
-  private(set) var isInitialized = false
-  weak var guillotineViewController: GuillotineViewController?
-  weak var projectionsViewController: ProjectionsViewController?
-  weak var editTransactionController: EditTransactionViewController?
+  weak var guillotineViewController: GuillotineViewController!
+  weak var projectionsViewController: ProjectionsViewController!
+  weak var editTransactionController: EditTransactionViewController!
   
   // Assumes that all view controller variables are set
-  func appDidFinishLaunching() {
+  private func setup() {
     // History & summary need monthSwitch so it's set up first
     monthSwitch.view = projectionsViewController?.monthSwitchView
     monthSwitch.dataService = dataService
@@ -46,14 +45,14 @@ class Coordinator {
     dataService.subscribe(callback: history.dataServiceUpdated)
     dataService.subscribe(callback: summary.dataServiceUpdated)
     
-    guillotineViewController?.subscribeToCancel(callback: addViewModel.guillotineCancel)
-    guillotineViewController?.subscribeToCancel(callback: editViewModel.guillotineCancel)
-    guillotineViewController?.subscribeForScroll(callback: monthSwitch.bladeScroll)
-    guillotineViewController?.subscribeForBladeState(callback: monthSwitch.bladeStateSwitch)
-    guillotineViewController?.subscribeForScroll(callback: editTransactionController?.bladeScroll)
-    guillotineViewController?.subscribeForBladeState(callback: editTransactionController?.bladeStateSwitch)
-    guillotineViewController?.subscribeForScroll(callback: projectionsViewController?.bladeScroll)
-    guillotineViewController?.subscribeForBladeState(callback: projectionsViewController?.bladeStateSwitch)
+    guillotineViewController.subscribeToCancel(callback: addViewModel.guillotineCancel)
+    guillotineViewController.subscribeToCancel(callback: editViewModel.guillotineCancel)
+    guillotineViewController.subscribeForScroll(callback: monthSwitch.bladeScroll)
+    guillotineViewController.subscribeForBladeState(callback: monthSwitch.bladeStateSwitch)
+    guillotineViewController.subscribeForScroll(callback: editTransactionController?.bladeScroll)
+    guillotineViewController.subscribeForBladeState(callback: editTransactionController?.bladeStateSwitch)
+    guillotineViewController.subscribeForScroll(callback: projectionsViewController?.bladeScroll)
+    guillotineViewController.subscribeForBladeState(callback: projectionsViewController?.bladeStateSwitch)
     
     settings.subscribe(callback: monthSwitch.currencyChanged, forSetting: .currency)
     settings.subscribe(callback: history.currencyChanged, forSetting: .currency)
@@ -72,19 +71,28 @@ class Coordinator {
     history.editor = editViewModel
     
     // Only after all assigned projections are ready
-    projectionsViewController?.projectors = [history, summary]
-    projectionsViewController?.settings = settings
-    editTransactionController?.settings = settings
+    projectionsViewController.projectors = [history, summary]
+    projectionsViewController.settings = settings
+    editTransactionController.settings = settings
     
     csvHandler.generateCSV = { [weak self] in self?.dataService.exportDataAsCSV() }
     csvHandler.importer = dataService
     projectionsViewController?.exporter = csvHandler
-    
-    isInitialized = true
   }
   
   func importCSV(fileURL: URL) {
     guard let vc = guillotineViewController else { return }
     csvHandler.importCSV(fileURL: fileURL, presentor: vc)
+  }
+}
+
+extension Coordinator: ViewControllerLoadDelegate {
+  func didLoad(viewController: UIViewController) {
+    // All these casts should crash immediately for easier debug (there is no case when they can fail legally)
+    guillotineViewController = (viewController as! GuillotineViewController)
+    projectionsViewController = (guillotineViewController.bladeViewController as! ProjectionsViewController)
+    editTransactionController = (guillotineViewController.baseViewController as! EditTransactionViewController)
+    
+    setup()
   }
 }
