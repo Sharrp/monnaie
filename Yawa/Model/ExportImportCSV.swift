@@ -8,7 +8,7 @@
 
 import UIKit
 
-typealias GenerateCSV = () -> String?
+typealias GenerateCSVCallback = () -> String?
 
 protocol CSVCompatible {
   func isEmpty() -> Bool
@@ -44,12 +44,15 @@ enum CSVImportResult {
   }
 }
 
-class CSVImportExportHandler {
-  var generateCSV: GenerateCSV?
+protocol Exporter: AnyObject {
+  func exportAll(presentor: UIViewController)
+}
+
+class CSVImportExportHandler: Exporter {
+  var generateCSV: GenerateCSVCallback?
   var importer: CSVCompatible?
-  var presentor: UIViewController?
   
-  func shareAllDataAsCSV() {
+  func exportAll(presentor: UIViewController) {
     guard let csv = generateCSV?() else { return }
     let filename = NSTemporaryDirectory() + "export-finances-\(Date.now).csv".replacingOccurrences(of: " ", with: "_")
     do {
@@ -62,13 +65,13 @@ class CSVImportExportHandler {
         // in case any of previous exports were interrupted after file creation but before shraing is finished
         FileManager.default.removeFiles(fromDirectory: NSTemporaryDirectory())
       }
-      presentor?.present(activityVC, animated: true)
+      presentor.present(activityVC, animated: true)
     } catch {
       print("Cannot write export file: \(error)")
     }
   }
   
-  func importCSV(fileURL: URL) {
+  func importCSV(fileURL: URL, presentor: UIViewController) {
     let removeImportedFile = {
       do {
         try FileManager.default.removeItem(at: fileURL)
@@ -77,11 +80,11 @@ class CSVImportExportHandler {
       }
     }
     
-    let handleImportResult = { [weak self] (result: CSVImportResult) in
+    let handleImportResult = { (result: CSVImportResult) in
       let alertController = UIAlertController(title: result.title, message: result.message, preferredStyle: .alert)
       let okAction = UIAlertAction(title: "Ok", style: .default)
       alertController.addAction(okAction)
-      self?.presentor?.present(alertController, animated: true)
+      presentor.present(alertController, animated: true)
       
       removeImportedFile()
     }
@@ -109,6 +112,6 @@ class CSVImportExportHandler {
       alertController.addAction(replaceAction)
     }
     
-    presentor?.present(alertController, animated: true)
+    presentor.present(alertController, animated: true)
   }
 }

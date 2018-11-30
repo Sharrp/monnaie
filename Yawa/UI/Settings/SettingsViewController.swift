@@ -27,6 +27,7 @@ enum SettingOption {
 class SettingsViewController: UIViewController {
   @IBOutlet weak var tableView: UITableView!
   weak var settings: Settings?
+  weak var exporter: Exporter?
   private let telegramUsername = "sharrp"
   private let hapticSwitch = UISwitch()
 
@@ -139,7 +140,9 @@ extension SettingsViewController: UITableViewDelegate {
       performSegue(withIdentifier: "CurrecySettingSegue", sender: self)
     case .feedbackTelegram:
       openTelegram()
-    default:
+    case .export:
+      exporter?.exportAll(presentor: self)
+    case .hapticFeedback:
       break
     }
     tableView.deselectRow(at: indexPath, animated: true)

@@ -22,6 +22,7 @@ class ProjectionsViewController: UIViewController {
     }
   }
   weak var settings: Settings?
+  weak var exporter: Exporter?
   
   @IBOutlet weak var navigationBar: UIView!
   private var navBarBorder = UIView()
@@ -106,6 +107,7 @@ class ProjectionsViewController: UIViewController {
     if let navController = segue.destination as? UINavigationController {
       guard let settingsVC = navController.children.first as? SettingsViewController else { return }
       settingsVC.settings = settings
+      settingsVC.exporter = exporter
     } else if let syncVC = segue.destination as? SyncViewController {
       guard let settings = settings else { return }
       syncVC.syncManager = P2PSyncManager(settings: settings)

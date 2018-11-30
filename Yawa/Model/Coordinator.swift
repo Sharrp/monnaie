@@ -76,14 +76,15 @@ class Coordinator {
     projectionsViewController?.settings = settings
     editTransactionController?.settings = settings
     
-    csvHandler.presentor = guillotineViewController
     csvHandler.generateCSV = { [weak self] in self?.dataService.exportDataAsCSV() }
     csvHandler.importer = dataService
+    projectionsViewController?.exporter = csvHandler
     
     isInitialized = true
   }
   
   func importCSV(fileURL: URL) {
-    csvHandler.importCSV(fileURL: fileURL)
+    guard let vc = guillotineViewController else { return }
+    csvHandler.importCSV(fileURL: fileURL, presentor: vc)
   }
 }
