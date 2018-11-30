@@ -134,7 +134,12 @@ class MonthSwitchViewModel: NSObject {
   
   func selectLastMonth() {
     selectedIndex = reports.count - 1
-    update(hideProgress: 1, animated: false)
+    
+    // This is not good at all but no worse than sending signals from viewDidLayout from ViewController
+    // and hacking it here with "if !didTheFirstTimeLayout { ... }"
+    DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
+      self?.update(hideProgress: 1, animated: false)
+    }
   }
 }
 

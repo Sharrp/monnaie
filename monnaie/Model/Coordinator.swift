@@ -25,7 +25,7 @@ class Coordinator {
   // Assumes that all view controller variables are set
   private func setup() {
     // History & summary need monthSwitch so it's set up first
-    monthSwitch.view = projectionsViewController?.monthSwitchView
+    monthSwitch.view = projectionsViewController.monthSwitchView
     monthSwitch.dataService = dataService
     monthSwitch.settings = settings
     monthSwitch.selectLastMonth()
