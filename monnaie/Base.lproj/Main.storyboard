@@ -13,12 +13,12 @@
         <!--Projections View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="ListVC" id="BYZ-38-t0r" customClass="ProjectionsViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ListVC" id="BYZ-38-t0r" customClass="ProjectionsViewController" customModule="monnaie" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sZb-W2-qke" customClass="ShadowRoundedView" customModule="Yawa" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sZb-W2-qke" customClass="ShadowRoundedView" customModule="monnaie" customModuleProvider="target">
                                 <rect key="frame" x="16" y="579" width="343" height="20"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -36,7 +36,7 @@
                                 <inset key="scrollIndicatorInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
                                 <inset key="separatorInset" minX="68" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="transactionCell" rowHeight="56" id="eWj-ZD-y37" customClass="TransactionCell" customModule="Yawa" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="transactionCell" rowHeight="56" id="eWj-ZD-y37" customClass="TransactionCell" customModule="monnaie" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="55.5" width="375" height="56"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="eWj-ZD-y37" id="edt-gh-Z4f">
@@ -105,7 +105,7 @@
                                             <outlet property="topMarginConstraint" destination="C0Z-G9-u5y" id="VVe-tJ-tjQ"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="summaryCell" rowHeight="53" id="vtW-J5-k9d" customClass="SummaryCell" customModule="Yawa" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="summaryCell" rowHeight="53" id="vtW-J5-k9d" customClass="SummaryCell" customModule="monnaie" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="111.5" width="375" height="53"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="vtW-J5-k9d" id="gUk-mX-7KB">
@@ -178,7 +178,7 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yfF-yw-6if" customClass="MonthSwitchView" customModule="Yawa" customModuleProvider="target">
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yfF-yw-6if" customClass="MonthSwitchView" customModule="monnaie" customModuleProvider="target">
                                 <rect key="frame" x="8" y="587" width="359" height="80"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Roi-lv-hht">
@@ -213,7 +213,7 @@
                                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         </collectionViewFlowLayout>
                                         <cells>
-                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="monthSwitchCell" id="I9f-AC-TZK" customClass="MonthSwitchCell" customModule="Yawa" customModuleProvider="target">
+                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="monthSwitchCell" id="I9f-AC-TZK" customClass="MonthSwitchCell" customModule="monnaie" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="12" width="110" height="56"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -284,7 +284,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dR6-9D-Tfj">
                                 <rect key="frame" x="0.0" y="-36" width="375" height="100"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w2q-Oc-fKm" customClass="TabSwitcher" customModule="Yawa" customModuleProvider="target">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w2q-Oc-fKm" customClass="TabSwitcher" customModule="monnaie" customModuleProvider="target">
                                         <rect key="frame" x="67.5" y="59" width="240" height="41"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
@@ -352,7 +352,7 @@
         <!--Edit Transaction View Controller-->
         <scene sceneID="LqN-g1-dFt">
             <objects>
-                <viewController storyboardIdentifier="editTransactionVC" id="J2s-wE-pf2" customClass="EditTransactionViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="editTransactionVC" id="J2s-wE-pf2" customClass="EditTransactionViewController" customModule="monnaie" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nkC-uH-eg5">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -365,7 +365,7 @@
                                 </view>
                                 <blurEffect style="light"/>
                             </visualEffectView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HNt-U5-1J3" customClass="TransactionComponserView" customModule="Yawa" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HNt-U5-1J3" customClass="TransactionComponserView" customModule="monnaie" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="295" width="375" height="86"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zyi-Pr-Cca">
@@ -486,7 +486,7 @@
                                     <action selector="dateChangedWithSender:" destination="J2s-wE-pf2" eventType="valueChanged" id="iJb-Yg-EjW"/>
                                 </connections>
                             </datePicker>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ic6-Ub-Ojj" customClass="DigitKeyboardView" customModule="Yawa" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ic6-Ub-Ojj" customClass="DigitKeyboardView" customModule="monnaie" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="381" width="375" height="216"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -506,7 +506,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="categoryCell" id="1Xh-kZ-HZQ" customClass="CategoryCell" customModule="Yawa" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="categoryCell" id="1Xh-kZ-HZQ" customClass="CategoryCell" customModule="monnaie" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="156" height="107"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -620,7 +620,7 @@
         <!--Settings-->
         <scene sceneID="MAb-h5-494">
             <objects>
-                <viewController id="jrT-oK-Qws" customClass="SettingsViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="jrT-oK-Qws" customClass="SettingsViewController" customModule="monnaie" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="coL-2s-xIq">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -663,7 +663,7 @@
         <!--Currency sign-->
         <scene sceneID="MVz-wl-Wz6">
             <objects>
-                <viewController title="Currency sign" id="EGv-Lv-XOR" customClass="CurrencySettingViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Currency sign" id="EGv-Lv-XOR" customClass="CurrencySettingViewController" customModule="monnaie" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NNO-Qd-842">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -697,7 +697,7 @@
         <!--Sync View Controller-->
         <scene sceneID="j0b-u4-4ZH">
             <objects>
-                <viewController id="Cq3-tA-THa" customClass="SyncViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Cq3-tA-THa" customClass="SyncViewController" customModule="monnaie" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="K8x-MP-Yc8">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -769,7 +769,7 @@ Feel free to change your name here 👇</string>
                     </view>
                     <size key="freeformSize" width="375" height="667"/>
                     <connections>
-                        <outlet property="nameChangeMessageLabel" destination="G7d-m0-NbC" id="MS0-Km-eOu"/>
+                        <outlet property="nameChangeMessageLabel" destination="G7d-m0-NbC" id="ONf-fM-hQ8"/>
                         <outlet property="peersTableView" destination="TOU-c9-7Rq" id="rFJ-vQ-YQk"/>
                         <outlet property="syncStatusLabel" destination="dqn-Fh-aMt" id="PWZ-Ld-aJ0"/>
                     </connections>
@@ -781,7 +781,7 @@ Feel free to change your name here 👇</string>
         <!--Sync Name View Controller-->
         <scene sceneID="tJl-XY-BMc">
             <objects>
-                <viewController id="nwH-Tk-n2m" customClass="SyncNameViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="nwH-Tk-n2m" customClass="SyncNameViewController" customModule="monnaie" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Llx-da-Yn9">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -829,7 +829,7 @@ Feel free to change your name here 👇</string>
         <!--Guillotine View Controller-->
         <scene sceneID="XaX-iS-BPI">
             <objects>
-                <viewController id="H9H-eu-ab2" customClass="GuillotineViewController" customModule="Yawa" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="H9H-eu-ab2" customClass="GuillotineViewController" customModule="monnaie" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="w4I-PQ-z8L">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

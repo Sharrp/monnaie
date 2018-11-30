@@ -31,7 +31,7 @@ class SyncViewController: UIViewController {
   private let syncController = SyncController()
   
   @IBOutlet weak var syncStatusLabel: UILabel!
-  @IBOutlet weak var nameChangeMessageLabel: UILabel!
+  @IBOutlet weak var nameChangeMessageLabel: UILabel?
   
   @IBOutlet weak var peersTableView: UITableView!
   private var buddies = [SyncBuddy]()
@@ -41,6 +41,9 @@ class SyncViewController: UIViewController {
     
     syncController.mergeDelegate = mergeDelegate
     syncController.dataSource = transactionsDataSource
+    
+    guard let syncName = syncManager?.syncName else { return }
+    display(name: syncName)
   }
   
   private func dismissWithNotification() {
@@ -109,7 +112,7 @@ extension SyncViewController: SyncPresentorDelegate {
 
 extension SyncViewController: SyncNameUpdateDelegate {
   func display(name: String) {
-    nameChangeMessageLabel.text = """
+    nameChangeMessageLabel?.text = """
     We sign your transactions with "\(name)".
     Feel free to change your name here 👇
     """
