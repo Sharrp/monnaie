@@ -29,6 +29,7 @@
 		7529F95F215E7A9900FD8884 /* CategorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7529F95E215E7A9900FD8884 /* CategorySelection.swift */; };
 		7529F960215E7A9900FD8884 /* CategorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7529F95E215E7A9900FD8884 /* CategorySelection.swift */; };
 		755EC21D219FB63F00CC0B09 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755EC21C219FB63F00CC0B09 /* HistoryViewModel.swift */; };
+		757BBD9321B210A2003D6201 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 757BBD9121B210A2003D6201 /* Localizable.strings */; };
 		758C6879218A777B00F2F7BE /* MonthSwitchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758C6878218A777B00F2F7BE /* MonthSwitchViewModel.swift */; };
 		75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046DE2098892500E8B09E /* AppDelegate.swift */; };
 		75C046E12098892600E8B09E /* DataProjectionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C046E02098892600E8B09E /* DataProjectionsViewController.swift */; };
@@ -121,6 +122,7 @@
 		7529F95B215BCD6900FD8884 /* SummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryViewModel.swift; sourceTree = "<group>"; };
 		7529F95E215E7A9900FD8884 /* CategorySelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySelection.swift; sourceTree = "<group>"; };
 		755EC21C219FB63F00CC0B09 /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
+		757BBD9221B210A2003D6201 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = monnaie/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		758C6878218A777B00F2F7BE /* MonthSwitchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthSwitchViewModel.swift; sourceTree = "<group>"; };
 		75C046DB2098892500E8B09E /* monnaie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = monnaie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75C046DE2098892500E8B09E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 				75C046E52098892600E8B09E /* Assets.xcassets */,
 				75C046E22098892600E8B09E /* Main.storyboard */,
 				75C046E72098892600E8B09E /* LaunchScreen.storyboard */,
+				757BBD9121B210A2003D6201 /* Localizable.strings */,
 				75C046EA2098892600E8B09E /* Info.plist */,
 			);
 			path = monnaie;
@@ -411,6 +414,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				757BBD9321B210A2003D6201 /* Localizable.strings in Resources */,
 				75C046E92098892600E8B09E /* LaunchScreen.storyboard in Resources */,
 				DF0B60AE20F0857E0018AC98 /* DigitKeyboardView.xib in Resources */,
 				75C046E62098892600E8B09E /* Assets.xcassets in Resources */,
@@ -521,6 +525,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		757BBD9121B210A2003D6201 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				757BBD9221B210A2003D6201 /* Base */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		75C046E22098892600E8B09E /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
