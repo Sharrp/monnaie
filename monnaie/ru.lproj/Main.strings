@@ -1,0 +1,78 @@
+
+/* Class = "UILabel"; text = "Amount"; ObjectID = "1mA-Ud-th3"; */
+"1mA-Ud-th3.text" = "Amount";
+
+/* Class = "UILabel"; text = "Author"; ObjectID = "5ua-1L-8bt"; */
+"5ua-1L-8bt.text" = "Author";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "78o-nz-V4I"; */
+"78o-nz-V4I.text" = "Label";
+
+/* Class = "UIButton"; normalTitle = "Oct 29"; ObjectID = "9ZH-LQ-MED"; */
+"9ZH-LQ-MED.normalTitle" = "Oct 29";
+
+/* Class = "UILabel"; text = "🍕"; ObjectID = "9i6-sl-SUp"; */
+"9i6-sl-SUp.text" = "🍕";
+
+/* Class = "UIButton"; normalTitle = "Save"; ObjectID = "Awz-UK-pzK"; */
+"Awz-UK-pzK.normalTitle" = "Save";
+
+/* Class = "UILabel"; text = "Category"; ObjectID = "BDh-wj-zF8"; */
+"BDh-wj-zF8.text" = "Category";
+
+/* Class = "UIViewController"; title = "Currency sign"; ObjectID = "EGv-Lv-XOR"; */
+"EGv-Lv-XOR.title" = "Currency sign";
+
+/* Class = "UILabel"; text = "We sign your transactions with \"iPhone 7 5hrp\".\nFeel free to change your name here 👇"; ObjectID = "G7d-m0-NbC"; */
+"G7d-m0-NbC.text" = "We sign your transactions with \"iPhone 7 5hrp\".\nFeel free to change your name here 👇";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "TPq-4E-WbD"; */
+"TPq-4E-WbD.text" = "Label";
+
+/* Class = "UINavigationItem"; title = "Settings"; ObjectID = "Zdq-FR-fBh"; */
+"Zdq-FR-fBh.title" = "Settings";
+
+/* Class = "UILabel"; text = "Category"; ObjectID = "crL-LF-AX2"; */
+"crL-LF-AX2.text" = "Category";
+
+/* Class = "UILabel"; text = "Sync status"; ObjectID = "dqn-Fh-aMt"; */
+"dqn-Fh-aMt.text" = "Sync status";
+
+/* Class = "UIBarButtonItem"; title = "Edit name"; ObjectID = "k1V-KA-Bqc"; */
+"k1V-KA-Bqc.title" = "Edit name";
+
+/* Class = "UILabel"; text = "🥑"; ObjectID = "lcF-q5-q4Y"; */
+"lcF-q5-q4Y.text" = "🥑";
+
+/* Class = "UITextField"; placeholder = "Name people you sync with see"; ObjectID = "lhp-Ad-nBE"; */
+"lhp-Ad-nBE.placeholder" = "Name people you sync with see";
+
+/* Class = "UIButton"; normalTitle = "Add"; ObjectID = "n2G-7X-LBj"; */
+"n2G-7X-LBj.normalTitle" = "Add";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "pZO-vI-CKe"; */
+"pZO-vI-CKe.text" = "Label";
+
+/* Class = "UILabel"; text = "Amount"; ObjectID = "rU8-2W-Fjd"; */
+"rU8-2W-Fjd.text" = "Amount";
+
+/* Class = "UILabel"; text = "🦋"; ObjectID = "rjL-Y0-IZP"; */
+"rjL-Y0-IZP.text" = "🦋";
+
+/* Class = "UIBarButtonItem"; title = "Cancel"; ObjectID = "t2w-tZ-Vcl"; */
+"t2w-tZ-Vcl.title" = "Cancel";
+
+/* Class = "UILabel"; text = "¥1,287"; ObjectID = "tt3-TQ-5HB"; */
+"tt3-TQ-5HB.text" = "¥1,287";
+
+/* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "xfS-Ih-pK6"; */
+"xfS-Ih-pK6.title" = "Back";
+
+/* Class = "UINavigationItem"; title = "Adding"; ObjectID = "yNY-1N-d0f"; */
+"yNY-1N-d0f.title" = "Adding";
+
+/* Class = "UIButton"; normalTitle = "Cancel"; ObjectID = "zbo-zu-VLx"; */
+"zbo-zu-VLx.normalTitle" = "Cancel";
+
+/* Class = "UIButton"; normalTitle = "🥥"; ObjectID = "zyi-Pr-Cca"; */
+"zyi-Pr-Cca.normalTitle" = "🥥";
