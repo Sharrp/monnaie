@@ -21,7 +21,7 @@
 "Choose CSV import mode" = "Choose CSV import mode";
 
 /* Part 1 of  */
-"Choose how to add transactions from" = "Choose how to add transactions;from" транзакции из файла";
+"Choose how to add transactions from" = "Choose how to add transactions from";
 
 /* Name of currency sign setting */
 "Currency sign" = "Currency sign";
@@ -87,7 +87,7 @@
 "Telegram your feedback" = "Telegram your feedback";
 
 /* Description of the universal currency sign */
-"The currency sign ¤ is a character used to denote an unspecified currency." = currency." любой денежной единицы";
+"The currency sign ¤ is a character used to denote an unspecified currency." = "The currency sign ¤ is a character used to denote an unspecified currency.";
 
 /* Part 2 of  */
 "to your existing transactions" = "to your existing transactions";
@@ -105,7 +105,7 @@
 "US Dollar" = "US Dollar";
 
 /* Prefix for Telegram username to reach out to */
-"Use Telegram messenger to reach out to" = "Use Telegram messenger to;reach out to" Telegram, чтобы написать";
+"Use Telegram messenger to reach out to" = "Use Telegram messenger to reach out to";
 
 /* Name of the day before current day in history */
 "Yesterday" = "Yesterday";

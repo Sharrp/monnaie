@@ -122,7 +122,7 @@ extension SettingsViewController: UITableViewDelegate {
       
       let alertTitle = NSLocalizedString("Telegram isn't installed", comment: "Alert title when Telegram isn't installed")
       let messagePrefix = NSLocalizedString("Use Telegram messenger to reach out to", comment: "Prefix for Telegram username to reach out to")
-      let alert = UIAlertController(title: alertTitle message: messagePrefix + " " + telegramUsername,
+      let alert = UIAlertController(title: alertTitle, message: messagePrefix + " " + telegramUsername,
                                     preferredStyle: .actionSheet)
       let cancelTitle = NSLocalizedString("Cancel", comment: "Cancel button title")
       let cancel = UIAlertAction(title: cancelTitle, style: .cancel, handler: nil)
