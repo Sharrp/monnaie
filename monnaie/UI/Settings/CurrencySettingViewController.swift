@@ -65,7 +65,8 @@ extension CurrencySettingViewController: UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
     if section == 1 {
-      return "The currency sign ¤ is a character used to denote an unspecified currency."
+      return NSLocalizedString("The currency sign ¤ is a character used to denote an unspecified currency.",
+                               comment: "Description of the universal currency sign") 
     }
     return nil
   }

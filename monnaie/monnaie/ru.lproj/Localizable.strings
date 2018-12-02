@@ -38,7 +38,7 @@
 "Grocery" = "Продукты";
 
 /* Name of haptic feedback setting */
-"Haptic feedback" = "Haptic feedback";
+"Haptic feedback" = "Отклик вибрацией";
 
 /* Transactions list name */
 "History" = "История";
