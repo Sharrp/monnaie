@@ -28,8 +28,6 @@ class EditTransactionViewModel {
 }
 
 extension EditTransactionViewModel: ManagedTransactionEditor {
-  func didSwitch(toMode: TransactionComposerMode) { }
-  
   func startEditing(transaction: Transaction, byReplacingView viewToReplace: UIView) {
     let storyboard = UIStoryboard(name: "Main", bundle: nil)
     guard let controller = storyboard.instantiateViewController(withIdentifier: "editTransactionVC") as? EditTransactionViewController else { return }
@@ -72,6 +70,8 @@ extension EditTransactionViewModel: ManagedTransactionEditor {
 }
 
 extension EditTransactionViewModel: TransactionEditorDelegate {
+  func didSwitch(toMode: TransactionComposerMode) { }
+  
   func commit(amount: Double, category: TransactionCategory, date: Date) {
     guard var transaction = editingTransaction else { return }
     transaction.amount = amount
