@@ -25,7 +25,7 @@ class AddTransactionViewModel {
   }
   
   private func configure(forMode mode: TransactionComposerMode, animated: Bool) {
-    guillotine?.navigationBarTitle = "Add"
+    guillotine?.navigationBarTitle = NSLocalizedString("Add", comment: "Add button title")
     let barHidden = mode == .waitingForInput
     guillotine?.setNavigationBar(hidden: barHidden, animated: animated)
     guillotine?.setBlade(hidden: shouldHideBlade(inMode: mode), animated: animated)

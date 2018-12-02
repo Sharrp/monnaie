@@ -16,10 +16,10 @@ enum SettingOption {
   
   var title: String {
     switch self {
-    case .currency: return "Currency sign"
-    case .export: return "Export data as CSV"
-    case .hapticFeedback: return "Haptic feedback"
-    case .feedbackTelegram: return "Telegram your feedback"
+    case .currency: return NSLocalizedString("Currency sign", comment: "Name of currency sign setting")
+    case .export: return NSLocalizedString("Export data as CSV", comment: "Name of export data as CSV setting")
+    case .hapticFeedback: return NSLocalizedString("Haptic feedback", comment: "Name of haptic feedback setting")
+    case .feedbackTelegram: return NSLocalizedString("Telegram your feedback", comment: "Name of telegram feedback setting")
     }
   }
 }
@@ -119,11 +119,15 @@ extension SettingsViewController: UITableViewDelegate {
     if UIApplication.shared.canOpenURL(url) {
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     } else {
-      let alert = UIAlertController(title: "Telegram isn't installed",
-                                    message: "Reach out to @\(telegramUsername) on Telegram messenger",
-        preferredStyle: .actionSheet)
-      let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-      let install = UIAlertAction(title: "Install Telegram", style: .default) { _ in
+      
+      let alertTitle = NSLocalizedString("Telegram isn't installed", comment: "Alert title when Telegram isn't installed")
+      let messagePrefix = NSLocalizedString("Use Telegram messenger to reach out to", comment: "Prefix for Telegram username to reach out to")
+      let alert = UIAlertController(title: alertTitle message: messagePrefix + " " + telegramUsername,
+                                    preferredStyle: .actionSheet)
+      let cancelTitle = NSLocalizedString("Cancel", comment: "Cancel button title")
+      let cancel = UIAlertAction(title: cancelTitle, style: .cancel, handler: nil)
+      let installTitle = NSLocalizedString("Install Telegram", comment: "Install telegram dialogue title")
+      let install = UIAlertAction(title: installTitle, style: .default) { _ in
         guard let telegramAppStoreURL = URL(string: "https://itunes.apple.com/app/id686449807") else { return }
         UIApplication.shared.open(telegramAppStoreURL, options: [:], completionHandler: nil)
       }

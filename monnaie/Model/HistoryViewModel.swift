@@ -49,7 +49,7 @@ class HistoryViewModel: NSObject {
 
 extension HistoryViewModel: TransactionsProjecting {
   var projectionName: String {
-    return "History"
+    return NSLocalizedString("History", comment: "Transactions list name")
   }
   
   func project(intoTableView tableView: UITableView?) {
@@ -177,9 +177,9 @@ extension HistoryViewModel: UITableViewDelegate {
   
   private func displayString(forDate date: Date, formatter: DateFormatter) -> String {
     if Calendar.current.isDate(date, inSameDayAs: Date.now) {
-      return "Today"
+      return NSLocalizedString("Today", comment: "Name of the current day in history")
     } else if Calendar.current.isDate(date, inSameDayAs: Date(timeIntervalSinceNow: -Date.secondsPerDay)) {
-      return "Yesterday"
+      return NSLocalizedString("Yesterday", comment: "Name of the day before current day in history")
     } else {
       return formatter.string(from: date)
     }

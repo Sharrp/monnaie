@@ -5,3 +5,126 @@
   Created by Anton Vronskii on 2018/12/01.
   Copyright © 2018 Anton Vronskii. All rights reserved.
 */
+/* Title of the view that adds new transaction */
+"Add" = "Add";
+
+/* Category bills */
+"Bills" = "Bills";
+
+/* Category cafe */
+"Cafe" = "Cafe";
+
+/* Cancel button title */
+"Cancel" = "Cancel";
+
+/* Title of csv import mode alert */
+"Choose CSV import mode" = "Choose CSV import mode";
+
+/* Part 1 of  */
+"Choose how to add transactions from" = "Choose how to add transactions;from" транзакции из файла";
+
+/* Name of currency sign setting */
+"Currency sign" = "Currency sign";
+
+/* Title of the view that edits transaction */
+"Edit" = "Edit";
+
+/* Category entertainment */
+"Entertainment" = "Entertainment";
+
+/* Euro name */
+"Euro" = "Euro";
+
+/* Name of export data as CSV setting */
+"Export data as CSV" = "Export data as CSV";
+
+/* Great Britain Pound name */
+"Great Britain Pound" = "Great Britain Pound";
+
+/* Category grocery */
+"Grocery" = "Grocery";
+
+/* Name of haptic feedback setting */
+"Haptic feedback" = "Haptic feedback";
+
+/* Transactions list name */
+"History" = "History";
+
+/* Import failed */
+"Import failed" = "Import failed";
+
+/* Import finished successfully */
+"Import finished" = "Import finished";
+
+/* Install telegram dialogue title */
+"Install Telegram" = "Install Telegram";
+
+/* Japanese Yen name */
+"Japanese Yen" = "Japanese Yen";
+
+/* Merge csv import option */
+"Merge" = "Merge";
+
+/* Category other */
+"Other" = "Other";
+
+/* Replace csv import option */
+"Replace" = "Replace";
+
+/* Russian Rouble name */
+"Russian Rouble" = "Russian Rouble";
+
+/* Save button title in transaction editing */
+"Save" = "Save";
+
+/* Monthly summary tab name */
+"Summary" = "Summary";
+
+/* Alert title when Telegram isn't installed */
+"Telegram isn't installed" = "Telegram isn't installed";
+
+/* Name of telegram feedback setting */
+"Telegram your feedback" = "Telegram your feedback";
+
+/* Description of the universal currency sign */
+"The currency sign ¤ is a character used to denote an unspecified currency." = currency." любой денежной единицы";
+
+/* Part 2 of  */
+"to your existing transactions" = "to your existing transactions";
+
+/* Name of the current day in history */
+"Today" = "Today";
+
+/* Category transport */
+"Transport" = "Transport";
+
+/* Universal currency sign name */
+"Universal currency sign" = "Universal currency sign";
+
+/* US Dollar name */
+"US Dollar" = "US Dollar";
+
+/* Prefix for Telegram username to reach out to */
+"Use Telegram messenger to reach out to" = "Use Telegram messenger to;reach out to" Telegram, чтобы написать";
+
+/* Name of the day before current day in history */
+"Yesterday" = "Yesterday";
+
+/* Grocery category emoji */
+"🍙" = "🍙";
+
+/* Cafe category emoji */
+"🍜" = "🍜";
+
+/* Bills category emoji */
+"💴" = "💴";
+
+/* Other category emoji */
+"📌" = "📌";
+
+/* Transport category emoji */
+"🚌" = "🚌";
+
+/* Entertainment category emoji */
+"🤘" = "🤘";
+

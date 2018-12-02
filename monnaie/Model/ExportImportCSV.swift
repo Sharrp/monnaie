@@ -28,9 +28,9 @@ enum CSVImportResult {
   var title: String {
     switch self {
     case .success:
-      return "Import finished"
+      return NSLocalizedString("Import finished", comment: "Import finished successfully")
     case .failure:
-      return "Import failed"
+      return NSLocalizedString("Import failed", comment: "Import failed")
     }
   }
   
@@ -89,22 +89,28 @@ class CSVImportExportHandler: Exporter {
       removeImportedFile()
     }
     
-    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+    let cancelTitle = NSLocalizedString("Cancel", comment: "Cancel button title")
+    let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel) { _ in
       removeImportedFile()
     }
-    let mergeAction = UIAlertAction(title: "Merge", style: .default) { [weak self] _ in
+    let mergeTitle = NSLocalizedString("Merge", comment: "Merge csv import option")
+    let mergeAction = UIAlertAction(title: mergeTitle, style: .default) { [weak self] _ in
       let csv = try? String(contentsOf: fileURL)
       guard let result = self?.importer?.importDataFromCSV(csv: csv, mode: .merge) else { return }
       handleImportResult(result)
     }
     
-    let message = "Please choose how to add transactions from \"\(fileURL.lastPathComponent)\" to your existing transactions"
-    let alertController = UIAlertController(title: "Choose CSV import mode", message: message, preferredStyle: .actionSheet)
+    let alertTitle = NSLocalizedString("Choose CSV import mode", comment: "Title of csv import mode alert")
+    let messagePart1 = NSLocalizedString("Choose how to add transactions from", comment: "Part 1 of ")
+    let messagePart2 = NSLocalizedString("to your existing transactions", comment: "Part 2 of ")
+    let message = messagePart1 + " \"\(fileURL.lastPathComponent)\" " + messagePart2
+    let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .actionSheet)
     [cancelAction, mergeAction].forEach { alertController.addAction($0) }
     
     guard let isEmpty = importer?.isEmpty() else { return }
     if !isEmpty {
-      let replaceAction = UIAlertAction(title: "Replace", style: .destructive) { [weak self] _ in
+      let replaceTitle = NSLocalizedString("Replace", comment: "Replace csv import option")
+      let replaceAction = UIAlertAction(title: replaceTitle, style: .destructive) { [weak self] _ in
         let csv = try? String(contentsOf: fileURL)
         guard let result = self?.importer?.importDataFromCSV(csv: csv, mode: .replace) else { return }
         handleImportResult(result)

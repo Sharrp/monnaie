@@ -50,26 +50,27 @@ enum TransactionCategory: Int, CustomStringConvertible {
   
   var emoji: String {
     switch self {
-    case .grocery: return "🍙"
-    case .cafe: return "🍜"
-    case .transport: return "🚌"
-    case .entertainment: return "🤘"
-    case .bills: return "💴"
-    case .other: return "📌"
+    case .grocery: return NSLocalizedString("🍙", comment: "Grocery category emoji")
+    case .cafe: return NSLocalizedString("🍜", comment: "Cafe category emoji")
+    case .transport: return NSLocalizedString("🚌", comment: "Transport category emoji")
+    case .entertainment: return NSLocalizedString("🤘", comment: "Entertainment category emoji")
+    case .bills: return NSLocalizedString("💴", comment: "Bills category emoji")
+    case .other: return NSLocalizedString("📌", comment: "Other category emoji")
     }
   }
   
   var name: String {
     switch self {
-    case .grocery: return "Grocery"
-    case .cafe: return "Cafe"
-    case .transport: return "Transport"
-    case .entertainment: return "Entertainment"
-    case .bills: return "Bills"
-    case .other: return "Other"
+    case .grocery: return NSLocalizedString("Grocery", comment: "Category grocery")
+    case .cafe: return NSLocalizedString("Cafe", comment: "Category cafe")
+    case .transport: return NSLocalizedString("Transport", comment: "Category transport")
+    case .entertainment: return NSLocalizedString("Entertainment", comment: "Category entertainment")
+    case .bills: return NSLocalizedString("Bills", comment: "Category bills")
+    case .other: return NSLocalizedString("Other", comment: "Category other")
     }
   }
   
+  // Do not translate for compatibility between all languages
   var exportName: String {
     switch self {
     case .grocery: return "Grocery"
@@ -201,12 +202,12 @@ enum Currency: Int {
   
   var name: String {
     switch self {
-    case .USD: return "US Dollar"
-    case .EUR: return "Euro"
-    case .GBP: return "Great Britain Pound"
-    case .JPY: return "Japanese Yen"
-    case .RUB: return "Russian Rouble"
-    case .any: return "Universal currency sign"
+    case .USD: return NSLocalizedString("US Dollar", comment: "US Dollar name")
+    case .EUR: return NSLocalizedString("Euro", comment: "Euro name")
+    case .GBP: return NSLocalizedString("Great Britain Pound", comment: "Great Britain Pound name")
+    case .JPY: return NSLocalizedString("Japanese Yen", comment: "Japanese Yen name")
+    case .RUB: return NSLocalizedString("Russian Rouble", comment: "Russian Rouble name")
+    case .any: return NSLocalizedString("Universal currency sign", comment: "Universal currency sign name")
     }
   }
 }

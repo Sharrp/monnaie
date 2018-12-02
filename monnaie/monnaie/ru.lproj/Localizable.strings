@@ -1,7 +1,123 @@
-/* 
-  Localizable.strings
-  monnaie
+/* Title of the view that adds new transaction */
+"Add" = "Добавить";
 
-  Created by Anton Vronskii on 2018/12/01.
-  Copyright © 2018 Anton Vronskii. All rights reserved.
-*/
+/* Category bills */
+"Bills" = "Платежи";
+
+/* Category cafe */
+"Cafe" = "Кафе";
+
+/* Cancel button title */
+"Cancel" = "Отмена";
+
+/* Title of csv import mode alert */
+"Choose CSV import mode" = "Выберите режим импорта CSV-файла";
+
+/* Part 1 of  */
+"Choose how to add transactions from" = "Выберите, как добавить транзакции из файла";
+
+/* Name of currency sign setting */
+"Currency sign" = "Знак валюты";
+
+/* Title of the view that edits transaction */
+"Edit" = "Редактировать";
+
+/* Category entertainment */
+"Entertainment" = "Развлечения";
+
+/* Euro name */
+"Euro" = "Евро";
+
+/* Name of export data as CSV setting */
+"Export data as CSV" = "Экспорт данных в CSV";
+
+/* Great Britain Pound name */
+"Great Britain Pound" = "Британский фунт стерлингов";
+
+/* Category grocery */
+"Grocery" = "Продукты";
+
+/* Name of haptic feedback setting */
+"Haptic feedback" = "Haptic feedback";
+
+/* Transactions list name */
+"History" = "История";
+
+/* Import failed */
+"Import failed" = "Импорт провалился";
+
+/* Import finished successfully */
+"Import finished" = "Импорт завершён успешно";
+
+/* Install telegram dialogue title */
+"Install Telegram" = "Установите Telegram";
+
+/* Japanese Yen name */
+"Japanese Yen" = "Японская йена";
+
+/* Merge csv import option */
+"Merge" = "Слияние";
+
+/* Category other */
+"Other" = "Прочее";
+
+/* Replace csv import option */
+"Replace" = "Заместить";
+
+/* Russian Rouble name */
+"Russian Rouble" = "Российский рубль";
+
+/* Save button title in transaction editing */
+"Save" = "Сохранить";
+
+/* Monthly summary tab name */
+"Summary" = "Сводка";
+
+/* Alert title when Telegram isn't installed */
+"Telegram isn't installed" = "Telegram не установлен";
+
+/* Name of telegram feedback setting */
+"Telegram your feedback" = "Отправить отзыв в Telegram";
+
+/* Description of the universal currency sign */
+"The currency sign ¤ is a character used to denote an unspecified currency." = "Универсальный знак валюты ¤ — это символ для обозначения любой денежной единицы";
+
+/* Part 2 of  */
+"to your existing transactions" = "к вашим существующим транзакциям";
+
+/* Name of the current day in history */
+"Today" = "Сегодня";
+
+/* Category transport */
+"Transport" = "Транспорт";
+
+/* Universal currency sign name */
+"Universal currency sign" = "Универсальный знак валюты";
+
+/* US Dollar name */
+"US Dollar" = "Доллар США";
+
+/* Prefix for Telegram username to reach out to */
+"Use Telegram messenger to reach out to" = "Воспользуйтесь мессенджером Telegram, чтобы написать";
+
+/* Name of the day before current day in history */
+"Yesterday" = "Вчера";
+
+/* Grocery category emoji */
+"🍙" = "🍞";
+
+/* Cafe category emoji */
+"🍜" = "🍝";
+
+/* Bills category emoji */
+"💴" = "🚰";
+
+/* Other category emoji */
+"📌" = "🛍";
+
+/* Transport category emoji */
+"🚌" = "🚎";
+
+/* Entertainment category emoji */
+"🤘" = "🤘";
+

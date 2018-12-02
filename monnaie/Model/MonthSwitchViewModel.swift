@@ -170,7 +170,7 @@ extension MonthSwitchViewModel: UICollectionViewDataSource {
       cell.alpha = isCurrentMonth ? 1 : 1 - monthsHideProgress
     } else {
       cell.amountLabel.text = formatMoney(amount: todayAmount, currency: currency)
-      cell.monthLabel.text = "Today"
+      cell.monthLabel.text = NSLocalizedString("Today", comment: "Name of the current day in history")
       cell.setState(textActiveLevel: 1, backgroundAlpha: 0)
       cell.alpha = monthsHideProgress
     }

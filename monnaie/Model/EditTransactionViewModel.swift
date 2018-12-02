@@ -27,7 +27,7 @@ class EditTransactionViewModel {
   }
   
   private func configure(forMode mode: TransactionComposerMode, animated: Bool) {
-    guillotine?.navigationBarTitle = "Edit"
+    guillotine?.navigationBarTitle = NSLocalizedString("Edit", comment: "Title of the view that edits transaction")
   }
 }
 
@@ -38,7 +38,8 @@ extension EditTransactionViewModel: ManagedTransactionEditor {
     viewController = controller
     guillotine?.view.addSubview(controller.view)
     controller.delegate = self
-    controller.setCommitButton(title: "Save")
+    let saveButtonTitle = NSLocalizedString("Save", comment: "Save button title in transaction editing")
+    controller.setCommitButton(title: saveButtonTitle)
     
     guillotine?.setNavigationBar(hidden: false, animated: true)
     

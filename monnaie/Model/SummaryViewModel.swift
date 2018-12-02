@@ -44,7 +44,7 @@ class SummaryViewModel: NSObject {
 
 extension SummaryViewModel: TransactionsProjecting {
   var projectionName: String {
-    return "Summary"
+    return NSLocalizedString("Summary", comment: "Monthly summary tab name")
   }
   
   func project(intoTableView tableView: UITableView?) {
