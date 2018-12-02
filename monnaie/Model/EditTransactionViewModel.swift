@@ -25,13 +25,11 @@ class EditTransactionViewModel {
   lazy var guillotineCancel: GuillotineCancelCallback = { [weak self] in
     self?.dismiss()
   }
-  
-  private func configure(forMode mode: TransactionComposerMode, animated: Bool) {
-    guillotine?.navigationBarTitle = NSLocalizedString("Edit", comment: "Title of the view that edits transaction")
-  }
 }
 
 extension EditTransactionViewModel: ManagedTransactionEditor {
+  func didSwitch(toMode: TransactionComposerMode) { }
+  
   func startEditing(transaction: Transaction, byReplacingView viewToReplace: UIView) {
     let storyboard = UIStoryboard(name: "Main", bundle: nil)
     guard let controller = storyboard.instantiateViewController(withIdentifier: "editTransactionVC") as? EditTransactionViewController else { return }
@@ -42,6 +40,7 @@ extension EditTransactionViewModel: ManagedTransactionEditor {
     controller.setCommitButton(title: saveButtonTitle)
     
     guillotine?.setNavigationBar(hidden: false, animated: true)
+    guillotine?.navigationBarTitle = NSLocalizedString("Edit", comment: "Title of the view that edits transaction")
     
     guard let superviewOfViewToReplace = viewToReplace.superview else { return }
     replacedView = viewToReplace
@@ -73,10 +72,6 @@ extension EditTransactionViewModel: ManagedTransactionEditor {
 }
 
 extension EditTransactionViewModel: TransactionEditorDelegate {
-  func didSwitch(toMode mode: TransactionComposerMode) {
-    configure(forMode: mode, animated: true)
-  }
-  
   func commit(amount: Double, category: TransactionCategory, date: Date) {
     guard var transaction = editingTransaction else { return }
     transaction.amount = amount
