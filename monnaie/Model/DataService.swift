@@ -90,7 +90,7 @@ class DataService {
     guard sqlite3_bind_text(statement, 6, transaction.category.name, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
     
     if sqlite3_step(statement) != SQLITE_DONE {
-      printError(on: "binding", db)
+      printError(on: "adding", db)
     }
     sqlite3_finalize(statement)
     if postNotification {
