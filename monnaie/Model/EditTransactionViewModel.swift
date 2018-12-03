@@ -40,16 +40,16 @@ extension EditTransactionViewModel: ManagedTransactionEditor {
     guillotine?.setNavigationBar(hidden: false, animated: true)
     guillotine?.navigationBarTitle = NSLocalizedString("Edit", comment: "Title of the view that edits transaction")
     
-    guard let superviewOfViewToReplace = viewToReplace.superview else { return }
     replacedView = viewToReplace
     replacedView?.isHidden = true
     editingTransaction = transaction
     
+    viewController?.view.layoutIfNeeded() // so we can get right composer's position
     guard let composer = controller.composer else { return }
-    let newPosition = superviewOfViewToReplace.convert(viewToReplace.frame.origin, to: nil)
+    guard let newPosition = viewToReplace.superview?.convert(viewToReplace.frame.origin, to: nil) else { return }
     composerTransformBeforeEditing = composer.transform
-    composer.transform = .identity // to properly calculate transform to match cell
-    composerTransformToMatchCell = CGAffineTransform(translationX: 0, y: newPosition.y - 519)
+    let currentPosition = viewController!.view.convert(composer.frame.origin, to: nil)
+    composerTransformToMatchCell = CGAffineTransform(translationX: 0, y: newPosition.y - currentPosition.y - composer.padding)
     composer.transform = composerTransformToMatchCell
     
     controller.switchTo(mode: .table, animated: false)
