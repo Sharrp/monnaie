@@ -79,7 +79,7 @@ class DataService {
   
   /// MARK: Public
   
-  func add(transaction: Transaction) {
+  func add(transaction: Transaction, postNotification: Bool = true) {
     let sql = "INSERT INTO \(transactionsTableName) (createdDate, date, modifiedDate, amount, author, category) VALUES (?, ?, ?, ?, ?, ?)"
     let statement = prepareStatement(sql: sql)
     guard sqlite3_bind_double(statement, 1, transaction.createdDate.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
@@ -93,7 +93,9 @@ class DataService {
       printError(on: "binding", db)
     }
     sqlite3_finalize(statement)
-    notifySubscribers()
+    if postNotification {
+      notifySubscribers()
+    }
   }
   
   func update(transaction: Transaction) {
@@ -315,7 +317,7 @@ extension DataService: MergeDelegate {
   func mergeDone(replacingTransactions transactions: [Transaction]) {
     removeAll()
     for transaction in transactions {
-      add(transaction: transaction)
+      add(transaction: transaction, postNotification: false)
     }
     notifySubscribers()
   }
