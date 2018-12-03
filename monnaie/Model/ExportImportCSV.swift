@@ -48,9 +48,26 @@ protocol Exporter: AnyObject {
   func exportAll(presentor: UIViewController)
 }
 
+typealias ImportEventCallback = (ImportEvent) -> Void
+
+enum ImportEvent {
+  case initiated
+  case success
+  case failed
+}
+
 class CSVImportExportHandler: Exporter {
   var generateCSV: GenerateCSVCallback?
   var importer: CSVCompatible?
+  
+  private var callbacks = [ImportEventCallback?]()
+  func subscribeForImportEvents(callback: ImportEventCallback?) {
+    callbacks.append(callback)
+  }
+  
+  private func notifySubscribers(event: ImportEvent) {
+    callbacks.forEach{ $0?(event) }
+  }
   
   func exportAll(presentor: UIViewController) {
     guard let csv = generateCSV?() else { return }
@@ -80,11 +97,18 @@ class CSVImportExportHandler: Exporter {
       }
     }
     
-    let handleImportResult = { (result: CSVImportResult) in
+    let handleImportResult = { [weak self] (result: CSVImportResult) in
       let alertController = UIAlertController(title: result.title, message: result.message, preferredStyle: .alert)
       let okAction = UIAlertAction(title: "Ok", style: .default)
       alertController.addAction(okAction)
       presentor.present(alertController, animated: true)
+      
+      switch result {
+      case .success:
+        self?.notifySubscribers(event: .success)
+      case .failure:
+        self?.notifySubscribers(event: .failed)
+      }
       
       removeImportedFile()
     }
@@ -119,5 +143,6 @@ class CSVImportExportHandler: Exporter {
     }
     
     presentor.present(alertController, animated: true)
+    notifySubscribers(event: .initiated)
   }
 }

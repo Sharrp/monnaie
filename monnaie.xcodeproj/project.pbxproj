@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		75097592219FF785000FDB39 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75097591219FF785000FDB39 /* Coordinator.swift */; };
 		7509759421A00932000FDB39 /* ExportImportCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7509759321A00932000FDB39 /* ExportImportCSV.swift */; };
+		750F811921B54423000B3C7E /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750F811821B54423000B3C7E /* HapticFeedback.swift */; };
 		7518DC622197B0A1001ECA26 /* ShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7518DC612197B0A1001ECA26 /* ShadowRoundedView.swift */; };
 		7518DC64219842EA001ECA26 /* csvImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7518DC63219842EA001ECA26 /* csvImportTests.swift */; };
 		7518DC662198430A001ECA26 /* csv-import.csv in Resources */ = {isa = PBXBuildFile; fileRef = 7518DC652198430A001ECA26 /* csv-import.csv */; };
@@ -108,6 +109,7 @@
 /* Begin PBXFileReference section */
 		75097591219FF785000FDB39 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		7509759321A00932000FDB39 /* ExportImportCSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportImportCSV.swift; sourceTree = "<group>"; };
+		750F811821B54423000B3C7E /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
 		7518DC612197B0A1001ECA26 /* ShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowRoundedView.swift; sourceTree = "<group>"; };
 		7518DC63219842EA001ECA26 /* csvImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = csvImportTests.swift; sourceTree = "<group>"; };
 		7518DC652198430A001ECA26 /* csv-import.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "csv-import.csv"; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 				758C6878218A777B00F2F7BE /* MonthSwitchViewModel.swift */,
 				75F7D41321A342BA0033FBCC /* AddTransactionViewModel.swift */,
 				75F7D41521A354E20033FBCC /* EditTransactionViewModel.swift */,
+				750F811821B54423000B3C7E /* HapticFeedback.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -469,6 +472,7 @@
 				7529F95C215BCD6900FD8884 /* SummaryViewModel.swift in Sources */,
 				75D32C0320A3093000D13420 /* HistorySummaryCells.swift in Sources */,
 				75D1CED021AC1BB300695054 /* SettingsViewController.swift in Sources */,
+				750F811921B54423000B3C7E /* HapticFeedback.swift in Sources */,
 				7527EF182183D57800E232AE /* TransactionComponserView.swift in Sources */,
 				7524B98D209B0F9F006027C8 /* DataModel.swift in Sources */,
 				75C046DF2098892500E8B09E /* AppDelegate.swift in Sources */,

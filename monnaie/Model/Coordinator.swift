@@ -17,6 +17,7 @@ class Coordinator {
   private let editViewModel = EditTransactionViewModel()
   private let csvHandler = CSVImportExportHandler()
   private let settings = Settings()
+  private let hapticFeedback = HapticFeedbackMapper()
   
   weak var guillotineViewController: GuillotineViewController!
   weak var projectionsViewController: ProjectionsViewController!
@@ -69,6 +70,16 @@ class Coordinator {
     editViewModel.guillotine = guillotineViewController
     
     history.editor = editViewModel
+    
+    // Haptic feedback events
+    hapticFeedback.settings = settings
+    monthSwitch.subscribe(callback: hapticFeedback.monthSwitched)
+    guillotineViewController.subscribeForBladeState(callback: hapticFeedback.bladeSwitched)
+    addViewModel.subscribeForAdding(callback: hapticFeedback.transactionAdded)
+    editViewModel.subscribeForEditingStart(callback: hapticFeedback.transactionEditingOccured)
+    projectionsViewController.tabSwitcher.subscribe(callback: hapticFeedback.tabSwitched)
+    csvHandler.subscribeForImportEvents(callback: hapticFeedback.importEventOccured)
+    history.subscribeForDeletion(callback: hapticFeedback.transactionDeleted)
     
     // Only after all assigned projections are ready
     projectionsViewController.projectors = [history, summary]

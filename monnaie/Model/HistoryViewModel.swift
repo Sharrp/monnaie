@@ -8,6 +8,12 @@
 
 import UIKit
 
+typealias DeleteRequestedCallback = () -> Void
+
+enum HistoryEvent {
+  case editingSt
+}
+
 class HistoryViewModel: NSObject {
   private struct SectionHeaderData {
     let firstDay: Date
@@ -23,6 +29,11 @@ class HistoryViewModel: NSObject {
   var editor: ManagedTransactionEditor?
   var getSelectedMonth: SelectedMonthGetter?
   weak var settings: Settings?
+  
+  private var callbacks = [DeleteRequestedCallback?]()
+  func subscribeForDeletion(callback: DeleteRequestedCallback?) {
+    callbacks.append(callback)
+  }
   
   private var isActive: Bool {
     return tableView != nil
@@ -45,6 +56,10 @@ class HistoryViewModel: NSObject {
   
   private func update() {
     tableView?.reloadData()
+  }
+  
+  private func notifyDeleteSubscribers() {
+    callbacks.forEach{ $0?() }
   }
 }
 
@@ -156,6 +171,7 @@ extension HistoryViewModel: UITableViewDataSource {
     let day = sectionsHeadersData[indexPath.section].firstDay
     guard let transaction = dataService?.transaction(index: indexPath.row, forDay: day) else { return }
     dataService?.remove(transaction: transaction)
+    notifyDeleteSubscribers()
   }
 }
 

@@ -8,11 +8,18 @@
 
 import UIKit
 
+typealias TransactionAddedCallback = () -> Void
+
 class AddTransactionViewModel {
   weak var guillotine: GuillotineViewController?
   weak var dataService: DataService?
   weak var viewController: EditTransactionViewController?
   weak var settings: Settings?
+  
+  private var callbacks = [TransactionAddedCallback?]()
+  func subscribeForAdding(callback: TransactionAddedCallback?) {
+    callbacks.append(callback)
+  }
   
   lazy var guillotineCancel: GuillotineCancelCallback = { [weak self] in
     self?.viewController?.switchTo(mode: .waitingForInput, animated: true)
@@ -35,6 +42,10 @@ class AddTransactionViewModel {
     let hasNoTransactions = dataService?.isEmpty() ?? true
     return hasNoTransactions || mode != .waitingForInput
   }
+  
+  private func notifySubscribers() {
+    callbacks.forEach{ $0?() }
+  }
 }
 
 extension AddTransactionViewModel: TransactionEditorDelegate {
@@ -49,5 +60,6 @@ extension AddTransactionViewModel: TransactionEditorDelegate {
     dataService?.add(transaction: transaction)
     configure(forMode: .waitingForInput, animated: true)
     viewController?.animateComposerFlyAway()
+    notifySubscribers()
   }
 }

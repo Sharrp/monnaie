@@ -8,6 +8,13 @@
 
 import UIKit
 
+typealias EditingCallback = (EditingEvent) -> Void
+
+enum EditingEvent {
+  case started
+  case commited
+}
+
 protocol ManagedTransactionEditor {
   func startEditing(transaction: Transaction, byReplacingView: UIView)
 }
@@ -22,13 +29,24 @@ class EditTransactionViewModel {
   private weak var replacedView: UIView?
   private var editingTransaction: Transaction?
   
+  private var callbacks = [EditingCallback?]()
+  func subscribeForEditingStart(callback: EditingCallback?) {
+    callbacks.append(callback)
+  }
+  
   lazy var guillotineCancel: GuillotineCancelCallback = { [weak self] in
     self?.dismiss()
+  }
+  
+  private func notifySubscribers(event: EditingEvent) {
+    callbacks.forEach{ $0?(event) }
   }
 }
 
 extension EditTransactionViewModel: ManagedTransactionEditor {
   func startEditing(transaction: Transaction, byReplacingView viewToReplace: UIView) {
+    notifySubscribers(event: .started) // notify early to provide haptic feedback faster
+    
     let storyboard = UIStoryboard(name: "Main", bundle: nil)
     guard let controller = storyboard.instantiateViewController(withIdentifier: "editTransactionVC") as? EditTransactionViewController else { return }
     viewController = controller
@@ -78,6 +96,7 @@ extension EditTransactionViewModel: TransactionEditorDelegate {
     transaction.category = category
     transaction.date = date
     dataService?.update(transaction: transaction)
+    notifySubscribers(event: .commited)
     dismiss()
   }
   
