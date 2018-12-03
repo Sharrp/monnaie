@@ -8,13 +8,13 @@
 
 import UIKit
 
-protocol CurrencyDelegate {
+protocol CurrencyDelegate: AnyObject {
   func didChangeCurrency(to: Currency)
 }
 
 class CurrencySettingViewController: UIViewController {
   @IBOutlet weak var tableView: UITableView!
-  var delegate: CurrencyDelegate?
+  weak var delegate: CurrencyDelegate?
   var selectedCurrency: Currency?
   private var selectedPath: IndexPath?
   

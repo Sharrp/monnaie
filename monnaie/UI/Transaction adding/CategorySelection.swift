@@ -8,13 +8,13 @@
 
 import UIKit
 
-protocol CategorySelectionDelegate {
+protocol CategorySelectionDelegate: AnyObject {
   func didSelect(category: TransactionCategory)
 }
 
 class CategoriesProvider: NSObject, UICollectionViewDataSource {
   private let categories = TransactionCategory.allCases()
-  var delegate: CategorySelectionDelegate?
+  weak var delegate: CategorySelectionDelegate?
   var selectedCategory = TransactionCategory.defaultCategory
   private let margin: CGFloat = 6
   private let cellHeight: CGFloat = 107

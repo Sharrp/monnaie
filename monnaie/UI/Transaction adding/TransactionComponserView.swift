@@ -16,7 +16,7 @@ enum TransactionComposerMode: Int {
   case table
 }
 
-protocol TransactionComposerDelegate {
+protocol TransactionComposerDelegate: AnyObject {
   func didSwitch(toMode: TransactionComposerMode, animated: Bool)
   func amountChangedValidity(isValid: Bool)
 }
@@ -24,7 +24,7 @@ protocol TransactionComposerDelegate {
 typealias ModeSwitchAnimation = () -> ()
 
 class TransactionComponserView: UIView {
-  var delegate: TransactionComposerDelegate?
+  weak var delegate: TransactionComposerDelegate?
   
   private let margin: CGFloat = 6
   private let baseSize: CGFloat = 56

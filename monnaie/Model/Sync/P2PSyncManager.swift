@@ -22,12 +22,12 @@ struct SyncBuddy: Equatable {
     return lhs.peerID == rhs.peerID
   }
 }
+
 enum SyncRequestMode: Int {
   case requested
   case declined
   case active
 }
-
 
 // Incapsulates object's data needed to request sync and respond to it
 // As well as data sended during a sync

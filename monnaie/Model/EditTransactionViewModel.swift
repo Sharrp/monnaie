@@ -94,7 +94,6 @@ extension EditTransactionViewModel: TransactionEditorDelegate {
       self?.replacedView?.isHidden = false
       self?.viewController?.view.removeFromSuperview()
       self?.viewController = nil
-      self?.replacedView?.isHidden = false
     }
     animator.startAnimation()
   }
