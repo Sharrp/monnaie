@@ -226,7 +226,7 @@ extension HistoryViewModel: UITableViewDelegate {
       NSLayoutConstraint(item: amountLabel, attribute: .height , relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 26)
       ])
     headerView.addConstraints([
-      NSLayoutConstraint(item: amountLabel, attribute: .trailing , relatedBy: .equal, toItem: headerView, attribute: .trailingMargin, multiplier: 1, constant: 0),
+      NSLayoutConstraint(item: amountLabel, attribute: .trailing , relatedBy: .equal, toItem: headerView, attribute: .trailingMargin, multiplier: 1, constant: -16),
       NSLayoutConstraint(item: amountLabel, attribute: .centerY , relatedBy: .equal, toItem: headerView, attribute: .centerY, multiplier: 1, constant: 0)
       ])
     
