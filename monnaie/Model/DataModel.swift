@@ -187,6 +187,13 @@ enum Currency: Int {
     case .any: return NSLocalizedString("Universal currency sign", comment: "Universal currency sign name")
     }
   }
+  
+  var decimalsAllowed: Bool {
+    if self == .JPY {
+      return false
+    }
+    return true
+  }
 }
 
 extension Currency: RawIntEnum { }

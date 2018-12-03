@@ -77,6 +77,7 @@ class EditTransactionViewController: UIViewController {
   lazy var currencyChanged: SettingUpdateCallback = { [weak self] in
     guard let currency = self?.settings?.userCurrency else { return }
     self?.composer.currency = currency
+    self?.keyboardView.dotAvailable = currency.decimalsAllowed
   }
   
   // MARK: Category

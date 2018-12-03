@@ -40,7 +40,13 @@ class DigitKeyboardView: UIView {
   @IBOutlet weak var contentView: UIView!
   @IBOutlet var buttons: [UIButton]!
   @IBOutlet weak var deleteButton: UIButton!
+  @IBOutlet weak var dotButton: UIButton!
   
+  var dotAvailable: Bool = true {
+    didSet {
+      dotButton.isHidden = !dotAvailable
+    }
+  }
   private var deleteTimer: Timer?
   
   weak var heightContraint: NSLayoutConstraint! {

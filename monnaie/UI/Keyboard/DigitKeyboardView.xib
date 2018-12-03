@@ -10,10 +10,11 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="KeyboardView" customModule="Yawa" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DigitKeyboardView" customModule="monnaie" customModuleProvider="target">
             <connections>
                 <outlet property="contentView" destination="iN0-l3-epB" id="aii-qP-wfe"/>
                 <outlet property="deleteButton" destination="FNE-t6-QwP" id="lnV-ti-cRA"/>
+                <outlet property="dotButton" destination="c09-9z-TYE" id="rmU-AZ-6to"/>
                 <outletCollection property="buttons" destination="8wr-XB-pu7" collectionClass="NSMutableArray" id="o5F-Yf-S6o"/>
                 <outletCollection property="buttons" destination="wk3-M7-kxh" collectionClass="NSMutableArray" id="QzZ-WY-Zjp"/>
                 <outletCollection property="buttons" destination="Ddg-0H-Cws" collectionClass="NSMutableArray" id="1Uh-BB-MsJ"/>
