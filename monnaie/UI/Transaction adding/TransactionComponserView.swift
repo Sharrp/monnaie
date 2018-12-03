@@ -75,7 +75,7 @@ class TransactionComponserView: UIView {
     animations.append(amountElementsAnimation(forMode: mode))
     
     if animated {
-      UIViewPropertyAnimator(duration: Animation.duration, curve: .easeIn) { [weak self] in
+      UIViewPropertyAnimator(duration: Animation.duration, curve: Animation.curve) { [weak self] in
         animations.forEach{ $0() }
         self?.layoutIfNeeded()
       }.startAnimation()

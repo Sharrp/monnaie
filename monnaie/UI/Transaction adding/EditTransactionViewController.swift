@@ -137,7 +137,7 @@ class EditTransactionViewController: UIViewController {
     composer.set(mode: .table, animated: true)
     adjustControls(toMode: .waitingForInput, animated: false)
     let yShiftFlyAway = -(composer.frame.maxY + 30)
-    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) { [weak self] in
+    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: Animation.curve) { [weak self] in
       self?.composer.transform = CGAffineTransform(translationX: 0, y: yShiftFlyAway).scaledBy(x: 0.1, y: 0.1)
     }
     animator.addCompletion { [weak self] _ in
@@ -181,7 +181,7 @@ class EditTransactionViewController: UIViewController {
       self?.commitButton.transform = addHidden ? CGAffineTransform(translationX: 0, y: Animation.appearceWithShfit) : .identity
     }
     if animated {
-      UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut, animations: animation).startAnimation()
+      UIViewPropertyAnimator(duration: Animation.duration, curve: Animation.curve, animations: animation).startAnimation()
     } else {
       animation()
     }

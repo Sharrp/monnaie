@@ -60,7 +60,7 @@ extension EditTransactionViewModel: ManagedTransactionEditor {
     controller.set(category: transaction.category)
     controller.hideControls(withProgress: 1, includingComposer: false)
 
-    UIViewPropertyAnimator(duration: Animation.duration, curve: .easeOut) {
+    UIViewPropertyAnimator(duration: Animation.duration, curve: Animation.curve) {
       controller.blurView.effect = UIBlurEffect(style: .light)
       controller.hideControls(withProgress: 0)
     }.startAnimation()
@@ -84,7 +84,7 @@ extension EditTransactionViewModel: TransactionEditorDelegate {
   private func dismiss() {
     guillotine?.setNavigationBar(hidden: true, animated: true)
     viewController?.composer.set(mode: .table, animated: true)
-    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: .easeInOut) { [weak self] in
+    let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: Animation.curve) { [weak self] in
       guard let transformToMatchCell = self?.composerTransformToMatchCell else { return }
       self?.viewController?.blurView.effect = nil
       self?.viewController?.composer.transform = transformToMatchCell
