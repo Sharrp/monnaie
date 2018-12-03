@@ -16,21 +16,6 @@ struct StoreManager {
     return NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] + "/" + fileName
   }
   
-  // Transactions
-  
-  func loadTransactions() -> [Transaction] {
-    let path = filePath(forName: transactionsFileName)
-    if let transactions = NSKeyedUnarchiver.unarchiveObject(withFile: path) as? [Transaction] {
-      return transactions
-    }
-    return []
-  }
-  
-  func save(transactions: [Transaction]) {
-    let path = filePath(forName: transactionsFileName)
-    NSKeyedArchiver.archiveRootObject(transactions, toFile: path)
-  }
-  
   // Permissions
 
   func loadPermissions() -> [String] {
