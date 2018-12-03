@@ -131,6 +131,27 @@ extension Date {
   }
 }
 
+// Protocol to enable "var allCases" for integer-based enums
+protocol RawIntEnum {
+  init?(rawValue: Int)
+}
+
+extension RawIntEnum {
+  static var allCases: [Self] {
+    var rawValue = 0
+    var cases = [Self]()
+    while true {
+      if let enumValue = Self.init(rawValue: rawValue) {
+        cases.append(enumValue)
+        rawValue += 1
+      } else {
+        break
+      }
+    }
+    return cases
+  }
+}
+
 struct Animation {
   static let duration = 0.35
   static let durationFast = 0.3

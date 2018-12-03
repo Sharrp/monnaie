@@ -13,7 +13,7 @@ protocol CategorySelectionDelegate: AnyObject {
 }
 
 class CategoriesProvider: NSObject, UICollectionViewDataSource {
-  private let categories = TransactionCategory.allCases()
+  private let categories = TransactionCategory.allCases
   weak var delegate: CategorySelectionDelegate?
   var selectedCategory = TransactionCategory.defaultCategory
   private let margin: CGFloat = 6

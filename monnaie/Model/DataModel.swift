@@ -17,27 +17,13 @@ enum TransactionCategory: Int, CustomStringConvertible {
   case other
   
   init?(exportName name: String) {
-    for category in TransactionCategory.allCases() {
-      if category.name == name {
+    for category in TransactionCategory.allCases {
+      if category.exportName == name {
         self = category
         return
       }
     }
     return nil
-  }
-  
-  static func allCases() -> [TransactionCategory] {
-    var rawValue = 0
-    var cases = [TransactionCategory]()
-    while true {
-      if let enumValue = TransactionCategory(rawValue: rawValue) {
-        cases.append(enumValue)
-        rawValue += 1
-      } else {
-        break
-      }
-    }
-    return cases
   }
   
   static var defaultCategory: TransactionCategory {
@@ -82,6 +68,8 @@ enum TransactionCategory: Int, CustomStringConvertible {
     }
   }
 }
+
+extension TransactionCategory: RawIntEnum { }
 
 struct Transaction {
   var amount: Double {
@@ -162,17 +150,6 @@ enum Currency: Int {
     return nil
   }
   
-  static var allCases: [Currency] {
-    var raw = 0
-    var cases = [Currency]()
-    while true {
-      guard let currency = Currency(rawValue: raw) else { break }
-      cases.append(currency)
-      raw += 1
-    }
-    return cases
-  }
-  
   static var defaultCurrency: Currency {
     let localCode = NumberFormatter().currencyCode
     return Currency(withCode: localCode) ?? .USD
@@ -211,6 +188,8 @@ enum Currency: Int {
     }
   }
 }
+
+extension Currency: RawIntEnum { }
 
 enum SyncMode: Int, CustomStringConvertible {
   case merge
