@@ -15,9 +15,6 @@ class TabSwitcher: UIView {
   private var indicator = UIView()
   @IBOutlet weak var width: NSLayoutConstraint!
   
-  private let activeFont = UIFont.systemFont(ofSize: 17, weight: .semibold)
-  private let inactiveFont = UIFont.systemFont(ofSize: 17, weight: .semibold)
-  
   private let margin: CGFloat = 12
   private let labelY: CGFloat = 9
   private let indicatorTopSpace: CGFloat = 10
@@ -32,9 +29,7 @@ class TabSwitcher: UIView {
   private var selectedIndex = 0 {
     didSet {
       guard selectedIndex < titles.count else { return }
-      labels[oldValue].font = inactiveFont
       labels[oldValue].textColor = Color.inactiveText
-      labels[selectedIndex].font = activeFont
       labels[selectedIndex].textColor = Color.accentText
       layoutIndicator()
     }
@@ -48,7 +43,7 @@ class TabSwitcher: UIView {
         let label = UILabel()
         label.text = title
         let isSelected = i == selectedIndex
-        label.font = isSelected ? activeFont : inactiveFont
+        label.font = Font.tabs
         label.textColor = isSelected ? Color.accentText : Color.inactiveText
         addSubview(label)
         labels.append(label)

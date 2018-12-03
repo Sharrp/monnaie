@@ -167,4 +167,13 @@ struct Color {
   static let shadowColor = UIColor(white: 0.84, alpha: 1)
   static let background = UIColor(hex: 0xF9F9F9)
   static let cellBackground = UIColor(hex: 0xF2F2F6)
+  static let placeholder = UIColor(white: 0.75, alpha: 1)
+  static let selection = UIColor.white.withAlphaComponent(0.3)
+  static let tableSeparator = UIColor(white: 0.2, alpha: 0.2)
+  static let tableHeader = UIColor.darkGray
+}
+
+struct Font {
+  static let main = UIFont.systemFont(ofSize: 17, weight: .medium)
+  static let tabs = UIFont.systemFont(ofSize: 17, weight: .semibold)
 }

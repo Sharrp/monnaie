@@ -17,6 +17,7 @@ class HistoryViewModel: NSObject {
   
   private var sectionsHeadersData = [SectionHeaderData]()
   private var tableView: UITableView?
+  private let cellHeight: CGFloat = 56
   
   weak var dataService: DataService?
   var editor: ManagedTransactionEditor?
@@ -160,7 +161,7 @@ extension HistoryViewModel: UITableViewDataSource {
 
 extension HistoryViewModel: UITableViewDelegate {
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    var height: CGFloat = 56
+    var height = cellHeight
     if indexPath.row == 0 {
       height += TransactionCell.shadowInset
     }
@@ -172,7 +173,7 @@ extension HistoryViewModel: UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return 56
+    return cellHeight
   }
   
   private func displayString(forDate date: Date, formatter: DateFormatter) -> String {
@@ -204,8 +205,8 @@ extension HistoryViewModel: UITableViewDelegate {
     let sectionData = sectionsHeadersData[section]
     
     let amountLabel = UILabel()
-    amountLabel.font = .systemFont(ofSize: 17, weight: .medium)
-    amountLabel.textColor = .darkGray
+    amountLabel.font = Font.main
+    amountLabel.textColor = Color.tableHeader
     amountLabel.textAlignment = .right
     
     let amount: Double
@@ -230,8 +231,8 @@ extension HistoryViewModel: UITableViewDelegate {
       ])
     
     let dateLabel = UILabel()
-    dateLabel.font = .systemFont(ofSize: 17, weight: .medium)
-    dateLabel.textColor = .darkGray
+    dateLabel.font = Font.main
+    dateLabel.textColor = Color.tableHeader
     dateLabel.text = title(forSectionHeader: sectionData)
     
     dateLabel.translatesAutoresizingMaskIntoConstraints = false

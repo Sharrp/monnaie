@@ -91,7 +91,7 @@ class DigitKeyboardView: UIView {
     for button in buttons {
       button.layer.cornerRadius = 5
       button.clipsToBounds = true
-      button.setBackgroundColor(UIColor(white: 1, alpha: 0.3), for: .highlighted)
+      button.setBackgroundColor(Color.selection, for: .highlighted)
     }
     
     let longTap = UILongPressGestureRecognizer(target: self, action: #selector(longTapHandler(longTap:)))

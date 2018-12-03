@@ -105,7 +105,7 @@ class TransactionComponserView: UIView {
     categoryButton.layer.borderColor = selectedBorderColor
     categoryLabel.text = TransactionCategory.defaultCategory.name
     categoryLabel.textColor = Color.accentText
-    categoryLabel.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+    categoryLabel.font = Font.main
     categoryLabel.frame = CGRect(x: 74, y: 14, width: 123, height: 28)
     categoryButton.clipsToBounds = true
     categoryButton.addSubview(categoryLabel)
@@ -120,7 +120,7 @@ class TransactionComponserView: UIView {
     dateButton.titleLabel?.textAlignment = .center
     
     // TEMP
-    self.amountButton.layer.borderColor = UIColor(hex: 0xe6e6e6).cgColor
+    self.amountButton.layer.borderColor = selectedBorderColor
     self.amountButton.layer.borderWidth = 1
   }
   
@@ -165,7 +165,7 @@ class TransactionComponserView: UIView {
   
   private func updatePlaceholder(sign: String) {
     let text = "\(sign)0"
-    let coloredPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: UIColor(white: 0.75, alpha: 1)])
+    let coloredPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: Color.placeholder])
     amountInput.attributedPlaceholder = coloredPlaceholder
   }
   
