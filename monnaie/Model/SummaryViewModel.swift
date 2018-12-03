@@ -9,8 +9,6 @@
 import UIKit
 
 class SummaryViewModel: NSObject {
-  private let minChartBarWidth: CGFloat = 8
-  
   weak var dataService: DataService?
   private var summary: CategoriesSummary? // cached data
   var getSelectedMonth: SelectedMonthGetter?
@@ -79,18 +77,19 @@ extension SummaryViewModel: UITableViewDataSource {
     } else {
       cell = SummaryCell(style: .default, reuseIdentifier: cellID)
     }
-    
     cell.backgroundColor = .clear
     cell.emojiLabel.text = categoryInfo.category.emoji
     cell.categoryLabel.text = categoryInfo.category.name
+    cell.level = categoryInfo.amount / summary[0].amount
     
-    let maxChartBarWidth = cell.valueLabel.frame.origin.x - cell.categoryLabel.frame.origin.x - 8 // margin between bar and valueLabel
-    let maxCategoryAmount = summary[0].amount
-    let chartBarWidth = maxChartBarWidth * CGFloat(categoryInfo.amount / maxCategoryAmount)
-    cell.chartBarWidth.constant = max(minChartBarWidth, chartBarWidth)
     let currency = settings?.userCurrency ?? Currency.defaultCurrency
     cell.valueLabel.text = "\(formatMoney(amount: categoryInfo.amount, currency: currency))"
     return cell
+  }
+  
+  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    cell.layoutIfNeeded()
+    cell.setNeedsUpdateConstraints()
   }
 }
 

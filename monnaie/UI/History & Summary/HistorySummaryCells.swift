@@ -115,6 +115,21 @@ class SummaryCell: UITableViewCell {
   @IBOutlet weak var categoryLabel: UILabel!
   @IBOutlet weak var chartBarWidth: NSLayoutConstraint!
   @IBOutlet weak var valueLabel: UILabel! // amount or percentage
+  
+  var level: Double = 0 {
+    didSet {
+      setNeedsUpdateConstraints()
+    }
+  }
+  private let chartBarToValueMinSpace: CGFloat = 9
+  private let minChartBarWidth: CGFloat = 8
+  
+  override func updateConstraints() {
+    super.updateConstraints()
+    let maxChartBarWidth = valueLabel.frame.origin.x - categoryLabel.frame.origin.x - chartBarToValueMinSpace
+    let barWidth = maxChartBarWidth * CGFloat(level)
+    chartBarWidth.constant = max(minChartBarWidth, barWidth)
+  }
 }
 
 class MonthSwitchCell: UICollectionViewCell {
