@@ -43,6 +43,11 @@ class HistoryViewModel: NSObject {
   lazy var monthChanged: MonthSwitchedCallback? = { [weak self] m in
     guard let isActive = self?.isActive, isActive else { return }
     self?.update()
+    self?.scrollToBottom(animated: false)
+  }
+  
+  lazy var monthSelectedAgain: MonthSelectedAgainCallback = { [weak self] in
+    self?.scrollToBottom(animated: true)
   }
   
   lazy var dataServiceUpdated: DataServiceUpdateCallback? = { [weak self] in
@@ -61,6 +66,15 @@ class HistoryViewModel: NSObject {
   private func notifyDeleteSubscribers() {
     callbacks.forEach{ $0?() }
   }
+  
+  private func scrollToBottom(animated: Bool) {
+    guard sectionsHeadersData.count > 0 else { return }
+    let lastSection = sectionsHeadersData.count - 1
+    guard let cellsInSection = tableView?.numberOfRows(inSection: lastSection) else { return }
+    let lastCellIndex = cellsInSection > 0 ? cellsInSection - 1 : NSNotFound
+    let lastCellIndexPath = IndexPath(row: lastCellIndex, section: lastSection)
+    tableView?.scrollToRow(at: lastCellIndexPath, at: .top, animated: animated)
+  }
 }
 
 extension HistoryViewModel: TransactionsProjecting {
@@ -69,11 +83,15 @@ extension HistoryViewModel: TransactionsProjecting {
   }
   
   func project(intoTableView tableView: UITableView?) {
-    self.tableView = tableView
+    self.tableView = tableView // also sets to nil
     guard let tableView = tableView else { return }
     tableView.dataSource = self
     tableView.delegate = self
     update()
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+      tableView.layoutIfNeeded()
+      self?.scrollToBottom(animated: false)
+    }
   }
 }
 
@@ -217,7 +235,6 @@ extension HistoryViewModel: UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let headerView = UIView()
-    //    headerView.backgroundColor = .clear
     let sectionData = sectionsHeadersData[section]
     
     let amountLabel = UILabel()

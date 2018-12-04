@@ -9,6 +9,7 @@
 import UIKit
 
 typealias MonthSwitchedCallback = (Date) -> Void
+typealias MonthSelectedAgainCallback = () -> Void
 typealias SelectedMonthGetter = () -> Date?
 
 class MonthSwitchViewModel: NSObject {
@@ -58,9 +59,14 @@ class MonthSwitchViewModel: NSObject {
     return reports[selectedIndex].monthDate
   }
   
-  private var callbacks = [MonthSwitchedCallback?]()
-  func subscribe(callback: MonthSwitchedCallback?) {
-    callbacks.append(callback)
+  private var switchCallbacks = [MonthSwitchedCallback?]()
+  func subscribeForSwitch(callback: MonthSwitchedCallback?) {
+    switchCallbacks.append(callback)
+  }
+  
+  private var selectAgainCallbacks = [MonthSelectedAgainCallback?]()
+  func subscribeForRepeatedSelection(callback: MonthSelectedAgainCallback?) {
+    selectAgainCallbacks.append(callback)
   }
   
   lazy var dataServiceUpdated: DataServiceUpdateCallback? = { [weak self] in
@@ -187,10 +193,13 @@ extension MonthSwitchViewModel: UICollectionViewDelegate {
   
   func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
     guard indexPath.row < reports.count else { return false }
-    guard selectedIndex != indexPath.row else { return false }
+    if indexPath.row == selectedIndex {
+      selectAgainCallbacks.forEach{ $0?() }
+      return false
+    }
     selectedIndex = indexPath.row
     let report = reports[selectedIndex]
-    callbacks.forEach{ $0?(report.monthDate) }
+    switchCallbacks.forEach{ $0?(report.monthDate) }
     collectionView.reloadData()
     return false
   }

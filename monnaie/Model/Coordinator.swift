@@ -38,8 +38,9 @@ class Coordinator {
     summary.dataService = dataService
     summary.settings = settings
     
-    monthSwitch.subscribe(callback: history.monthChanged)
-    monthSwitch.subscribe(callback: summary.monthChanged)
+    monthSwitch.subscribeForSwitch(callback: history.monthChanged)
+    monthSwitch.subscribeForRepeatedSelection(callback: history.monthSelectedAgain)
+    monthSwitch.subscribeForSwitch(callback: summary.monthChanged)
     editTransactionController?.delegate = addViewModel
     
     dataService.subscribe(callback: monthSwitch.dataServiceUpdated)
@@ -73,7 +74,7 @@ class Coordinator {
     
     // Haptic feedback events
     hapticFeedback.settings = settings
-    monthSwitch.subscribe(callback: hapticFeedback.monthSwitched)
+    monthSwitch.subscribeForSwitch(callback: hapticFeedback.monthSwitched)
     guillotineViewController.subscribeForBladeState(callback: hapticFeedback.bladeSwitched)
     addViewModel.subscribeForAdding(callback: hapticFeedback.transactionAdded)
     editViewModel.subscribeForEditingStart(callback: hapticFeedback.transactionEditingOccured)
