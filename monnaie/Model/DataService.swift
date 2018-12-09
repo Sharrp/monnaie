@@ -79,23 +79,33 @@ class DataService {
   
   /// MARK: Public
   
-  func add(transaction: Transaction, postNotification: Bool = true) {
-    let sql = "INSERT INTO \(transactionsTableName) (createdDate, date, modifiedDate, amount, author, category) VALUES (?, ?, ?, ?, ?, ?)"
-    let statement = prepareStatement(sql: sql)
-    guard sqlite3_bind_double(statement, 1, transaction.createdDate.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
-    guard sqlite3_bind_double(statement, 2, transaction.date.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
-    guard sqlite3_bind_double(statement, 3, transaction.modifiedDate.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
-    guard sqlite3_bind_double(statement, 4, Double(transaction.amount)) == SQLITE_OK else { printError(on: "binding", db); return }
-    guard sqlite3_bind_text(statement, 5, transaction.authorName, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
-    guard sqlite3_bind_text(statement, 6, transaction.category.name, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
-    
+  func add(transactions: [Transaction]) {
+    sqlite3_exec(db, "BEGIN EXCLUSIVE TRANSACTION", nil, nil, nil)
+    let statement = prepareStatement(sql: insertSQL)
+    for transaction in transactions {
+      bind(transaction: transaction, toStatement: statement)
+      if sqlite3_step(statement) != SQLITE_DONE {
+        printError(on: "bulk adding", db)
+      }
+      if sqlite3_reset(statement) != SQLITE_OK {
+        printError(on: "reset adding statemtn", db)
+      }
+    }
+    sqlite3_finalize(statement)
+    if sqlite3_exec(db, "COMMIT TRANSACTION", nil, nil, nil) != SQLITE_OK {
+      printError(on: "commit adding transaction", db)
+    }
+    notifySubscribers()
+  }
+  
+  func add(transaction: Transaction) {
+    let statement = prepareStatement(sql: insertSQL)
+    bind(transaction: transaction, toStatement: statement)
     if sqlite3_step(statement) != SQLITE_DONE {
       printError(on: "adding", db)
     }
     sqlite3_finalize(statement)
-    if postNotification {
-      notifySubscribers()
-    }
+    notifySubscribers()
   }
   
   func update(transaction: Transaction) {
@@ -272,6 +282,19 @@ class DataService {
     return "date>=\(timestamps.start) AND date<\(timestamps.end)"
   }
   
+  private var insertSQL: String {
+    return "INSERT INTO \(transactionsTableName) (createdDate, date, modifiedDate, amount, author, category) VALUES (?, ?, ?, ?, ?, ?)"
+  }
+  
+  private func bind(transaction: Transaction, toStatement statement: OpaquePointer?) {
+    guard sqlite3_bind_double(statement, 1, transaction.createdDate.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_double(statement, 2, transaction.date.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_double(statement, 3, transaction.modifiedDate.timeIntervalSince1970) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_double(statement, 4, Double(transaction.amount)) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_text(statement, 5, transaction.authorName, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
+    guard sqlite3_bind_text(statement, 6, transaction.category.name, -1, SQLITE_TRANSIENT) == SQLITE_OK else { printError(on: "binding", db); return }
+  }
+  
   // MARK: Generic helpers
   
   private func components(ofDate date: Date) -> (year: Int, month: Int, day: Int) {
@@ -316,10 +339,7 @@ extension DataService: SyncTransactionsDataSource {
 extension DataService: MergeDelegate {
   func mergeDone(replacingTransactions transactions: [Transaction]) {
     removeAll()
-    for transaction in transactions {
-      add(transaction: transaction, postNotification: false)
-    }
-    notifySubscribers()
+    add(transactions: transactions)
   }
 }
 
@@ -345,7 +365,7 @@ extension DataService: CSVCompatible {
     guard let csv = csv else { return failureResult }
     
     var importedTransactions = [Transaction]()
-    let dateFormatter = DateFormatter()
+    let dateFormatter = DateFormatter() // TODO: vsscanf() should be faster (date from string is the slowest part here)
     dateFormatter.dateFormat = dateFormatString
     for (i, line) in csv.components(separatedBy: "\n").enumerated() {
       if i == 0 { continue } // Skip title line
