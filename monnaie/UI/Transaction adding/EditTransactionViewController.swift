@@ -207,4 +207,8 @@ extension EditTransactionViewController: TransactionComposerDelegate {
   func amountChangedValidity(isValid amountIsValid: Bool) {
     commitButton.isEnabled = amountIsValid
   }
+  
+  func setDateToToday() {
+    dateTimePicker.setDate(Date.now, animated: true)
+  }
 }

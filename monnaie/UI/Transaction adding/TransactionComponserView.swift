@@ -19,6 +19,7 @@ enum TransactionComposerMode: Int {
 protocol TransactionComposerDelegate: AnyObject {
   func didSwitch(toMode: TransactionComposerMode, animated: Bool)
   func amountChangedValidity(isValid: Bool)
+  func setDateToToday()
 }
 
 typealias ModeSwitchAnimation = () -> ()
@@ -147,6 +148,10 @@ class TransactionComponserView: UIView {
   }
   
   @IBAction func dateButtonTouched() {
+    if mode == .date {
+      delegate?.setDateToToday()
+      return
+    }
     set(mode: .date, animated: true, enableDelegation: true)
   }
   
