@@ -29,7 +29,7 @@ class TransactionComponserView: UIView {
   
   private let margin: CGFloat = 6
   private let baseSize: CGFloat = 56
-  private let amountButtonWidth: CGFloat = 89
+  private let amountButtonWidth: CGFloat = 91
   var padding: CGFloat {
     return dateButton.frame.origin.y
   }
@@ -55,6 +55,10 @@ class TransactionComponserView: UIView {
   private let categoryLabel = UILabel()
   
   @IBOutlet weak var dateButton: UIButton!
+  
+  @IBOutlet weak var dateShadowView: ShadowRoundedView!
+  @IBOutlet weak var categoryShadowView: ShadowRoundedView!
+  @IBOutlet weak var amountShadowView: ShadowRoundedView!
   
   private(set) var mode: TransactionComposerMode = .waitingForInput
   
@@ -119,10 +123,6 @@ class TransactionComponserView: UIView {
     dateButton.layer.borderColor = selectedBorderColor
     dateButton.titleLabel?.numberOfLines = 2
     dateButton.titleLabel?.textAlignment = .center
-    
-    // TEMP
-    self.amountButton.layer.borderColor = selectedBorderColor
-    self.amountButton.layer.borderWidth = 1
   }
   
   override func layoutSubviews() {
@@ -205,6 +205,8 @@ class TransactionComponserView: UIView {
         self?.amountLabel.alpha = 0
         self?.amountButton.transform = downscale
         self?.amountButton.alpha = 0
+        self?.amountShadowView.transform = downscale
+        self?.amountShadowView.alpha = 0
       case .category, .date:
         self?.amountInput.resignFirstResponder()
         self?.amountInput.transform = downscale
@@ -213,6 +215,8 @@ class TransactionComponserView: UIView {
         self?.amountLabel.alpha = 1
         self?.amountButton.transform = .identity
         self?.amountButton.alpha = 1
+        self?.amountShadowView.transform = .identity
+        self?.amountShadowView.alpha = 1
       case .table:
         self?.amountInput.resignFirstResponder()
         self?.amountInput.transform = downscale
@@ -221,6 +225,8 @@ class TransactionComponserView: UIView {
         self?.amountLabel.alpha = 1
         self?.amountButton.transform = downscale
         self?.amountButton.alpha = 0
+        self?.amountShadowView.transform = downscale
+        self?.amountShadowView.alpha = 0
       }
     }
   }
@@ -239,48 +245,53 @@ class TransactionComponserView: UIView {
     }
     
     return { [weak self] in
-      self?.categoryButton.layer.borderWidth = 1
+      self?.categoryButton.layer.borderWidth = mode == .category ? 1 : 0
       self?.categoryButton.backgroundColor = mode == .category ? .clear : .white
       self?.categoryButton.alpha = mode == .waitingForInput ? 0 : 1
+      self?.categoryShadowView.alpha = mode == .date || mode == .amount ? 1 : 0
       
-      let defaultCategoryTitleInset = UIEdgeInsets(top: 0, left: 13, bottom: 0, right: 0)
+      var categoryTitleInset = UIEdgeInsets(top: 0, left: 13, bottom: 0, right: 0)
+      let transform: CGAffineTransform
       switch mode {
       case .waitingForInput:
-        self?.categoryButton.transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
-        self?.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
       case .amount:
-        self?.categoryButton.transform = .identity
-        self?.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        transform = .identity
       case .date:
-        self?.categoryButton.transform = .identity
-        self?.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        transform = .identity
       case .category:
-        self?.categoryButton.transform = .identity
-        self?.categoryButton.titleEdgeInsets = defaultCategoryTitleInset
+        transform = .identity
       case .table:
         guard let baseSize = self?.baseSize else { return }
         guard let margin = self?.margin else { return }
-        self?.categoryButton.transform = CGAffineTransform(translationX: -baseSize-margin+2, y: 0)
-        self?.categoryButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
+        transform = CGAffineTransform(translationX: -baseSize-margin+2, y: 0)
+        categoryTitleInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
       }
+      self?.categoryButton.transform = transform
+      self?.categoryShadowView.transform = transform
+      self?.categoryButton.titleEdgeInsets = categoryTitleInset
     }
   }
   
   private func dateButtonAnimation(forMode mode: TransactionComposerMode) -> ModeSwitchAnimation {
     return { [weak self] in
-      self?.dateButton.layer.borderWidth = 1
       self?.dateButton.backgroundColor = mode == .date ? .clear : .white
       let isVisible = mode == .category || mode == .date || mode == .amount
       self?.dateButton.alpha = isVisible ? 1 : 0
+      self?.dateButton.layer.borderWidth = mode == .date ? 1 : 0
+      self?.dateShadowView.alpha = isVisible && mode != .date ? 1 : 0
       
+      let transform: CGAffineTransform
       switch mode {
       case .waitingForInput:
-        self?.dateButton.transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
+        transform = CGAffineTransform(translationX: -Animation.appearceWithShfit, y: 0)
       case .amount, .category, .date:
-        self?.dateButton.transform = .identity
+        transform = .identity
       case .table:
-        self?.dateButton.transform = CGAffineTransform(translationX: -5*Animation.appearceWithShfit, y: 0)
+        transform = CGAffineTransform(translationX: -5*Animation.appearceWithShfit, y: 0)
       }
+      self?.dateButton.transform = transform
+      self?.dateShadowView.transform = transform
     }
   }
   

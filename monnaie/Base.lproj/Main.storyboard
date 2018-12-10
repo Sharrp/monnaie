@@ -369,24 +369,22 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HNt-U5-1J3" customClass="TransactionComponserView" customModule="monnaie" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="295" width="375" height="86"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zyi-Pr-Cca">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HCO-T0-cSI" customClass="ShadowRoundedView" customModule="monnaie" customModuleProvider="target">
+                                        <rect key="frame" x="6" y="15" width="56" height="56"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="igK-Pi-tQ1" customClass="ShadowRoundedView" customModule="monnaie" customModuleProvider="target">
                                         <rect key="frame" x="68" y="15" width="156" height="56"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2qm-PI-UQq" customClass="ShadowRoundedView" customModule="monnaie" customModuleProvider="target">
+                                        <rect key="frame" x="278" y="15" width="91" height="56"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="56" id="JBP-e4-drP"/>
-                                            <constraint firstAttribute="width" constant="156" id="ijw-4g-oUN"/>
+                                            <constraint firstAttribute="height" constant="56" id="2qd-ZP-Qeh"/>
+                                            <constraint firstAttribute="width" constant="91" id="JRB-pF-Hkv"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                        <state key="normal" title="🥥"/>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                <integer key="value" value="8"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="categoryButtonTouched" destination="HNt-U5-1J3" eventType="touchUpInside" id="PO4-5o-P9c"/>
-                                        </connections>
-                                    </button>
+                                    </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9ZH-LQ-MED">
                                         <rect key="frame" x="6" y="15" width="56" height="56"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -405,6 +403,24 @@
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="dateButtonTouched" destination="HNt-U5-1J3" eventType="touchUpInside" id="nLg-Kd-CRv"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zyi-Pr-Cca">
+                                        <rect key="frame" x="68" y="15" width="156" height="56"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="56" id="JBP-e4-drP"/>
+                                            <constraint firstAttribute="width" constant="156" id="ijw-4g-oUN"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                        <state key="normal" title="🥥"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="8"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="categoryButtonTouched" destination="HNt-U5-1J3" eventType="touchUpInside" id="PO4-5o-P9c"/>
                                         </connections>
                                     </button>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GxJ-ns-JBx">
@@ -439,7 +455,7 @@
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="¥1,287" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tt3-TQ-5HB">
                                         <rect key="frame" x="278" y="33" width="73" height="21"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="73" id="fXc-Lf-qOV"/>
                                             <constraint firstAttribute="height" constant="21" id="pDv-vE-K4J"/>
@@ -451,15 +467,25 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstItem="HCO-T0-cSI" firstAttribute="leading" secondItem="9ZH-LQ-MED" secondAttribute="leading" id="0fD-bk-0Kn"/>
                                     <constraint firstAttribute="bottom" secondItem="tt3-TQ-5HB" secondAttribute="bottom" constant="32" id="7Wb-5u-kyN"/>
+                                    <constraint firstItem="HCO-T0-cSI" firstAttribute="bottom" secondItem="9ZH-LQ-MED" secondAttribute="bottom" id="824-zr-Fxh"/>
                                     <constraint firstAttribute="trailing" secondItem="Zhv-dH-Ezn" secondAttribute="trailing" constant="6" id="8kS-ce-5Ip"/>
+                                    <constraint firstItem="igK-Pi-tQ1" firstAttribute="bottom" secondItem="zyi-Pr-Cca" secondAttribute="bottom" id="9kr-Ua-Rrl"/>
                                     <constraint firstAttribute="trailing" secondItem="tt3-TQ-5HB" secondAttribute="trailing" constant="24" id="9ol-LF-ifG"/>
+                                    <constraint firstItem="HCO-T0-cSI" firstAttribute="trailing" secondItem="9ZH-LQ-MED" secondAttribute="trailing" id="C1T-Dt-rgC"/>
                                     <constraint firstAttribute="bottom" secondItem="GxJ-ns-JBx" secondAttribute="bottom" constant="8" id="DQ5-KU-oBX"/>
+                                    <constraint firstItem="igK-Pi-tQ1" firstAttribute="trailing" secondItem="zyi-Pr-Cca" secondAttribute="trailing" id="G1r-BC-or2"/>
                                     <constraint firstAttribute="height" constant="86" id="Gso-T8-flY"/>
+                                    <constraint firstAttribute="bottom" secondItem="2qm-PI-UQq" secondAttribute="bottom" constant="15" id="Kpz-Gr-zec"/>
+                                    <constraint firstItem="HCO-T0-cSI" firstAttribute="top" secondItem="9ZH-LQ-MED" secondAttribute="top" id="LhT-cG-6ag"/>
                                     <constraint firstItem="zyi-Pr-Cca" firstAttribute="top" secondItem="HNt-U5-1J3" secondAttribute="top" constant="15" id="Lk2-ZP-uK2"/>
+                                    <constraint firstAttribute="trailing" secondItem="2qm-PI-UQq" secondAttribute="trailing" constant="6" id="Ukl-LD-wDN"/>
                                     <constraint firstAttribute="bottom" secondItem="Zhv-dH-Ezn" secondAttribute="bottom" constant="15" id="YEP-ai-Cfy"/>
                                     <constraint firstAttribute="trailing" secondItem="GxJ-ns-JBx" secondAttribute="trailing" constant="20" id="YI3-r3-598"/>
                                     <constraint firstAttribute="bottom" secondItem="9ZH-LQ-MED" secondAttribute="bottom" constant="15" id="bbE-hz-srO"/>
+                                    <constraint firstItem="igK-Pi-tQ1" firstAttribute="leading" secondItem="zyi-Pr-Cca" secondAttribute="leading" id="hHV-sK-yTp"/>
+                                    <constraint firstItem="igK-Pi-tQ1" firstAttribute="top" secondItem="zyi-Pr-Cca" secondAttribute="top" id="jyT-dY-Fjy"/>
                                     <constraint firstItem="9ZH-LQ-MED" firstAttribute="leading" secondItem="HNt-U5-1J3" secondAttribute="leading" constant="6" id="jz2-Hc-FkL"/>
                                     <constraint firstItem="zyi-Pr-Cca" firstAttribute="leading" secondItem="HNt-U5-1J3" secondAttribute="leading" constant="68" id="m3v-3c-Y9N"/>
                                 </constraints>
@@ -470,10 +496,13 @@
                                     <outlet property="amountInputRightMargin" destination="YI3-r3-598" id="L14-hh-ucx"/>
                                     <outlet property="amountLabel" destination="tt3-TQ-5HB" id="o8D-4m-rMl"/>
                                     <outlet property="amountLabelRightMargin" destination="9ol-LF-ifG" id="sxM-iA-Z3U"/>
+                                    <outlet property="amountShadowView" destination="2qm-PI-UQq" id="8JC-0F-mPx"/>
                                     <outlet property="categoryButton" destination="zyi-Pr-Cca" id="Tcq-zx-9vf"/>
                                     <outlet property="categoryButtonLeftMargin" destination="m3v-3c-Y9N" id="LHM-YD-1Ar"/>
                                     <outlet property="categoryButtonWidth" destination="ijw-4g-oUN" id="7d7-Sm-gvo"/>
+                                    <outlet property="categoryShadowView" destination="igK-Pi-tQ1" id="TA6-rt-Eqi"/>
                                     <outlet property="dateButton" destination="9ZH-LQ-MED" id="CPv-CI-pJG"/>
+                                    <outlet property="dateShadowView" destination="HCO-T0-cSI" id="cuB-nD-aVa"/>
                                 </connections>
                             </view>
                             <datePicker hidden="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="TgH-T5-qXh">

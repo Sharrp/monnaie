@@ -10,13 +10,6 @@ import UIKit
 
 class ShadowRoundedView: UIView {
   private let cornerRadius: CGFloat = 8
-  var shadowRadius: CGFloat = 12 {
-    didSet {
-      layer.shadowRadius = shadowRadius
-    }
-  }
-  private let shadowColor = Color.shadowColor.cgColor
-  private let shadowOpacity: Float = 1
   private let shapeLayer = CALayer()
   
   var roundedCorners = UIRectCorner.allCorners {
@@ -29,10 +22,10 @@ class ShadowRoundedView: UIView {
     super.init(coder: aDecoder)
     
     layer.masksToBounds = false
-    layer.shadowOffset = CGSize()
-    layer.shadowColor = shadowColor
-    layer.shadowRadius = shadowRadius
-    layer.shadowOpacity = shadowOpacity
+    layer.shadowOffset = Layout.shadowOffset
+    layer.shadowColor = Color.shadowColor.cgColor
+    layer.shadowRadius = Layout.shadowRadius
+    layer.shadowOpacity = 1
     
     layer.insertSublayer(shapeLayer, at: 0)
     
