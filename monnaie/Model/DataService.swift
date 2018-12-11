@@ -12,6 +12,10 @@ import SQLite3
 typealias CategoriesSummary = [(category: TransactionCategory, amount: Double)]
 typealias DataServiceUpdateCallback = () -> Void
 
+protocol AuthorRenamer: AnyObject {
+  func renameAuthor(from oldName: String, to newName: String)
+}
+
 class DataService {
   private var db: OpaquePointer!
   private let transactionsTableName = "transactions"
@@ -229,14 +233,6 @@ class DataService {
     return summary
   }
   
-  func changeOnwer(from oldName: String, to newName: String) {
-    let sql = "UPDATE \(transactionsTableName) SET author='\(newName)' WHERE author='\(oldName)'"
-    let statement = prepareStatement(sql: sql)
-    guard sqlite3_step(statement) == SQLITE_DONE else { printError(on: "renaming", db); return }
-    sqlite3_finalize(statement)
-    notifySubscribers()
-  }
-  
   // MARK: SQLite helpers
   
   private func printError(on operation: String, _ db: OpaquePointer) {
@@ -319,6 +315,16 @@ class DataService {
     let author = String(cString: sqlite3_column_text(statement, 4))
     return Transaction(amount: amount, category: category, authorName: author,
                        transactionDate: date, creationDate: createdDate, modifiedDate: modifiedDate)
+  }
+}
+
+extension DataService: AuthorRenamer {
+  func renameAuthor(from oldName: String, to newName: String) {
+    let sql = "UPDATE \(transactionsTableName) SET author='\(newName)' WHERE author='\(oldName)'"
+    let statement = prepareStatement(sql: sql)
+    guard sqlite3_step(statement) == SQLITE_DONE else { printError(on: "renaming", db); return }
+    sqlite3_finalize(statement)
+    notifySubscribers()
   }
 }
 

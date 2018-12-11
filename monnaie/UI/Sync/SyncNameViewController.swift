@@ -9,18 +9,18 @@
 import UIKit
 
 protocol SyncNameUpdateDelegate: AnyObject {
-  func nameUpdated(from oldName: String, to newName: String)
+  func nameUpdated(to name: String)
 }
 
 class SyncNameViewController: UIViewController {
   @IBOutlet weak var nameTextField: UITextField!
   @IBOutlet weak var saveButton: UIButton!
   weak var delegate: SyncNameUpdateDelegate?
-  weak var settings: Settings?
+  var currentName: String?
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    nameTextField.text = settings?.syncName ?? ""
+    nameTextField.text = currentName ?? ""
     nameTextField.becomeFirstResponder()
   }
   
@@ -31,9 +31,7 @@ class SyncNameViewController: UIViewController {
   
   @IBAction func savePressed() {
     if let newName = nameTextField.text {
-      let oldName = settings?.syncName ?? ""
-      settings?.syncName = newName
-      delegate?.nameUpdated(from: oldName, to: newName)
+      delegate?.nameUpdated(to: newName)
     }
     dismiss()
   }

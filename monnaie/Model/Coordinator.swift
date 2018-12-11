@@ -90,6 +90,7 @@ class Coordinator {
     csvHandler.generateCSV = { [weak self] in self?.dataService.exportDataAsCSV() }
     csvHandler.importer = dataService
     projectionsViewController?.exporter = csvHandler
+    projectionsViewController?.renamer = dataService
   }
   
   func importCSV(fileURL: URL) {

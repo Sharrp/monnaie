@@ -15,6 +15,9 @@ extension Notification.Name {
 
 // Responsible for setting up all the pieces requried for sync
 class SyncViewController: UIViewController {
+  @IBOutlet weak var nameLabel: UILabel?
+  @IBOutlet weak var nameView: UIView!
+  
   var syncManager: P2PSyncManager? {
     didSet {
       syncManager?.presentor = self
@@ -24,17 +27,13 @@ class SyncViewController: UIViewController {
       display(name: syncName)
     }
   }
-  weak var nameDelegate: SyncNameUpdateDelegate?
+  weak var settings: Settings?
   weak var mergeDelegate: MergeDelegate?
   weak var transactionsDataSource: SyncTransactionsDataSource?
+  weak var renamer: AuthorRenamer?
   
   private let syncController = SyncController()
-  
-  @IBOutlet weak var syncStatusLabel: UILabel!
-  @IBOutlet weak var nameChangeMessageLabel: UILabel?
-  
-  @IBOutlet weak var peersTableView: UITableView!
-  private var buddies = [SyncBuddy]()
+  private var autoSyncBuddy: SyncBuddy?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -59,18 +58,19 @@ class SyncViewController: UIViewController {
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     guard segue.identifier == "name-edit" else { return }
     guard let vc = segue.destination as? SyncNameViewController else { return }
+    vc.currentName = syncManager?.syncName
     vc.delegate = self
   }
 }
 
 extension SyncViewController: SyncPresentorDelegate {
   private func updateStatus(to newStatus: String) {
-    self.syncStatusLabel.text = newStatus
+//    self.syncStatusLabel.text = newStatus
   }
   
   func updated(availableBuddies: [SyncBuddy]) {
-    buddies = availableBuddies
-    peersTableView.reloadData()
+//    buddies = availableBuddies
+//    peersTableView.reloadData()
   }
   
   func syncRequestReceived(fromBuddy buddy: SyncBuddy, handler: @escaping SyncRequestHandler) {
@@ -112,42 +112,14 @@ extension SyncViewController: SyncPresentorDelegate {
 
 extension SyncViewController: SyncNameUpdateDelegate {
   func display(name: String) {
-    nameChangeMessageLabel?.text = """
-    We sign your transactions with "\(name)".
-    Feel free to change your name here 👇
-    """
+    nameLabel?.text = "You are \(name)"
   }
   
-  func nameUpdated(from oldName: String, to newName: String) {
+  func nameUpdated(to newName: String) {
     display(name: newName)
-    nameDelegate?.nameUpdated(from: oldName, to: newName)
+    let oldName = settings?.syncName ?? ""
+    settings?.syncName = newName
+    renamer?.renameAuthor(from: oldName, to: newName)
     syncManager?.deviceNameUpdated(toName: newName)
-  }
-}
-
-extension SyncViewController: UITableViewDataSource {
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return buddies.count
-  }
-  
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cellID = "peerCellID"
-    let cell: UITableViewCell
-    if let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: cellID) {
-      cell = dequeuedCell
-    } else {
-      cell = UITableViewCell(style: .default, reuseIdentifier: cellID)
-    }
-    
-    cell.textLabel?.text = buddies[indexPath.row].name
-    return cell
-  }
-}
-
-extension SyncViewController: UITableViewDelegate {
-  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    let buddy = buddies[indexPath.row]
-    syncManager?.inviteToSync(buddy: buddy)
-    updateStatus(to: "Waiting a response from \(buddy.name)")
   }
 }

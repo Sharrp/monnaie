@@ -23,6 +23,7 @@ class ProjectionsViewController: UIViewController {
   }
   weak var settings: Settings?
   weak var exporter: Exporter?
+  weak var renamer: AuthorRenamer?
   
   @IBOutlet weak var navigationBar: UIView!
   private var navBarBorder = UIView()
@@ -104,13 +105,15 @@ class ProjectionsViewController: UIViewController {
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if let navController = segue.destination as? UINavigationController {
-      guard let settingsVC = navController.children.first as? SettingsViewController else { return }
+    guard let navController = segue.destination as? UINavigationController else { return }
+    if let settingsVC = navController.children.first as? SettingsViewController {
       settingsVC.settings = settings
       settingsVC.exporter = exporter
-    } else if let syncVC = segue.destination as? SyncViewController {
+    } else if let syncVC = navController.children.first as? SyncViewController {
       guard let settings = settings else { return }
       syncVC.syncManager = P2PSyncManager(settings: settings)
+      syncVC.settings = settings
+      syncVC.renamer = renamer
     }
   }
 }
