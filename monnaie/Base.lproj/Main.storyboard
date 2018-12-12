@@ -924,34 +924,38 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name people you sync with see" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lhp-Ad-nBE">
-                                <rect key="frame" x="16" y="318" width="343" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Awz-UK-pzK">
+                                <rect key="frame" x="24" y="347" width="327" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="yFh-AB-gpd"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <state key="normal" title="Save">
+                                    <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="savePressed" destination="nwH-Tk-n2m" eventType="touchUpInside" id="IDK-xx-zIj"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="&quot;Top gun&quot; or &quot;Cinnamon&quot; or..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lhp-Ad-nBE">
+                                <rect key="frame" x="24" y="309" width="327" height="30"/>
                                 <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="namePhonePad" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="nickname"/>
                                 <connections>
                                     <action selector="nameEditingChangedWithTextField:" destination="nwH-Tk-n2m" eventType="editingChanged" id="TT8-7a-SIv"/>
                                 </connections>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Awz-UK-pzK">
-                                <rect key="frame" x="225" y="356" width="34" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Save"/>
-                                <connections>
-                                    <action selector="savePressed" destination="nwH-Tk-n2m" eventType="touchUpInside" id="IDK-xx-zIj"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zbo-zu-VLx">
-                                <rect key="frame" x="111" y="356" width="48" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Cancel"/>
-                                <connections>
-                                    <action selector="cancelPressed" destination="nwH-Tk-n2m" eventType="touchUpInside" id="4FN-hv-KZi"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="jN7-o4-DCS" firstAttribute="trailing" secondItem="Awz-UK-pzK" secondAttribute="trailing" constant="24" id="ByW-AP-Huc"/>
+                            <constraint firstItem="Awz-UK-pzK" firstAttribute="top" secondItem="lhp-Ad-nBE" secondAttribute="bottom" constant="8" id="QUP-EA-BPb"/>
+                            <constraint firstItem="Awz-UK-pzK" firstAttribute="leading" secondItem="jN7-o4-DCS" secondAttribute="leading" constant="24" id="UFv-8w-CNr"/>
+                            <constraint firstItem="jN7-o4-DCS" firstAttribute="bottom" secondItem="Awz-UK-pzK" secondAttribute="bottom" constant="276" id="fGy-5N-xX4"/>
+                            <constraint firstItem="jN7-o4-DCS" firstAttribute="trailing" secondItem="lhp-Ad-nBE" secondAttribute="trailing" constant="24" id="hr9-9O-OQi"/>
+                            <constraint firstItem="lhp-Ad-nBE" firstAttribute="leading" secondItem="jN7-o4-DCS" secondAttribute="leading" constant="24" id="pgk-nF-7B5"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="jN7-o4-DCS"/>
                     </view>
                     <size key="freeformSize" width="375" height="667"/>
@@ -962,7 +966,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Sct-Pq-MxM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1081" y="1519"/>
+            <point key="canvasLocation" x="1080.8" y="1518.8905547226389"/>
         </scene>
         <!--Guillotine View Controller-->
         <scene sceneID="XaX-iS-BPI">

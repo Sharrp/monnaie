@@ -36,10 +36,6 @@ class SyncNameViewController: UIViewController {
     dismiss()
   }
   
-  @IBAction func cancelPressed() {
-    dismiss()
-  }
-  
   @IBAction func nameEditingChanged(textField: UITextField) {
     if let newName = textField.text,
       newName.count > 0 {
