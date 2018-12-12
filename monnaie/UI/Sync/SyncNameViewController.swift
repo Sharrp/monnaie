@@ -26,7 +26,7 @@ class SyncNameViewController: UIViewController {
   
   private func dismiss() {
     nameTextField.resignFirstResponder()
-    dismiss(animated: true, completion: nil)
+    navigationController?.popViewController(animated: true)
   }
   
   @IBAction func savePressed() {

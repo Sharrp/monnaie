@@ -18,6 +18,9 @@ class SyncViewController: UIViewController {
   @IBOutlet weak var nameLabel: UILabel?
   @IBOutlet weak var nameView: UIView!
   
+  @IBOutlet var stepLabels: [UILabel]!
+  @IBOutlet var stepHeights: [NSLayoutConstraint]!
+  
   var syncManager: P2PSyncManager? {
     didSet {
       syncManager?.presentor = self
@@ -43,8 +46,20 @@ class SyncViewController: UIViewController {
     
     guard let syncName = syncManager?.syncName else { return }
     display(name: syncName)
+    
+    nameView.layer.borderColor = UIColor(hex: 0xD8D8D8).cgColor
   }
   
+  override func updateViewConstraints() {
+    super.updateViewConstraints()
+    
+    for (i, height) in stepHeights.enumerated() {
+      let width = UIScreen.main.bounds.width - 24 * 2 // sorry for that
+      let restrictionBox = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
+      height.constant = stepLabels[i].sizeThatFits(restrictionBox).height
+    }
+  }
+
   private func dismissWithNotification() {
     self.dismiss(animated: true, completion: nil)
     NotificationCenter.default.post(name: .syncDidDismiss, object: nil)
@@ -112,7 +127,12 @@ extension SyncViewController: SyncPresentorDelegate {
 
 extension SyncViewController: SyncNameUpdateDelegate {
   func display(name: String) {
-    nameLabel?.text = "You are \(name)"
+    let formattedText = NSMutableAttributedString(string: "You are \(name)")
+    let font = UIFont.systemFont(ofSize: 16, weight: .medium)
+    let range = NSRange(location: formattedText.length - name.count, length: name.count)
+    formattedText.addAttribute(.font, value: font, range: range)
+    formattedText.addAttribute(.foregroundColor, value: Color.accentText, range: range)
+    nameLabel?.attributedText = formattedText
   }
   
   func nameUpdated(to newName: String) {
