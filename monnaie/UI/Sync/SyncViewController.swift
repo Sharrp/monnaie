@@ -51,7 +51,7 @@ class SyncViewController: UIViewController {
     if let syncName = syncManager?.syncName {
       display(name: syncName)
     }
-    nameView.layer.borderColor = UIColor(hex: 0xD8D8D8).cgColor
+    nameView.layer.borderColor = Color.border.cgColor
   }
   
   override func updateViewConstraints() {

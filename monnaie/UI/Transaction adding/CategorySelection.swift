@@ -68,6 +68,6 @@ class CategoryCell: UICollectionViewCell {
     super.awakeFromNib()
     
     selectedBackgroundView = UIView(frame: bounds)
-    selectedBackgroundView?.backgroundColor = Color.selection
+    selectedBackgroundView?.backgroundColor = Color.cellBackground
   }
 }

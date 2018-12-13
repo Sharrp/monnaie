@@ -106,7 +106,7 @@ class TransactionComponserView: UIView {
   override func awakeFromNib() {
     super.awakeFromNib()
     
-    let selectedBorderColor = UIColor(hex: 0xe6e6e6).cgColor
+    let selectedBorderColor = Color.border.cgColor
     categoryButton.layer.borderColor = selectedBorderColor
     categoryLabel.text = TransactionCategory.defaultCategory.name
     categoryLabel.textColor = Color.accentText
@@ -120,7 +120,7 @@ class TransactionComponserView: UIView {
     amountLabel.layer.anchorPoint = CGPoint(x: 1, y: 0.5)
     amountButton.layer.anchorPoint = CGPoint(x: 1, y: 0.5)
     
-    dateButton.layer.borderColor = selectedBorderColor
+    dateButton.layer.borderColor = Color.border.cgColor
     dateButton.titleLabel?.numberOfLines = 2
     dateButton.titleLabel?.textAlignment = .center
   }
@@ -170,7 +170,7 @@ class TransactionComponserView: UIView {
   
   private func updatePlaceholder(sign: String) {
     let text = "\(sign)0"
-    let coloredPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: Color.placeholder])
+    let coloredPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: Color.border])
     amountInput.attributedPlaceholder = coloredPlaceholder
   }
   

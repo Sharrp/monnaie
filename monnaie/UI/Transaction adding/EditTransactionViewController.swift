@@ -49,8 +49,6 @@ class EditTransactionViewController: UIViewController {
     categoryCollectionView.delegate = categoriesProvider
     categoriesProvider.delegate = self
     clearCategory()
-    
-    dateTimePicker.setValue(UIColor(white: 0.6, alpha: 1), forKey: "textColor")
 
     composer.set(date: Date.now)
     composer.set(category: .defaultCategory)

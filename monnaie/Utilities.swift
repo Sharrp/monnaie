@@ -174,15 +174,13 @@ struct Animation {
 }
 
 struct Color {
-  static let inactiveText = UIColor(hex: 0xAAAAAA)
   static let accentText = UIColor(hex: 0x333333)
-  static let shadowColor = UIColor(white: 0.0, alpha: 0.1)
+  static let inactiveText = UIColor(hex: 0x737373)
+  static let border = UIColor(hex: 0xD8D8D8)
+  
   static let background = UIColor(hex: 0xF9F9F9)
-  static let cellBackground = UIColor(hex: 0xF2F2F6)
-  static let placeholder = UIColor(white: 0.75, alpha: 1)
-  static let selection = UIColor.white.withAlphaComponent(0.3)
-  static let tableSeparator = UIColor(white: 0.2, alpha: 0.2)
-  static let tableHeader = UIColor.darkGray
+  static let cellBackground = UIColor(hex: 0xE8E8E8)
+  static let shadowColor = UIColor(white: 0.0, alpha: 0.1)
 }
 
 struct Font {

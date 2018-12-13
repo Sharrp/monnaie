@@ -239,7 +239,7 @@ extension HistoryViewModel: UITableViewDelegate {
     
     let amountLabel = UILabel()
     amountLabel.font = Font.main
-    amountLabel.textColor = Color.tableHeader
+    amountLabel.textColor = Color.inactiveText
     amountLabel.textAlignment = .right
     
     let amount: Double
@@ -265,7 +265,7 @@ extension HistoryViewModel: UITableViewDelegate {
     
     let dateLabel = UILabel()
     dateLabel.font = Font.main
-    dateLabel.textColor = Color.tableHeader
+    dateLabel.textColor = Color.inactiveText
     dateLabel.text = title(forSectionHeader: sectionData)
     
     dateLabel.translatesAutoresizingMaskIntoConstraints = false
