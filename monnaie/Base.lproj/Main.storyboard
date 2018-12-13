@@ -62,6 +62,13 @@
                                                     <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ns8-ax-Ggq">
+                                                    <rect key="frame" x="74" y="54.5" width="301" height="0.5"/>
+                                                    <color key="backgroundColor" red="0.84705882352941175" green="0.84705882352941175" blue="0.84705882352941175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="0.5" id="3DA-SL-P9M"/>
+                                                    </constraints>
+                                                </view>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Author" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5ua-1L-8bt">
                                                     <rect key="frame" x="74" y="30" width="166" height="20"/>
                                                     <constraints>
@@ -93,13 +100,17 @@
                                                 <constraint firstItem="crL-LF-AX2" firstAttribute="top" secondItem="edt-gh-Z4f" secondAttribute="top" constant="8" id="C0Z-G9-u5y"/>
                                                 <constraint firstItem="crL-LF-AX2" firstAttribute="leading" secondItem="9i6-sl-SUp" secondAttribute="trailing" constant="18" id="CSD-0V-ino"/>
                                                 <constraint firstAttribute="trailing" secondItem="1mA-Ud-th3" secondAttribute="trailing" constant="16" id="MZw-mp-Qqf"/>
+                                                <constraint firstAttribute="bottom" secondItem="Ns8-ax-Ggq" secondAttribute="bottom" constant="0.5" id="XMM-B4-Ccn"/>
+                                                <constraint firstItem="Ns8-ax-Ggq" firstAttribute="leading" secondItem="edt-gh-Z4f" secondAttribute="leading" constant="74" id="Yi3-sp-Jyx"/>
                                                 <constraint firstItem="1mA-Ud-th3" firstAttribute="top" secondItem="edt-gh-Z4f" secondAttribute="top" constant="19" id="j48-tU-PQW"/>
+                                                <constraint firstAttribute="trailing" secondItem="Ns8-ax-Ggq" secondAttribute="trailing" id="lx2-FY-0Nk"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
                                             <outlet property="amountLabel" destination="1mA-Ud-th3" id="wFm-ge-anT"/>
                                             <outlet property="authorLabel" destination="5ua-1L-8bt" id="wMb-Gb-xus"/>
+                                            <outlet property="bottomBorder" destination="Ns8-ax-Ggq" id="neh-mG-qjB"/>
                                             <outlet property="categoryLabel" destination="crL-LF-AX2" id="rjM-qw-TYY"/>
                                             <outlet property="emojiLabel" destination="9i6-sl-SUp" id="ohj-kX-1p2"/>
                                             <outlet property="topMarginConstraint" destination="C0Z-G9-u5y" id="VVe-tJ-tjQ"/>

@@ -41,7 +41,7 @@ class ProjectionsViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    tableView.separatorColor = .white
+    tableView.separatorColor = .clear
     tableView.transform = CGAffineTransform(translationX: 0, y: tableViewBottomOffsetWhenCollapsed)
     tableView.showsVerticalScrollIndicator = false
     

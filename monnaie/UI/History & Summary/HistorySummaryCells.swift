@@ -14,9 +14,14 @@ class TransactionCell: UITableViewCell {
   @IBOutlet weak var authorLabel: UILabel!
   @IBOutlet weak var topMarginConstraint: NSLayoutConstraint!
   @IBOutlet weak var amountLabel: UILabel!
+  @IBOutlet weak var bottomBorder: UIView!
   
   var isFirst = false
-  var isLast = false
+  var isLast = false {
+    didSet {
+      bottomBorder.isHidden = isLast
+    }
+  }
   
   private let sideInset: CGFloat = 8
   private let cornerRadius: CGFloat = 8
