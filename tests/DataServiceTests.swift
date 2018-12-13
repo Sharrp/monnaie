@@ -132,7 +132,7 @@ class DataServiceTests: XCTestCase {
       return self.dataProvider.transaction(index: 2, forDay: self.testingDays[1])
     }
     
-    guard var t1 = testingTransaction() else { XCTFail(); return }
+    guard let t1 = testingTransaction() else { XCTFail(); return }
     let newAmount = 112.0
     let newCategory = TransactionCategory.entertainment
     t1.amount = newAmount

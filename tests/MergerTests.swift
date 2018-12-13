@@ -96,7 +96,7 @@ class MergerTests: XCTestCase {
   func testUpdatedLocal() {
     Thread.sleep(forTimeInterval: 0.01) // so we will have different modifiedDate
     let index = 2
-    var transaction = local.syncTransactions()[index]
+    let transaction = local.syncTransactions()[index]
     transaction.amount += 200
     let expectedAmount = transaction.amount
     local.update(transaction: transaction)
@@ -109,7 +109,7 @@ class MergerTests: XCTestCase {
   func testUpdatedRemote() {
     Thread.sleep(forTimeInterval: 0.01)
     let index = 3
-    var transaction = remote.syncTransactions()[index]
+    let transaction = remote.syncTransactions()[index]
     let newCategory = TransactionCategory.bills
     XCTAssert(transaction.category != newCategory)
     transaction.category = newCategory
@@ -123,11 +123,11 @@ class MergerTests: XCTestCase {
   // Remote and location devices change different transactions
   func testUpdatedBoth() {
     Thread.sleep(forTimeInterval: 0.01)
-    var localTransaction = local.syncTransactions()[4]
+    let localTransaction = local.syncTransactions()[4]
     localTransaction.date = localTransaction.date.addingTimeInterval(-3600)
     local.update(transaction: localTransaction)
     
-    var remoteTransaction = remote.syncTransactions()[1]
+    let remoteTransaction = remote.syncTransactions()[1]
     remoteTransaction.date = remoteTransaction.date.addingTimeInterval(2 * Date.secondsPerDay)
     remote.update(transaction: remoteTransaction)
     
@@ -173,12 +173,12 @@ class MergerTests: XCTestCase {
   func testConflictUpdatedBoth() {
     let index = 0
     Thread.sleep(forTimeInterval: 0.01)
-    var localTransaction = local.syncTransactions()[index]
+    let localTransaction = local.syncTransactions()[index]
     localTransaction.date = localTransaction.date.addingTimeInterval(-1200)
     local.update(transaction: localTransaction)
     
     Thread.sleep(forTimeInterval: 0.01) // so the remote version is newer and we expect it in merged list
-    var remoteTransaction = remote.syncTransactions()[index]
+    let remoteTransaction = remote.syncTransactions()[index]
     let expectedDate = remoteTransaction.date.addingTimeInterval(-5000)
     remoteTransaction.date = expectedDate
     remote.update(transaction: remoteTransaction)
@@ -201,7 +201,7 @@ class MergerTests: XCTestCase {
   }
   
   func testConflictLocalUpdateRemoteDelete() {
-    guard var transaction = local.transaction(withIndex: 1, forDayIndex: 0) else { XCTFail(); return }
+    guard let transaction = local.transaction(withIndex: 1, forDayIndex: 0) else { XCTFail(); return }
     transaction.amount += 200
     local.update(transaction: transaction)
     remote.remove(transaction: transaction)
@@ -211,7 +211,7 @@ class MergerTests: XCTestCase {
   }
   
   func testConflictLocalDeleteRemoteUpdate() {
-    guard var transaction = local.transaction(withIndex: 0, forDayIndex: 1) else { XCTFail(); return }
+    guard let transaction = local.transaction(withIndex: 0, forDayIndex: 1) else { XCTFail(); return }
     local.remove(transaction: transaction)
     transaction.amount += 200
     remote.update(transaction: transaction)

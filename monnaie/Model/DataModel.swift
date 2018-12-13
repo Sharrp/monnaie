@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum TransactionCategory: Int, CustomStringConvertible {
+enum TransactionCategory: Int, CaseIterable {
   case grocery
   case cafe
   case transport
@@ -28,10 +28,6 @@ enum TransactionCategory: Int, CustomStringConvertible {
   
   static var defaultCategory: TransactionCategory {
     return .grocery
-  }
-  
-  var description: String {
-    return name
   }
   
   var emoji: String {
@@ -69,7 +65,11 @@ enum TransactionCategory: Int, CustomStringConvertible {
   }
 }
 
-extension TransactionCategory: RawIntEnum { }
+extension TransactionCategory: CustomStringConvertible {
+  var description: String {
+    return name
+  }
+}
 
 class Transaction: NSObject, NSCoding {
   var amount: Double {
@@ -132,12 +132,17 @@ class Transaction: NSObject, NSCoding {
 }
 
 extension Transaction {
-  public static func ==(lhs: Transaction, rhs: Transaction) -> Bool {
+  static func ==(lhs: Transaction, rhs: Transaction) -> Bool {
     return lhs.amount == rhs.amount &&
       lhs.authorName == rhs.authorName &&
       lhs.category == rhs.category &&
       abs(lhs.createdDate.timeIntervalSince(rhs.createdDate)) < 1e-6 &&
       abs(lhs.date.timeIntervalSince(rhs.date)) < 1e-6
+  }
+  
+  override func isEqual(_ object: Any?) -> Bool {
+    guard let other = object as? Transaction else { return false }
+    return self == other
   }
 }
 
@@ -152,7 +157,7 @@ struct MonthReport {
   let amount: Double
 }
 
-enum Currency: Int {
+enum Currency: CaseIterable {
   case USD
   case EUR
   case GBP
@@ -216,8 +221,6 @@ enum Currency: Int {
     return true
   }
 }
-
-extension Currency: RawIntEnum { }
 
 enum SyncMode: Int, CustomStringConvertible {
   case merge
