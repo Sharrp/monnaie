@@ -166,7 +166,7 @@ extension HistoryViewModel: UITableViewDataSource {
     cell.amountLabel.text = formatMoney(amount: transaction.amount, currency: currency)
     if transaction.authorName == settings?.syncName {
       cell.authorLabel.text = ""
-      cell.topMarginConstraint.constant = 19
+      cell.topMarginConstraint.constant = 17
     } else {
       cell.authorLabel.text = "\(transaction.authorName)"
       cell.topMarginConstraint.constant = 8

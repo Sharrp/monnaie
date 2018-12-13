@@ -120,12 +120,11 @@ class SummaryCell: UITableViewCell {
       setNeedsUpdateConstraints()
     }
   }
-  private let chartBarToValueMinSpace: CGFloat = 9
   private let minChartBarWidth: CGFloat = 8
   
   override func updateConstraints() {
     super.updateConstraints()
-    let maxChartBarWidth = valueLabel.frame.origin.x - categoryLabel.frame.origin.x - chartBarToValueMinSpace
+    let maxChartBarWidth = valueLabel.frame.maxX - categoryLabel.frame.origin.x
     let barWidth = maxChartBarWidth * CGFloat(level)
     chartBarWidth.constant = max(minChartBarWidth, barWidth)
   }
