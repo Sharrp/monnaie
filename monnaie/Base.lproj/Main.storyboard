@@ -403,7 +403,7 @@
                                             <constraint firstAttribute="height" constant="56" id="pCg-dq-ey7"/>
                                             <constraint firstAttribute="width" constant="56" id="tJz-Vd-V1E"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <state key="normal" title="Oct 29">
                                             <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>

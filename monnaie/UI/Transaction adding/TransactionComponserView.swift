@@ -181,8 +181,8 @@ class TransactionComponserView: UIView {
     let dayOfMonth = Calendar.current.component(.day, from: date)
     
     let formattedTitle = NSMutableAttributedString(string: "\(dayOfMonth)\n\(month)")
-    let font = UIFont.systemFont(ofSize: 11, weight: .regular)
-    let range = NSRange(location: formattedTitle.length - 3, length: 3)
+    let font = UIFont.systemFont(ofSize: 16, weight: .bold)
+    let range = NSRange(location: 0, length: 2) // 2 = 1 digit + new line or 2 digits
     formattedTitle.addAttribute(.font, value: font, range: range)
     dateButton.setAttributedTitle(formattedTitle, for: .normal)
   }
