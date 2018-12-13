@@ -56,7 +56,7 @@ extension EditTransactionViewModel: ManagedTransactionEditor {
     controller.setCommitButton(title: saveButtonTitle)
     
     guillotine?.setNavigationBar(hidden: false, animated: true)
-    guillotine?.navigationBarTitle = NSLocalizedString("Edit", comment: "Title of the view that edits transaction")
+    guillotine?.navigationBarTitle = NSLocalizedString("Editing", comment: "Navigation bar title during editing")
     
     replacedView = viewToReplace
     replacedView?.isHidden = true
