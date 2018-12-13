@@ -65,6 +65,13 @@ class GuillotineViewController: UIViewController {
     
     view.addGestureRecognizer(panGesture)
     
+    navBarContainer.clipsToBounds = false
+    navBarContainer.layer.masksToBounds = false
+    navBarContainer.layer.shadowOffset = Layout.shadowOffset
+    navBarContainer.layer.shadowColor = Color.shadowColor.cgColor
+    navBarContainer.layer.shadowRadius = Layout.shadowRadius
+    navBarContainer.layer.shadowOpacity = 1
+    
     loadDelegate?.didLoad(viewController: self)
   }
   
