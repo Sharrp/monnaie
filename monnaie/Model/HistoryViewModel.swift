@@ -260,7 +260,7 @@ extension HistoryViewModel: UITableViewDelegate {
       ])
     headerView.addConstraints([
       NSLayoutConstraint(item: amountLabel, attribute: .trailing , relatedBy: .equal, toItem: headerView, attribute: .trailingMargin, multiplier: 1, constant: -16),
-      NSLayoutConstraint(item: amountLabel, attribute: .centerY , relatedBy: .equal, toItem: headerView, attribute: .centerY, multiplier: 1, constant: 0)
+      NSLayoutConstraint(item: amountLabel, attribute: .bottom, relatedBy: .equal, toItem: headerView, attribute: .bottomMargin, multiplier: 1, constant: 8)
       ])
     
     let dateLabel = UILabel()
@@ -274,7 +274,7 @@ extension HistoryViewModel: UITableViewDelegate {
       NSLayoutConstraint(item: dateLabel, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 26)
     )
     headerView.addConstraints([
-      NSLayoutConstraint(item: dateLabel, attribute: .centerY, relatedBy: .equal, toItem: headerView, attribute: .centerY, multiplier: 1, constant: 0),
+      NSLayoutConstraint(item: dateLabel, attribute: .bottom, relatedBy: .equal, toItem: headerView, attribute: .bottomMargin, multiplier: 1, constant: 8),
       NSLayoutConstraint(item: dateLabel, attribute: .leading, relatedBy: .equal, toItem: headerView, attribute: .leading, multiplier: 1, constant: 16),
       NSLayoutConstraint(item: dateLabel, attribute: .trailing, relatedBy: .equal, toItem: amountLabel, attribute: .leading, multiplier: 1, constant: 8)
       ])
