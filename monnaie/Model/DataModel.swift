@@ -71,7 +71,7 @@ enum TransactionCategory: Int, CustomStringConvertible {
 
 extension TransactionCategory: RawIntEnum { }
 
-struct Transaction {
+class Transaction: NSObject, NSCoding {
   var amount: Double {
     didSet {
       modifiedDate = Date.now
@@ -105,12 +105,33 @@ struct Transaction {
     self.modifiedDate = modifiedDate
   }
   
-  var hash: Int {
+  required init(coder decoder: NSCoder) {
+    amount = decoder.decodeDouble(forKey: "amount")
+    let categoryRawValue = decoder.decodeInteger(forKey: "category")
+    category = TransactionCategory(rawValue: categoryRawValue)!
+    authorName = decoder.decodeObject(forKey: "authorName") as! String
+    
+    date = decoder.decodeObject(forKey: "date") as! Date
+    createdDate = decoder.decodeObject(forKey: "createdDate") as! Date
+    modifiedDate = decoder.decodeObject(forKey: "modifiedDate") as! Date
+  }
+  
+  func encode(with coder: NSCoder) {
+    coder.encode(amount, forKey: "amount")
+    coder.encode(category.rawValue, forKey: "category")
+    coder.encode(authorName, forKey: "authorName")
+    
+    coder.encode(date, forKey: "date")
+    coder.encode(createdDate, forKey: "createdDate")
+    coder.encode(modifiedDate, forKey: "modifiedDate")
+  }
+  
+  override var hash: Int {
     return createdDate.hashValue
   }
 }
 
-extension Transaction: Equatable {
+extension Transaction {
   public static func ==(lhs: Transaction, rhs: Transaction) -> Bool {
     return lhs.amount == rhs.amount &&
       lhs.authorName == rhs.authorName &&
@@ -120,8 +141,8 @@ extension Transaction: Equatable {
   }
 }
 
-extension Transaction: CustomStringConvertible {
-  var description: String {
+extension Transaction {
+  override var description: String {
     return "\(authorName), \(date): \(category), \(amount)"
   }
 }
