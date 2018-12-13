@@ -91,6 +91,8 @@ class Coordinator {
     csvHandler.importer = dataService
     projectionsViewController?.exporter = csvHandler
     projectionsViewController?.renamer = dataService
+    projectionsViewController?.syncDataSource = dataService
+    projectionsViewController?.syncMergeDelegate = dataService    
   }
   
   func importCSV(fileURL: URL) {

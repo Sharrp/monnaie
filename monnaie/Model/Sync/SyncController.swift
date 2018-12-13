@@ -51,9 +51,12 @@ extension SyncController: SyncDataDelegate {
       transactions = syncData.transactions
     }
     
-    mergeDelegate?.mergeDone(replacingTransactions: transactions)
     let thisSyncTransactionsList = transactions.map { $0.hash }
     syncHistoryManager.update(transactionsList: thisSyncTransactionsList, forDeviceID: buddy.deviceID)
-    dataSender?.allDataSent(toBuddy: buddy)
+    
+    DispatchQueue.main.async { [weak self] in
+      self?.mergeDelegate?.mergeDone(replacingTransactions: transactions)
+      self?.dataSender?.allDataSent(toBuddy: buddy)
+    }
   }
 }

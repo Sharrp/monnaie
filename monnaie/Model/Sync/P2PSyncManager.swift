@@ -257,8 +257,8 @@ extension P2PSyncManager: MCSessionDelegate {
       guard let receivedData = request.data else { return }
       DispatchQueue.main.async { [weak self] in
         self?.presentor?.syncInProgress(withBuddy: buddy)
+        self?.dataDelegate?.receive(data: receivedData, fromBuddy: buddy)
       }
-      dataDelegate?.receive(data: receivedData, fromBuddy: buddy)
     }
   }
   
@@ -269,13 +269,13 @@ extension P2PSyncManager: MCSessionDelegate {
       availableToSyncBuddies.append(buddy)
       
       // Auto-sync
-      if permissionsManager.isAllowedToSync(withDeviceID: deviceID) {
-        // Ensure that only one peer initiates sync
-        let shouldInitiateSync = peerID.hash < session.myPeerID.hash
-        if shouldInitiateSync {
+      let shouldInitiateSync = peerID.hash < session.myPeerID.hash // Ensures that only one peer initiates sync
+      if shouldInitiateSync {
+        if permissionsManager.isAllowedToSync(withDeviceID: deviceID) {
           startSync(withBuddy: buddy)
+        } else {
+          inviteToSync(buddy: buddy)
         }
-        return
       }
     } else if state == .notConnected {
       guard let removeIndex = availableToSyncBuddies.index(where: { $0.peerID == peerID }) else { return }

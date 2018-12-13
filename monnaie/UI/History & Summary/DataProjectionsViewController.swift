@@ -24,6 +24,8 @@ class ProjectionsViewController: UIViewController {
   weak var settings: Settings?
   weak var exporter: Exporter?
   weak var renamer: AuthorRenamer?
+  weak var syncDataSource: SyncTransactionsDataSource?
+  weak var syncMergeDelegate: MergeDelegate?
   
   @IBOutlet weak var navigationBar: UIView!
   private var navBarBorder = UIView()
@@ -112,6 +114,8 @@ class ProjectionsViewController: UIViewController {
     } else if let syncVC = navController.children.first as? SyncViewController {
       guard let settings = settings else { return }
       syncVC.syncManager = P2PSyncManager(settings: settings)
+      syncVC.syncDataSource = syncDataSource
+      syncVC.mergeDelegate = syncMergeDelegate
       syncVC.settings = settings
       syncVC.renamer = renamer
     }

@@ -31,22 +31,26 @@ class SyncViewController: UIViewController {
     }
   }
   weak var settings: Settings?
-  weak var mergeDelegate: MergeDelegate?
-  weak var transactionsDataSource: SyncTransactionsDataSource?
+  weak var mergeDelegate: MergeDelegate? {
+    didSet {
+      syncController.mergeDelegate = mergeDelegate
+    }
+  }
   weak var renamer: AuthorRenamer?
+  weak var syncDataSource: SyncTransactionsDataSource? {
+    didSet {
+      syncController.dataSource = syncDataSource
+    }
+  }
   
   private let syncController = SyncController()
   private var autoSyncBuddy: SyncBuddy?
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    syncController.mergeDelegate = mergeDelegate
-    syncController.dataSource = transactionsDataSource
-    
-    guard let syncName = syncManager?.syncName else { return }
-    display(name: syncName)
-    
+    if let syncName = syncManager?.syncName {
+      display(name: syncName)
+    }
     nameView.layer.borderColor = UIColor(hex: 0xD8D8D8).cgColor
   }
   
