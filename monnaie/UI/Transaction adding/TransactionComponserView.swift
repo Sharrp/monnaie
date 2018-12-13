@@ -232,7 +232,7 @@ class TransactionComponserView: UIView {
   }
   
   private func categoryButtonAnimation(forMode mode: TransactionComposerMode) -> ModeSwitchAnimation {
-    // Constraints should be updated immeditely
+    // Constraints should be updated immediately
     switch mode {
     case .waitingForInput:
       self.categoryButtonWidth.constant = baseSize
@@ -248,8 +248,9 @@ class TransactionComponserView: UIView {
       self?.categoryButton.layer.borderWidth = mode == .category ? 1 : 0
       self?.categoryButton.backgroundColor = mode == .category ? .clear : .white
       self?.categoryButton.alpha = mode == .waitingForInput ? 0 : 1
-      self?.categoryShadowView.alpha = mode == .date || mode == .amount ? 1 : 0
+      self?.categoryShadowView.alpha = mode == .date || mode == .amount || mode == .table ? 1 : 0
       
+      guard let strongSelf = self else { return }
       var categoryTitleInset = UIEdgeInsets(top: 0, left: 13, bottom: 0, right: 0)
       let transform: CGAffineTransform
       switch mode {
@@ -262,14 +263,24 @@ class TransactionComponserView: UIView {
       case .category:
         transform = .identity
       case .table:
-        guard let baseSize = self?.baseSize else { return }
-        guard let margin = self?.margin else { return }
-        transform = CGAffineTransform(translationX: -baseSize-margin+2, y: 0)
+        transform = CGAffineTransform(translationX: -strongSelf.baseSize-strongSelf.margin+2, y: 0)
         categoryTitleInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
       }
       self?.categoryButton.transform = transform
       self?.categoryShadowView.transform = transform
       self?.categoryButton.titleEdgeInsets = categoryTitleInset
+      
+      // Shadow should be animated separately with CABasicAnimation ¯\_(ツ)_/¯
+      let shadowAnimation = CABasicAnimation(keyPath: "shadowPath")
+      shadowAnimation.fillMode = .forwards
+      shadowAnimation.isRemovedOnCompletion = false
+      shadowAnimation.duration = Animation.duration
+      shadowAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+      shadowAnimation.fromValue = UIBezierPath(rect: strongSelf.categoryButton.bounds).cgPath
+      var newFrame = strongSelf.categoryButton.bounds
+      newFrame.size.width = strongSelf.categoryButtonWidth.constant
+      shadowAnimation.toValue = UIBezierPath(rect: newFrame).cgPath
+      self?.categoryShadowView.layer.add(shadowAnimation, forKey: "shadowPath")
     }
   }
   

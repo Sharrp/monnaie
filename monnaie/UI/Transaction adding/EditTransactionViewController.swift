@@ -135,15 +135,15 @@ class EditTransactionViewController: UIViewController {
   func animateComposerFlyAway() {
     composer.set(mode: .table, animated: true)
     adjustControls(toMode: .waitingForInput, animated: false)
-    let yShiftFlyAway = -(composer.frame.maxY + 30)
+    let yShiftFlyAway = -(composer.frame.maxY - 80)
     let animator = UIViewPropertyAnimator(duration: Animation.duration, curve: Animation.curve) { [weak self] in
-      self?.composer.transform = CGAffineTransform(translationX: 0, y: yShiftFlyAway).scaledBy(x: 0.1, y: 0.1)
+      self?.composer.transform = CGAffineTransform(translationX: 0, y: yShiftFlyAway).scaledBy(x: 0.02, y: 0.02)
     }
     animator.addCompletion { [weak self] _ in
       self?.composer.reset(animated: false)
       self?.composer.transform = .identity
     }
-    animator.startAnimation(afterDelay: 0.3)
+    animator.startAnimation(afterDelay: Animation.duration + 0.05)
   }
   
   func switchTo(mode: TransactionComposerMode, animated: Bool) {

@@ -387,6 +387,9 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="igK-Pi-tQ1" customClass="ShadowRoundedView" customModule="monnaie" customModuleProvider="target">
                                         <rect key="frame" x="68" y="15" width="156" height="56"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="156" id="pXD-Lo-yan"/>
+                                        </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2qm-PI-UQq" customClass="ShadowRoundedView" customModule="monnaie" customModuleProvider="target">
                                         <rect key="frame" x="278" y="15" width="91" height="56"/>
@@ -487,7 +490,6 @@
                                     <constraint firstAttribute="trailing" secondItem="tt3-TQ-5HB" secondAttribute="trailing" constant="24" id="9ol-LF-ifG"/>
                                     <constraint firstItem="HCO-T0-cSI" firstAttribute="trailing" secondItem="9ZH-LQ-MED" secondAttribute="trailing" id="C1T-Dt-rgC"/>
                                     <constraint firstAttribute="bottom" secondItem="GxJ-ns-JBx" secondAttribute="bottom" constant="8" id="DQ5-KU-oBX"/>
-                                    <constraint firstItem="igK-Pi-tQ1" firstAttribute="trailing" secondItem="zyi-Pr-Cca" secondAttribute="trailing" id="G1r-BC-or2"/>
                                     <constraint firstAttribute="height" constant="86" id="Gso-T8-flY"/>
                                     <constraint firstAttribute="bottom" secondItem="2qm-PI-UQq" secondAttribute="bottom" constant="15" id="Kpz-Gr-zec"/>
                                     <constraint firstItem="HCO-T0-cSI" firstAttribute="top" secondItem="9ZH-LQ-MED" secondAttribute="top" id="LhT-cG-6ag"/>
